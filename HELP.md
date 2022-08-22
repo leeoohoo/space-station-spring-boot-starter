@@ -10,7 +10,7 @@
 * 验证器
 * 事件驱动引擎
 
-### 验证器 @MyValidate 
+## 验证器 @MyValidate 
 该注解是基于 spring-boot-starter-validation 进行的二次封装，在原有的功能上，支持自己编写自己的验证逻辑，封装该注解的目的在于我发现很多验证的
 逻辑会严重污染我们的正常的业务逻辑，于是尝试将数据验证的逻辑拆分出来，下面是代码示例：
 ```java
@@ -39,16 +39,20 @@ public class UserDto {
     private String dress;
 
 
+    /**
+     * 年龄校验
+     */
     public static class AgeValidator implements SingleValidate {
         @Override
         public boolean validate(Object obj) {
-            System.out.println(obj);
-            System.out.println("我接受到什么");
-
+            if(obj > 150 || obj < 0) {
+                return false;
+            }
             return true;
         }
     }
 
+    
     public static class DressValidate implements   SingleValidate  {
         public boolean validate(Object obj) {
             return true;
@@ -85,6 +89,11 @@ public class JobValidate implements SingleValidate {
 @Verify
 public class NameAndIdCardValidate implements GroupValidate {
 
+    /**
+     * 
+     * @param map key 就是字段的名称，value 就是值，在下面自己的逻辑中自取验证的字段的值进行组合验证
+     * @return
+     */
     @Override
     public boolean validate(Map<String, Object> map) {
         System.out.println(map);
@@ -92,5 +101,11 @@ public class NameAndIdCardValidate implements GroupValidate {
     }
 }
 ```
-使用时需要注意的是，当需要注入其他服务的代码时，不能将验证器以内部类的方式写到DTO中，
+使用时需要注意：
+* 当需要注入其他服务的代码时，不能将验证器以内部类的方式写到DTO中，需要单独建立一个文件；
+* 支持单个和分组校验，分组校验时需要额外标注分组名称和分组的size, 后期会尝试简化这部分内容；
+* 可以在一个字段上添加多个注解，和原生的注解也可以组合使用
+
+
+
 

@@ -7,7 +7,7 @@ import java.util.Map;
  * @Author: lei.d.li@capgemini.com
  * @CreateTime: 2022/8/3
  */
-public interface GroupValidate extends Validate{
+public interface GroupValidate extends Validate {
 
 
     /**
