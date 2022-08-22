@@ -11,18 +11,18 @@
 * 使用方式
 * 验证器
 * 事件驱动引擎
+* 待开发内容
 
 ## 使用方式
-1. 首先下载本项目，通过mvn进行打包(正在尝试上传至maven中央库)
-2. 引入目标项目中,请按照示例名字进行打包
+1. 引入maven
     ```
         <dependency>
-            <groupId>com.oohoo</groupId>
+            <groupId>io.github.leeoohoo</groupId>
             <artifactId>space-station-spring-boot-starter</artifactId>
             <version>0.0.1</version>
         </dependency>
     ```
-3. 开启注解扫描 @EnableHappenProxy
+2. 开启注解扫描 @EnableHappenProxy
     ```java
     /**
      * @author 17986
@@ -39,6 +39,11 @@
     }
     
     ```
+3. 目前只有线程池bean 名的配置,在yml 中末尾添加即可
+    ```
+   station:
+       task-executor-name: asyncTaskExecutor
+   ```
 
 ## 验证器 @MyValidate 
 该注解是基于 spring-boot-starter-validation 进行的二次封装，在原有的功能上，支持自己编写自己的验证逻辑，封装该注解的目的在于我发现很多验证的
@@ -278,6 +283,12 @@ public class TriggerTest {
 * 事件接收器支持事物（TransactionDefinition.PROPAGATION_REQUIRES_NEW），目前仅支持开启新的事物，后续可以继续跟@Transactional做深入兼容；
 * 如事件接收器是异步的情况下，可以在配置文件中配置自己的线程池的名称，如未配置则默认不使用线程池；
 * 异步情况下，忽略事物，同时会在所有同步事件接收器执行完毕以后，开始执行所有异步执行器;
+* 事件接收器会根据配置 "order" 自然排序顺序执行
+* EventThreadValue.getStepResultThreadLocal("validate") 可以根据线程变量获取已经执行过的事件接收器的返回参数
+
+# 待开发内容
+1. 完善事件驱动引擎，开放若干接口供用户实现，并添加自己的逻辑；
+2. 基于DTO添加注解，自动生成 select 语句与where 语句；
 
 
 
