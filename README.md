@@ -8,7 +8,7 @@
 
 
 ## 目录
-* 使用方式
+* 开始使用
 * 验证器
 * 事件驱动引擎
 * 待开发内容
@@ -287,7 +287,7 @@ public class TriggerTest {
 * EventThreadValue.getStepResultThreadLocal("validate") 可以根据线程变量获取已经执行过的事件接收器的返回参数
 
 # 待开发内容
-1. 完善事件驱动引擎，开放若干接口供用户实现，并添加自己的逻辑；
+1. 完善事件驱动引擎，开放若干接口供用户实现；
 2. 基于DTO添加注解，自动生成 select 语句与where 语句；
 
 
