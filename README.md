@@ -2,13 +2,43 @@
 
 ## 简介
 * 总结自己在开发过程中，遇到的一些问题，并将这些问题归集分析后， 得出的一些解决方案， 并开发成比较方便使用的注解；
-* 配合本项目还有另一个Demo 项目，可以结合阅读；
 * 本项目会持续更新，追加一些新的功能或优化完善已做好的功能；
+* 如有更好的建议，或需要改进的部分，请各位大神能够多多指导；
+
 
 
 ## 目录
+* 使用方式
 * 验证器
 * 事件驱动引擎
+
+## 使用方式
+1. 首先下载本项目，通过mvn进行打包(正在尝试上传至maven中央库)
+2. 引入目标项目中,请按照示例名字进行打包
+    ```
+        <dependency>
+            <groupId>com.oohoo</groupId>
+            <artifactId>space-station-spring-boot-starter</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    ```
+3. 开启注解扫描 @EnableHappenProxy
+    ```java
+    /**
+     * @author 17986
+     */
+    @SpringBootApplication
+    @EnableHappenProxy
+    @EnableFeignClients
+    public class ScaffoldApplication {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(ScaffoldApplication.class, args);
+        }
+    
+    }
+    
+    ```
 
 ## 验证器 @MyValidate 
 该注解是基于 spring-boot-starter-validation 进行的二次封装，在原有的功能上，支持自己编写自己的验证逻辑，封装该注解的目的在于我发现很多验证的
@@ -103,8 +133,151 @@ public class NameAndIdCardValidate implements GroupValidate {
 * 可以在一个字段上添加多个注解，和原生的注解也可以组合使用
 
 # 事件驱动引擎 @Happen @Trigger
-* @Happen 标注到
-在开发过程中，有时会遇到如下几个场景可以使用本组注解
+* @Happen 标注到事件发生的方法上；
+* @Trigger 标注到接收事件发生的方法上；
+
+在开发过程中，有时会遇到如下几个场景可以使用本组注解:
+* 在修改某一对象的状态值时，其他地方需要做相应的改变时；
+* 对数据做流程是处理时；
+
+以下为使用示例：
+```java
+/**
+ * @Description:
+ * @Author: lei.d.li@capgemini.com
+ * @CreateTime: 2022/8/3
+ */
+@Service
+@Slf4j
+public class UserService {
+
+
+    @Autowired
+    private   UserRepository userRepository;
+
+
+
+
+
+    @Happen("userSaveOrUpdate")
+    @Transactional(rollbackFor = Exception.class)
+    public String saveOrUpdate(UserDto userDto, String uuid){
+        User user = new User();
+        BeanUtils.copyProperties(userDto,user);
+        userRepository.save(user);
+        return "我返回的结果";
+    }
+
+
+    @Trigger(value = "validate",happenName = "userSaveOrUpdate",order = 1)
+    @Transactional(rollbackFor = Exception.class)
+    public String validatePassword(String result , UserDto userDto, String uuid){
+        log.info("---------------------验证密码");
+        // 如果此方法的入参没有遵循默认的（事件发生的返回值 ， 事件发生的入参顺序）入参顺序，
+        // 则可以通过线程变量获取事件发生的返回值和入参的值
+        Object resultThreadLocal = EventThreadValue.getResultThreadLocal();
+        log.info(EventThreadValue.getParamsThreadLocal().toString());
+        log.info("result:{}, user:{}, uuid:{}",result, userDto, uuid);
+        if(null != resultThreadLocal) {
+            log.info(resultThreadLocal.toString());
+        }
+        // 可以用取到的值进行其他操作
+        User user = new User();
+        BeanUtils.copyProperties(userDto,user);
+        userRepository.save(user);
+        return "测试";
+    }
+
+
+    @Trigger(value = "test",happenName = "userSaveOrUpdate",order = 2)
+    @Transactional(rollbackFor = Exception.class)
+    public void test( String result ,UserDto user,String uuid){
+        Object validate = EventThreadValue.getStepResultThreadLocal("validate");
+        log.info("我是测试---------------------");
+        Object resultThreadLocal = EventThreadValue.getResultThreadLocal();
+        log.info(EventThreadValue.getParamsThreadLocal().toString());
+        log.info("result:{}, user:{}, uuid:{}",result, user, uuid);
+        if(null != resultThreadLocal) {
+            log.info(resultThreadLocal.toString());
+        }
+        log.info("我是测试---------------------");
+
+    }
+
+    @Trigger(value = "boo",happenName = "boo")
+    public void booTrigger() {
+        System.out.println("我走到boo");
+    }
+}
+
+```
+```java
+/**
+ * @Description:
+ * @Author: lei.d.li@capgemini.com
+ * @CreateTime: 2022/8/8
+ */
+@Slf4j
+@Service
+public class TriggerTest {
+    private final  UserRepository repository;
+
+    public TriggerTest(UserRepository repository) {
+        this.repository = repository;
+    }
+
+
+    @Trigger(value = "test",happenName = "userSaveOrUpdate",async = true)
+    @Happen("boo")
+    public void test(String result , UserDto user, String uuid) throws InterruptedException {
+        User user1 = new User();
+        BeanUtils.copyProperties(user,user1);
+        repository.save(user1);
+        log.info("我是另一个测试---------------------");
+        Thread.sleep(5000);
+        log.info("我睡了一会");
+        Object resultThreadLocal = EventThreadValue.getResultThreadLocal();
+        log.info(EventThreadValue.getParamsThreadLocal().toString());
+        log.info("result:{}, user:{}, uuid:{}",result, user,uuid);
+        if(null != resultThreadLocal) {
+            log.info(resultThreadLocal.toString());
+        }
+    }
+}
+```
+使用注意：
+* 事件接收器的方法入参推荐顺序为 “事件发生方法的返回参数”， ”事件发生方法的入参顺序"，这样的话注解会自动将事件发生器的入参赋值；
+* 事件接收器同时也可以成为事件发生源，例如
+    ```
+    
+        @Trigger(value = "test",happenName = "value",async = true)
+        @Happen("boo")
+        public void test(String result , UserDto user, String uuid) throws InterruptedException {
+            User user1 = new User();
+            BeanUtils.copyProperties(user,user1);
+            repository.save(user1);
+            log.info("我是另一个测试---------------------");
+            Thread.sleep(5000);
+            log.info("我睡了一会");
+            Object resultThreadLocal = EventThreadValue.getResultThreadLocal();
+            log.info(EventThreadValue.getParamsThreadLocal().toString());
+            log.info("result:{}, user:{}, uuid:{}",result, user,uuid);
+            if(null != resultThreadLocal) {
+                log.info(resultThreadLocal.toString());
+            }
+        }
+    ```
+    以上片段作为事件的接收者，接收userSaveOrUpdate的事件的同时，又发起了 "boo"的事件。
+    ```
+        @Trigger(value = "boo",happenName = "boo")
+        public void booTrigger() {
+            System.out.println("我走到boo");
+        }
+    ```
+    由以上方法接收，入参可以遵从上文说过的顺序，也可以没有参数，从线程变量中获取。
+* 事件接收器支持事物（TransactionDefinition.PROPAGATION_REQUIRES_NEW），目前仅支持开启新的事物，后续可以继续跟@Transactional做深入兼容；
+* 如事件接收器是异步的情况下，可以在配置文件中配置自己的线程池的名称，如未配置则默认不使用线程池；
+* 异步情况下，忽略事物，同时会在所有同步事件接收器执行完毕以后，开始执行所有异步执行器;
 
 
 
