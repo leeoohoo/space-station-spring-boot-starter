@@ -39,22 +39,18 @@ public class UserDto {
     private String dress;
 
 
-    /**
-     * 年龄校验
-     */
-    public static class AgeValidator implements SingleValidate {
+    public static class AgeValidator implements SingleValidate<Integer> {
         @Override
-        public boolean validate(Object obj) {
-            if(obj > 150 || obj < 0) {
+        public boolean validate(Integer obj) {
+            if(obj>150 || obj <0) {
                 return false;
             }
             return true;
         }
     }
 
-    
-    public static class DressValidate implements   SingleValidate  {
-        public boolean validate(Object obj) {
+    public static class DressValidate implements   SingleValidate<String>  {
+        public boolean validate(String obj) {
             return true;
         }
     }
@@ -65,7 +61,7 @@ public class UserDto {
 ```
 ```java
 @Verify
-public class JobValidate implements SingleValidate {
+public class JobValidate implements SingleValidate<String> {
     private final UserService userService;
 
     public JobValidate(UserService userService) {
@@ -78,7 +74,7 @@ public class JobValidate implements SingleValidate {
      * @return
      */
     @Override
-    public boolean validate(Object obj) {
+    public boolean validate(String obj) {
         System.out.println("测试");
 
         return true;
@@ -105,6 +101,12 @@ public class NameAndIdCardValidate implements GroupValidate {
 * 当需要注入其他服务的代码时，不能将验证器以内部类的方式写到DTO中，需要单独建立一个文件；
 * 支持单个和分组校验，分组校验时需要额外标注分组名称和分组的size, 后期会尝试简化这部分内容；
 * 可以在一个字段上添加多个注解，和原生的注解也可以组合使用
+
+# 事件驱动引擎 @Happen @Trigger
+* @Happen 标注到
+在开发过程中，有时会遇到如下几个场景可以使用本组注解
+
+
 
 
 
