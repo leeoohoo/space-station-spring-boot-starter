@@ -15,4 +15,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface Happen {
     String value();
+
+    boolean enabledSave() default false;
 }

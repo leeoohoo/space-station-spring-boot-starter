@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -89,10 +90,15 @@ public class HappenConfiguration {
     static class HappenMethodInterceptor implements MethodInterceptor {
 
 
+        @Autowired
+        private RecordAbstract recordAbstract;
         @Nullable
         @Override
         public Object invoke(@NonNull MethodInvocation invocation) throws Throwable {
-
+            //获取记录器
+            CirculationRecord circulationRecord = new CirculationRecord();
+            circulationRecord.setHappenName("test");
+            recordAbstract.save(circulationRecord);
             Object proceed = invocation.proceed();
             boolean annotationPresent = invocation.getMethod().isAnnotationPresent(Happen.class);
             if (!annotationPresent) {
