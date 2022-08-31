@@ -12,6 +12,7 @@
 * 验证器
 * 事件驱动引擎
 * 待开发内容
+* 版本更新详情
 
 ## 使用方式
 1. 引入maven
@@ -249,7 +250,34 @@ public class TriggerTest {
         }
     }
 }
+
 ```
+实现RecordAbstract接口,重写可以拿到事件发生器与事件接收器执行过程中的记录
+```java
+
+public class TestRecord implements RecordAbstract {
+    @Override
+    public void saveTrigger(CirculationRecord circulationRecord) {
+        System.out.println("测试是否可以拿到数据");
+        System.out.println(circulationRecord.toString());
+    }
+
+    @Override
+    public void saveHappen(CirculationRecord circulationRecord) {
+        System.out.println("测试是否可以拿到数据");
+        System.out.println(circulationRecord.toString());
+    }
+}
+```
+别忘了通过@Bean注入到ioc中
+```
+    @Bean
+	public RecordAbstract getRecordAbstract() {
+		return new TestRecord();
+	}
+
+```
+
 使用注意：
 * 事件接收器的方法的类确保被spring IOC管理，且暂不支持Interface的方式
 * 事件接收器的方法入参推荐顺序为 “事件发生方法的返回参数”， ”事件发生方法的入参顺序"，这样的话注解会自动将事件发生器的入参赋值；
@@ -291,6 +319,12 @@ public class TriggerTest {
 1. 完善事件驱动引擎，开放若干接口供用户实现；
 2. 基于DTO添加注解，自动生成 select 语句与where 语句；
 
+# 版本更新
+## 0.0.1 
+为初始版本，包含验证器与事件驱动器两组注解功能
+## 0.0.2 
+更新事件驱动器注解，添加RecordAbstract的实现功能，可以自定义将事件发生的过程参数记录下来
+@Happen 注解添加新属性 boolean enabledSave() default false; 默认不记录
 
 
 
