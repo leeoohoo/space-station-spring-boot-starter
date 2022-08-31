@@ -1,6 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Description:
@@ -8,6 +11,9 @@ import lombok.Data;
  * @CreateTime: 2022/8/23
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CirculationRecord {
 
     /**
@@ -18,7 +24,7 @@ public class CirculationRecord {
     /**
      * 事件源 & 事件接收器
      */
-    private Integer type;
+    private EventEnum type;
 
     /**
      * 事件接受器名称
@@ -43,12 +49,12 @@ public class CirculationRecord {
     /**
      * 是否异步
      */
-    private Integer asyncOr;
+    private EventEnum asyncOr;
 
     /**
      * 执行状态
      */
-    private Integer status;
+    private EventEnum status;
 
     /**
      * 异常信息

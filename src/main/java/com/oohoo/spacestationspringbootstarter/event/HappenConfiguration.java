@@ -1,5 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.event;
 
+import com.google.gson.Gson;
 import com.oohoo.spacestationspringbootstarter.config.SpringUtils;
 import com.oohoo.spacestationspringbootstarter.event.annotation.Happen;
 import lombok.extern.slf4j.Slf4j;
@@ -92,22 +93,20 @@ public class HappenConfiguration {
 
         @Autowired
         private RecordAbstract recordAbstract;
+
         @Nullable
         @Override
         public Object invoke(@NonNull MethodInvocation invocation) throws Throwable {
-            //获取记录器
-            CirculationRecord circulationRecord = new CirculationRecord();
-            circulationRecord.setHappenName("test");
-            recordAbstract.save(circulationRecord);
-            Object proceed = invocation.proceed();
+
             boolean annotationPresent = invocation.getMethod().isAnnotationPresent(Happen.class);
             if (!annotationPresent) {
                 // 如果不是事件发生的方法则直接返回
-                return proceed;
+                return invocation.proceed();
             }
+
             Happen annotation = invocation.getMethod().getAnnotation(Happen.class);
             List<TriggerMethod> value = HappenContext.getTriggerMethods(annotation.value());
-
+            Object proceed = this.happen(invocation,annotation);
             if (!CollectionUtils.isEmpty(value)) {
                 // 如果发现后续事件的接收者，手动打开事物
                 AbstractPlatformTransactionManager transactionManager = SpringUtils.getBean("transactionManager");
@@ -121,43 +120,105 @@ public class HappenConfiguration {
                 // 根据事件接收者的排序字段进行排序 顺序执行
                 value.sort(Comparator.comparing(TriggerMethod::getOrder));
                 value.stream().filter(it -> !it.getAsync()).forEach(triggerMethod -> {
-                    try {
-                        Object[] arguments = invocation.getArguments();
-                        Object[] objects1 = this.initParams(proceed, arguments, triggerMethod.getObjectTypes());
-                        Object bean = null;
-                        if (triggerMethod.getIsInterface()) {
-                            log.warn("[事件接收]----------->>>>>>>class:{}, 为interface, 本组件暂时不支持",triggerMethod.getTargetName());
-                        } else {
-                            bean = SpringUtils.getBean(triggerMethod.getTargetName());
-                        }
-                        if (null != bean) {
-                            Object invoke = triggerMethod.getMethod().invoke(bean, objects1);
-                            EventThreadValue.setStepResultThreadLocal(triggerMethod.getName(),invoke);
-                        } else {
-                            log.warn("[事件接收]---------->>>>>>class:{},未找到或未加入到IOC管理，未能触发事件接收", triggerMethod.getTargetName());
-                        }
-
-                    } catch (Exception e) {
-                        transactionManager.commit(status);
-                        throw new RuntimeException(e);
-                    }
+                    //执行每一个同步的事件接受器
+                    synchronizeTrigger(invocation, proceed, triggerMethod, annotation, transactionManager, status);
                 });
                 // 执行异步的方法 异步的方法不参与排序
                 value.stream().filter(TriggerMethod::getAsync).forEach(triggerMethod -> {
                     Object[] arguments = invocation.getArguments();
-                    Object[] objects1 = this.initParams(proceed, arguments, triggerMethod.getObjectTypes());
+                    Object[] params = this.initParams(proceed, arguments, triggerMethod.getObjectTypes());
                     Object bean = SpringUtils.getBean(triggerMethod.getTargetName());
                     EventExecutor instance = EventExecutor.getInstance();
-                    instance.execute(triggerMethod, objects1, proceed, arguments, bean);
+                    instance.execute(triggerMethod, params, arguments, bean, annotation, recordAbstract);
                 });
 
                 transactionManager.commit(status);
                 EventThreadValue.clearThreadLocal();
             }
 
+
             return proceed;
         }
 
+        /**
+         * 代理事件发生源的方法
+         * @param invocation
+         * @param annotation
+         * @return
+         * @throws Throwable
+         */
+        private Object happen(MethodInvocation invocation,Happen annotation) throws Throwable {
+            Object proceed = null;
+            CirculationRecord circulationRecord = null;
+            try {
+                proceed = invocation.proceed();
+                if (annotation.enabledSave()) {
+                    circulationRecord = EventUtil.initCirculationRecord(invocation.getArguments(),annotation.value(),"",
+                            proceed,EventEnum.SUCCESS);
+                }
+            } catch (Exception e) {
+                if (annotation.enabledSave()) {
+                    circulationRecord = EventUtil.initCirculationRecord(invocation.getArguments(),annotation.value(),e.getMessage(),
+                            null,EventEnum.SUCCESS);
+                }
+                throw e;
+            }finally {
+                if(annotation.enabledSave()) {
+                    recordAbstract.saveHappen(circulationRecord);
+                }
+            }
+            return proceed;
+        }
+
+
+        /**
+         * 执行同步的事件接受器
+         * @param invocation 事件发生源的方法
+         * @param proceed 事件发生源的返回值
+         * @param triggerMethod 事件接收器的方法
+         * @param annotation 事件发生源的注解
+         * @param transactionManager 事物管理
+         * @param status 事物状态
+         */
+        private void synchronizeTrigger(MethodInvocation invocation, Object proceed,
+                                        TriggerMethod triggerMethod, Happen annotation,
+                                        AbstractPlatformTransactionManager transactionManager,
+                                        TransactionStatus status) {
+            Object[] params = null;
+            CirculationRecord circulationRecord = null;
+            try {
+                Object[] arguments = invocation.getArguments();
+                params = this.initParams(proceed, arguments, triggerMethod.getObjectTypes());
+                Object bean = null;
+                if (triggerMethod.getIsInterface()) {
+                    log.warn("[事件接收]----------->>>>>>>class:{}, 为interface, 本组件暂时不支持", triggerMethod.getTargetName());
+                } else {
+                    bean = SpringUtils.getBean(triggerMethod.getTargetName());
+                }
+                if (null != bean) {
+                    Object invoke = triggerMethod.getMethod().invoke(bean, params);
+                    EventThreadValue.setStepResultThreadLocal(triggerMethod.getName(), invoke);
+                    if (annotation.enabledSave()) {
+                        circulationRecord =
+                                EventUtil.initCirculationRecord(params, triggerMethod, "", invoke, EventEnum.SUCCESS);
+                    }
+                } else {
+                    log.warn("[事件接收]---------->>>>>>class:{},未找到或未加入到IOC管理，未能触发事件接收", triggerMethod.getTargetName());
+                }
+
+            } catch (Exception e) {
+                if (annotation.enabledSave()) {
+                    circulationRecord =
+                            EventUtil.initCirculationRecord(params, triggerMethod, e.getMessage(), null, EventEnum.FAILED);
+                }
+                transactionManager.commit(status);
+                throw new RuntimeException(e);
+            } finally {
+                if (annotation.enabledSave()) {
+                    recordAbstract.saveTrigger(circulationRecord);
+                }
+            }
+        }
 
         private Object[] initParams(Object result, Object[] objects, Class<?>[] types) {
             Object[] objects1 = {result};

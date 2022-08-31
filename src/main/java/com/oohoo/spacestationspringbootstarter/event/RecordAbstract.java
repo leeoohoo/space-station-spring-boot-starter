@@ -11,10 +11,18 @@ import org.springframework.stereotype.Component;
 public interface RecordAbstract {
 
     /**
-     * 保存事件过程的返回值和
+     * 保存事件接收器的执行记录
+     *
      * @param circulationRecord
      */
-    void save(CirculationRecord circulationRecord);
+    void saveTrigger(CirculationRecord circulationRecord);
+
+
+    /**
+     * 保存事件发生器的执行记录
+     * @param circulationRecord
+     */
+    void saveHappen(CirculationRecord circulationRecord);
 
 
 }
