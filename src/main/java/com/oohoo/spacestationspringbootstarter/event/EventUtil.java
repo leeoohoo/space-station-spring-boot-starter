@@ -13,7 +13,7 @@ public class EventUtil {
                                                     String errorMsg, Object result,
                                                     EventEnum status) {
         Gson gson = new Gson();
-        CirculationRecord build = CirculationRecord.builder()
+        return CirculationRecord.builder()
                 .happenName(triggerMethod.getHappenName())
                 .asyncOr(triggerMethod.getAsync() ? EventEnum.ASYNC : EventEnum.SYNCHRONIZE)
                 .errorJson(errorMsg)
@@ -24,7 +24,6 @@ public class EventUtil {
                 .status(status)
                 .type(EventEnum.TRIGGER)
                 .build();
-        return build;
     }
 
 
@@ -33,7 +32,7 @@ public class EventUtil {
                                                           EventEnum status) {
 
         Gson gson = new Gson();
-        CirculationRecord build = CirculationRecord.builder()
+        return CirculationRecord.builder()
                 .happenName(HappenName)
                 .errorJson(errorMsg)
                 .paramsJsonArray(gson.toJson(params))
@@ -41,7 +40,6 @@ public class EventUtil {
                 .status(status)
                 .type(EventEnum.HAPPEN)
                 .build();
-        return build;
     }
 
 }
