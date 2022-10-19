@@ -1,6 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.event;
 
-import com.google.gson.Gson;
+
 import com.oohoo.spacestationspringbootstarter.config.SpringUtils;
 import com.oohoo.spacestationspringbootstarter.event.annotation.Happen;
 import lombok.extern.slf4j.Slf4j;

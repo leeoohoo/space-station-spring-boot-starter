@@ -24,7 +24,6 @@ public class EventExecutor {
 
 
     private static class SingletonEventExecutor {
-
         private static final EventExecutor INSTANCE = new EventExecutor();
     }
 
