@@ -2,16 +2,18 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Join;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.SerializedLambda;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @Description:
  * @Author: lei.d.li@capgemini.com
  * @CreateTime: 2022/8/31
  */
-public interface DtoQuery<T,R> {
+public interface DtoQuery<T> extends Serializable {
 
     /**
      * 获得查询语句
@@ -31,11 +33,20 @@ public interface DtoQuery<T,R> {
         return "";
     }
 
-    default void test(R select) {
-
-        String a = (String) select;
-        System.out.println(a);
+    default void test( SelectColumn<Test,?> select) {
+        SerializedLambda resolve = SerializedLambda.resolve(select);
+        String implMethodName = resolve.getImplMethodName();
+        System.out.println(resolve);
     }
+
+    default String getSql(){
+        return "";
+    }
+
+    default List<Object> getParam() {
+        return null;
+    }
+
 
 
 }

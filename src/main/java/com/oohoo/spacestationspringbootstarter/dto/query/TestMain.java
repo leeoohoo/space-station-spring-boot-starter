@@ -1,6 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+
+import java.lang.invoke.SerializedLambda;
 
 /**
  * @Description:
