@@ -106,6 +106,13 @@ public class SerializedLambda implements Serializable {
         return ClassUtils.toClassConfident(instantiatedTypeName);
     }
 
+
+    public Column serializedLambdaToColumn(SerializedLambda serializedLambda) {
+        String clazzName = serializedLambda.implClass;
+        String mothedName = serializedLambda.implMethodName;
+        return null;
+    }
+
     /**
      * @return 字符串形式
      */
