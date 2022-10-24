@@ -1,6 +1,16 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.Test;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
+import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import lombok.Data;
+import org.springframework.util.StringUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -10,7 +20,94 @@ import lombok.Data;
 @Data
 public class Column {
 
-    private String clazzName;
+    private Class<?> clazz;
+    private String tableName;
 
     private String field;
+
+    private String alias;
+
+
+    private Column(Class<?> clazz, String fieldFunc, String alias) {
+        this.getTableName(clazz);
+        this.field = this.getFiledName(fieldFunc);
+        this.alias = alias;
+        this.clazz = clazz;
+    }
+
+    public static Column create(Class<?> clazz, String fieldFunc, String alias) {
+        return new Column(clazz, fieldFunc, alias);
+    }
+
+    public static <T> Column create(SelectColumn<T, ?> selectColumn, String alias) {
+        SerializedLambda resolve = SerializedLambda.resolve(selectColumn);
+        Class<?> clazz = resolve.getImplClass();
+        String implMethodName = resolve.getImplMethodName();
+        return create(clazz, implMethodName, alias);
+    }
+
+    public static <T> Column create(SelectColumn<T, ?> selectColumn) {
+        return create(selectColumn,"");
+    }
+
+    public String getSelectFieldSql() {
+        return tableName + "." + field + (StringUtils.hasLength(alias) ? " as " + alias : "");
+    }
+
+    public String getCdnSql(OpEnum opEnum) {
+        return tableName + "." + field  + opEnum.getOp() + " ? ";
+    }
+
+    /**
+     * 检查是否是实体类
+     *
+     * @param clazz
+     * @return
+     */
+    private void getTableName(Class<?> clazz) {
+        Entity declaredAnnotation = clazz.getDeclaredAnnotation(Entity.class);
+        if (null == declaredAnnotation) {
+            throw new DtoQueryException("查询的对象不是实体类，className:[" + clazz.getName() + "]");
+        }
+        this.tableName = declaredAnnotation.name();
+    }
+
+
+    /**
+     * 获取字段名
+     *
+     * @param str
+     * @return
+     */
+    private String getFiledName(String str) {
+        if (!StringUtils.hasLength(str) || str.length() <= 3) {
+            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
+        }
+        String getString = str.substring(0, 3);
+        if (!"get".equals(getString)) {
+            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
+        }
+        String substring = str.substring(3);
+        char[] cs = substring.toCharArray();
+        cs[0] += 32;
+        return camelToUnderline(String.valueOf(cs));
+    }
+
+    public static String camelToUnderline(String line) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
+        StringBuilder sb = new StringBuilder();
+        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            sb.append(word.toLowerCase());
+            sb.append(matcher.end() == line.length() ? "" : "_");
+        }
+        return sb.toString();
+    }
+
+
 }

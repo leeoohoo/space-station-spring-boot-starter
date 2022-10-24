@@ -1,5 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  * @Description
  * @since 21 October 2022
  */
+@Component
 public interface SqlContext {
 
     /**
@@ -39,4 +42,14 @@ public interface SqlContext {
      * @return
      */
     List<Object> getParams();
+
+    void setSelect(StringBuilder select);
+
+    void setCdn(StringBuilder cdn);
+
+    void addCdn(String cdn);
+
+    void setSql(StringBuilder sql);
+
+    void addParams(Object param);
 }

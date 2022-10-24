@@ -11,7 +11,7 @@ public interface SelectManager {
 
     <T> SelectManager select(SelectColumn<T,?>... columns);
 
-    <T,D> SelectManager select(SelectColumn<T,?> column, SelectColumn<D,?> alias);
+    <T,D> SelectManager select(SelectColumn<T,?> column, String alias);
 
     CdnManager where();
 

@@ -1,6 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 
 import java.util.List;
 
@@ -17,6 +18,12 @@ public class MysqlSqlContext implements SqlContext {
     private StringBuilder cdnSql;
 
     private List<Object> params;
+
+    private final LogicEnum logicEnum = LogicEnum.AND;
+
+    private  LogicEnum temporaryLogicEnum;
+
+    private boolean isFirstCdn = true;
 
 
     @Override
@@ -46,5 +53,40 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public List<Object> getParams() {
         return null;
+    }
+
+    @Override
+    public void setSelect(StringBuilder select) {
+
+    }
+
+    @Override
+    public void setCdn(StringBuilder cdn) {
+
+    }
+
+    @Override
+    public void addCdn(String cdn) {
+        if(!isFirstCdn) {
+            if(null != this.temporaryLogicEnum) {
+                this.cdnSql.append( this.temporaryLogicEnum.getValue());
+                this.temporaryLogicEnum = null;
+            }
+            this.cdnSql.append(this.logicEnum.getValue());
+        }
+        this.cdnSql.append(cdn);
+        this.isFirstCdn = false;
+    }
+
+
+
+    @Override
+    public void setSql(StringBuilder sql) {
+
+    }
+
+    @Override
+    public void addParams(Object param) {
+
     }
 }

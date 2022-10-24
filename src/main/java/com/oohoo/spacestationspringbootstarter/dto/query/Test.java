@@ -1,9 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Eq;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.From;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Join;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Like;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.mysql.MysqlQuery;
 import lombok.Data;
 
@@ -13,6 +10,7 @@ import lombok.Data;
  * @CreateTime: 2022/9/1
  */
 @Data
+@Entity(name = "test")
 @From(Test.class)
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "job")
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "age")
@@ -26,5 +24,8 @@ public class Test extends MysqlQuery {
     @Like
     private String job;
 
+    @Like
     private Integer age;
+
+    private String userName;
 }

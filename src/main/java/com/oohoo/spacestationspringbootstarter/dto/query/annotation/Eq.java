@@ -3,6 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.annotation;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Condition(op = OpEnum.EQ)
+@Component
 public @interface Eq {
     LogicEnum logic() default LogicEnum.AND;
 

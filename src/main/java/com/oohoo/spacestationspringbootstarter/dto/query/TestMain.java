@@ -17,22 +17,21 @@ public class TestMain {
     public static void main(String[] args) {
 
         Test test = new Test();
+        test.setAge(11);
+
+
         test.creat()
-                .select(Test::getAge)
+                .select(Test::getUserName,Test::getAge)
+                .select(Test::getAge,"userAge")
                 .left(Test1.class)
                 .on(Test::getId, OpEnum.EQ, Test1::getAge)
                 .where().eq(Test::getAge,true)
+                .eq(Test::getAge)
                 .or()
                 .eq(Test1::getJob,"ceshi");
 
 
-        test.select().where().eq(Test::getAge).in(Test::getAge, new ArrayList<Integer>()).bracket().or();
-        test.creat();
-        test.select();
-        test.join();
-        test.test(Test::getAge);
-        test.test(Test::getId);
-        test.test(Test1::getAge);
+
     }
 
 

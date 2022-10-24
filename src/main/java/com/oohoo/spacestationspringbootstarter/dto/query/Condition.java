@@ -14,27 +14,27 @@ import java.util.Arrays;
  * @since 21 October 2022
  */
 @Data
-public class Condition<T,P> {
+public class Condition {
 
     /**
      * 默认and
      */
     private LogicEnum logicSymbol;
 
-    private  SelectColumn<T, ?> column;
+    private  SelectColumn<?, ?> column;
 
     private OpEnum opEnum;
 
     /**
      * 如果为空则替换为 “？”
      */
-    private SelectColumn<P, ?> column1;
+    private SelectColumn<?, ?> column1;
 
     private Condition(){}
 
-    public static<T, P> Condition<T, P> create( SelectColumn<T, ?> column,
+    public static<T, P> Condition create( SelectColumn<T, ?> column,
                                                OpEnum opEnum, SelectColumn<P, ?> column1,LogicEnum... logicSymbol ) {
-        Condition<T, P> tpCondition = new Condition<>();
+        Condition tpCondition = new Condition();
         if(null == logicSymbol || logicSymbol.length <= 0) {
             tpCondition.logicSymbol = LogicEnum.AND;
         }else {
@@ -55,7 +55,7 @@ public class Condition<T,P> {
      * @param <T>
      * @param <P>
      */
-    public static<T, P> Condition<T, P> create( SelectColumn<T, ?> column,
+    public static<T, P> Condition create( SelectColumn<T, ?> column,
                                                  SelectColumn<P, ?> column1,LogicEnum... logicSymbol ) {
         return create(column,OpEnum.EQ,column1,logicSymbol);
     }
@@ -68,7 +68,7 @@ public class Condition<T,P> {
      * @param <T>
      * @param <P>
      */
-    public static<T, P> Condition<T, P> create( SelectColumn<T, ?> column,
+    public static<T, P> Condition create( SelectColumn<T, ?> column,
                                                 OpEnum opEnum, LogicEnum... logicSymbol ) {
         return create(column,opEnum,null,logicSymbol);
     }
@@ -82,7 +82,7 @@ public class Condition<T,P> {
      * @param <T>
      * @param <P>
      */
-    public static<T, P> Condition<T, P> create( SelectColumn<T, ?> column,
+    public static<T, P> Condition create( SelectColumn<T, ?> column,
                                                  LogicEnum... logicSymbol ) {
 
         return create(column,OpEnum.EQ,null,logicSymbol);
