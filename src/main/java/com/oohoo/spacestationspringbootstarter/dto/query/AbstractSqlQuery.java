@@ -218,11 +218,13 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
 
     @Override
     public CdnManager bracket() {
+        this.sqlContext.setBracket();
         return this;
     }
 
     @Override
     public JoinManager inner(Class<?> clazz) {
+
         return this;
     }
 

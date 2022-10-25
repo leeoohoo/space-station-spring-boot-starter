@@ -29,8 +29,8 @@ public class Column {
 
 
     private Column(Class<?> clazz, String fieldFunc, String alias) {
-        this.getTableName(clazz);
-        this.field = this.getFiledName(fieldFunc);
+        this.tableName = ClassUtils.getTableName(clazz);
+        this.field = ClassUtils.getFiledName(fieldFunc);
         this.alias = alias;
         this.clazz = clazz;
     }
@@ -58,40 +58,7 @@ public class Column {
         return tableName + "." + field  + opEnum.getOp() + " ? ";
     }
 
-    /**
-     * 检查是否是实体类
-     *
-     * @param clazz
-     * @return
-     */
-    private void getTableName(Class<?> clazz) {
-        Entity declaredAnnotation = clazz.getDeclaredAnnotation(Entity.class);
-        if (null == declaredAnnotation) {
-            throw new DtoQueryException("查询的对象不是实体类，className:[" + clazz.getName() + "]");
-        }
-        this.tableName = declaredAnnotation.name();
-    }
 
-
-    /**
-     * 获取字段名
-     *
-     * @param str
-     * @return
-     */
-    private String getFiledName(String str) {
-        if (!StringUtils.hasLength(str) || str.length() <= 3) {
-            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
-        }
-        String getString = str.substring(0, 3);
-        if (!"get".equals(getString)) {
-            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
-        }
-        String substring = str.substring(3);
-        char[] cs = substring.toCharArray();
-        cs[0] += 32;
-        return camelToUnderline(String.valueOf(cs));
-    }
 
     public static String camelToUnderline(String line) {
         if (line == null || "".equals(line)) {

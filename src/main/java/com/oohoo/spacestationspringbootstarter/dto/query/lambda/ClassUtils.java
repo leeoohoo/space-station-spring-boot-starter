@@ -1,11 +1,16 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
+import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column.camelToUnderline;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -201,5 +206,41 @@ public class ClassUtils {
             }
         }
         return cl;
+    }
+
+
+    /**
+     * 检查是否是实体类
+     *
+     * @param clazz
+     * @return
+     */
+    public static String getTableName(Class<?> clazz) {
+        Entity declaredAnnotation = clazz.getDeclaredAnnotation(Entity.class);
+        if (null == declaredAnnotation) {
+            throw new DtoQueryException("查询的对象不是实体类，className:[" + clazz.getName() + "]");
+        }
+        return declaredAnnotation.name();
+    }
+
+
+    /**
+     * 获取字段名
+     *
+     * @param str
+     * @return
+     */
+    public static String getFiledName(String str) {
+        if (!StringUtils.hasLength(str) || str.length() <= 3) {
+            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
+        }
+        String getString = str.substring(0, 3);
+        if (!"get".equals(getString)) {
+            throw new DtoQueryException("查询字段异常,fieldName:[" + str + "]");
+        }
+        String substring = str.substring(3);
+        char[] cs = substring.toCharArray();
+        cs[0] += 32;
+        return camelToUnderline(String.valueOf(cs));
     }
 }
