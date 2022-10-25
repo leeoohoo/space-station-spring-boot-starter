@@ -1,5 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public interface SqlContext {
     void setSelect(StringBuilder select);
 
     void setCdn(StringBuilder cdn);
+
+    void setLogicEnum(LogicEnum logicEnum);
 
     void addCdn(String cdn);
 

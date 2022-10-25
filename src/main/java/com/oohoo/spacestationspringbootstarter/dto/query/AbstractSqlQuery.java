@@ -1,6 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
@@ -74,119 +75,144 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
 
     @Override
     public <T> CdnManager eq(SelectColumn<T, ?> column, Object value, boolean... required) {
-        this.addCdnAndParams(column,value, OpEnum.EQ, required);
+        this.addCdnAndParams(column, value, OpEnum.EQ, required);
         this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager like(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams("'%"+this.addCdnAndParams(column, OpEnum.LIKE)+"%'");
+        this.sqlContext.addParams("'%" + this.addCdnAndParams(column, OpEnum.LIKE) + "%'");
         return this;
     }
 
     @Override
     public <T> CdnManager like(SelectColumn<T, ?> column, String value, boolean... required) {
-        this.addCdnAndParams(column,value, OpEnum.LIKE, required);
-        this.sqlContext.addParams("'%"+value+"%'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
+        this.sqlContext.addParams("'%" + value + "%'");
         return this;
     }
 
     @Override
     public <T> CdnManager likeLeft(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams("'%"+this.addCdnAndParams(column, OpEnum.LIKE));
+        this.sqlContext.addParams("'%" + this.addCdnAndParams(column, OpEnum.LIKE) + "'");
         return this;
     }
 
     @Override
     public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value, boolean... required) {
-        this.addCdnAndParams(column,value, OpEnum.LIKE, required);
-        this.sqlContext.addParams("'%"+value);
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
+        this.sqlContext.addParams("'%" + value + "'");
         return this;
     }
 
     @Override
     public <T> CdnManager likeRight(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams("'" + this.addCdnAndParams(column, OpEnum.LIKE) + "%'");
         return this;
     }
 
     @Override
     public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
+        this.sqlContext.addParams("'" + value + "%'");
         return this;
     }
 
     @Override
     public <T> CdnManager le(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.LE));
         return this;
     }
 
     @Override
     public <T> CdnManager le(SelectColumn<T, ?> column, Object value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.LE, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager lt(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.LT));
         return this;
     }
 
     @Override
     public <T> CdnManager lt(SelectColumn<T, ?> column, Object value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.LT, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager ge(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.GE));
         return this;
     }
 
     @Override
     public <T> CdnManager ge(SelectColumn<T, ?> column, Object value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.GE, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager gt(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.GT));
         return this;
     }
 
     @Override
     public <T> CdnManager gt(SelectColumn<T, ?> column, Object value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.GT, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager in(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.IN));
         return this;
     }
 
     @Override
     public <T> CdnManager in(SelectColumn<T, ?> column, List<?> value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.IN, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager notIn(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.NOT_IN));
         return this;
     }
 
     @Override
     public <T> CdnManager notIn(SelectColumn<T, ?> column, List<?> value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.NOT_IN, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager ne(SelectColumn<T, ?> column) {
+        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.NE));
         return this;
     }
 
     @Override
     public <T> CdnManager ne(SelectColumn<T, ?> column, Object value, boolean... required) {
+        this.addCdnAndParams(column, value, OpEnum.NE, required);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public CdnManager or() {
+        this.sqlContext.setLogicEnum(LogicEnum.OR);
         return this;
     }
 
@@ -220,7 +246,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         return this;
     }
 
-    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn,Object value, OpEnum opEnum, boolean... requireds) {
+    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum, boolean... requireds) {
         Column field = Column.create(selectColumn);
         boolean required = false;
         if (requireds.length > 0) {
@@ -229,7 +255,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         if (required && null == value) {
             throw new DtoQueryException("参数不能为空，fieldName:[" + field.getField() + "]");
         }
-        if(null == value) {
+        if (null == value) {
             return;
         }
         String cdnSql = field.getCdnSql(opEnum);

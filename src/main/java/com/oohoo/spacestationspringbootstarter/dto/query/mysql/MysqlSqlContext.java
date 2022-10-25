@@ -3,6 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class MysqlSqlContext implements SqlContext {
 
     private StringBuilder cdnSql;
 
-    private List<Object> params;
+    private List<Object> params = new ArrayList<>();
 
     private final LogicEnum logicEnum = LogicEnum.AND;
 
@@ -66,6 +67,11 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     @Override
+    public void setLogicEnum(LogicEnum logicEnum) {
+        this.temporaryLogicEnum = logicEnum;
+    }
+
+    @Override
     public void addCdn(String cdn) {
         if(!isFirstCdn) {
             if(null != this.temporaryLogicEnum) {
@@ -87,6 +93,6 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public void addParams(Object param) {
-
+        this.params.add(param);
     }
 }
