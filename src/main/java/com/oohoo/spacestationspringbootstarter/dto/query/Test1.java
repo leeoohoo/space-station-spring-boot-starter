@@ -1,5 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Join;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
  * @CreateTime: 2022/9/1
  */
 @Data
+@Entity(name = "test")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "job")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "age")
 public class Test1  {

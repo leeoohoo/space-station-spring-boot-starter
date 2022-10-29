@@ -1,9 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.enums;
 
 public enum JoinEnum {
-    LEFT(" left "),
-    RIGHT(" right "),
-    INNER(" inner ");
+    LEFT(" left join "),
+    RIGHT(" right join "),
+    INNER(" inner join ");
 
     final String type;
 

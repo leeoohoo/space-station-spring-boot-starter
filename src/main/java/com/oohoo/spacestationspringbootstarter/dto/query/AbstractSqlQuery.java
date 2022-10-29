@@ -1,10 +1,12 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 
 import java.lang.reflect.Field;
@@ -17,7 +19,7 @@ import java.util.Optional;
  * @Description
  * @since 21 October 2022
  */
-public abstract class AbstractSqlQuery implements CdnManager, JoinManager, SelectManager, Query {
+public abstract class AbstractSqlQuery implements CdnManager, JoinManager, SelectManager, FromManager, Query {
 
     protected SqlContext sqlContext;
 
@@ -31,7 +33,8 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         return this;
     }
 
-    public AbstractSqlQuery from(Class<?> clazz) {
+    @Override
+    public FromManager from(Class<?> clazz) {
         return this;
     }
 
@@ -74,7 +77,14 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager eq(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager eq(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.EQ);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+
+    @Override
+    public <T> CdnManager eq(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.EQ, required);
         this.sqlContext.addParams(value);
         return this;
@@ -87,7 +97,14 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager like(SelectColumn<T, ?> column, String value, boolean... required) {
+    public <T> CdnManager like(SelectColumn<T, ?> column, String value) {
+        this.addCdnAndParams(column, value, OpEnum.LIKE);
+        this.sqlContext.addParams("'%" + value + "%'");
+        return this;
+    }
+
+    @Override
+    public <T> CdnManager like(SelectColumn<T, ?> column, String value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.LIKE, required);
         this.sqlContext.addParams("'%" + value + "%'");
         return this;
@@ -100,7 +117,14 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value, boolean... required) {
+    public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value) {
+        this.addCdnAndParams(column, value, OpEnum.LIKE);
+        this.sqlContext.addParams("'%" + value + "'");
+        return this;
+    }
+
+    @Override
+    public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.LIKE, required);
         this.sqlContext.addParams("'%" + value + "'");
         return this;
@@ -113,7 +137,13 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value, boolean... required) {
+    public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value) {
+        this.addCdnAndParams(column, value, OpEnum.LIKE);
+        this.sqlContext.addParams("'" + value + "%'");
+        return this;
+    }
+    @Override
+    public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.LIKE, required);
         this.sqlContext.addParams("'" + value + "%'");
         return this;
@@ -125,8 +155,15 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         return this;
     }
 
+
     @Override
-    public <T> CdnManager le(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager le(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.LE);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+    @Override
+    public <T> CdnManager le(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.LE, required);
         this.sqlContext.addParams(value);
         return this;
@@ -138,8 +175,15 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         return this;
     }
 
+
     @Override
-    public <T> CdnManager lt(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager lt(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.LT);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+    @Override
+    public <T> CdnManager lt(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.LT, required);
         this.sqlContext.addParams(value);
         return this;
@@ -151,8 +195,15 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         return this;
     }
 
+
     @Override
-    public <T> CdnManager ge(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager ge(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.GE);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+    @Override
+    public <T> CdnManager ge(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.GE, required);
         this.sqlContext.addParams(value);
         return this;
@@ -165,7 +216,14 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager gt(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager gt(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.GT);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+
+    @Override
+    public <T> CdnManager gt(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.GT, required);
         this.sqlContext.addParams(value);
         return this;
@@ -178,7 +236,14 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager in(SelectColumn<T, ?> column, List<?> value, boolean... required) {
+    public <T> CdnManager in(SelectColumn<T, ?> column, List<?> value) {
+        this.addCdnAndParams(column, value, OpEnum.IN);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+
+    @Override
+    public <T> CdnManager in(SelectColumn<T, ?> column, List<?> value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.IN, required);
         this.sqlContext.addParams(value);
         return this;
@@ -191,7 +256,13 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager notIn(SelectColumn<T, ?> column, List<?> value, boolean... required) {
+    public <T> CdnManager notIn(SelectColumn<T, ?> column, List<?> value) {
+        this.addCdnAndParams(column, value, OpEnum.NOT_IN);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+    @Override
+    public <T> CdnManager notIn(SelectColumn<T, ?> column, List<?> value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.NOT_IN, required);
         this.sqlContext.addParams(value);
         return this;
@@ -204,7 +275,13 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public <T> CdnManager ne(SelectColumn<T, ?> column, Object value, boolean... required) {
+    public <T> CdnManager ne(SelectColumn<T, ?> column, Object value) {
+        this.addCdnAndParams(column, value, OpEnum.NE);
+        this.sqlContext.addParams(value);
+        return this;
+    }
+    @Override
+    public <T> CdnManager ne(SelectColumn<T, ?> column, Object value, boolean required) {
         this.addCdnAndParams(column, value, OpEnum.NE, required);
         this.sqlContext.addParams(value);
         return this;
@@ -223,40 +300,115 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public JoinManager inner(Class<?> clazz) {
+    public void findOne() {
 
+        System.out.println(this.sqlContext.getCdn().toString());
+        System.out.println("我只找你");
+    }
+
+    @Override
+    public JoinManager inner(Class<?> clazz, String... alias) {
+        this.addJoin(JoinEnum.INNER, clazz, alias);
         return this;
     }
 
     @Override
-    public JoinManager left(Class<?> clazz) {
+    public JoinManager left(Class<?> clazz, String... alias) {
+        this.addJoin(JoinEnum.LEFT, clazz, alias);
         return this;
     }
 
     @Override
-    public JoinManager right(Class<?> clazz) {
+    public JoinManager right(Class<?> clazz, String... alias) {
+        this.addJoin(JoinEnum.RIGHT, clazz, alias);
         return this;
     }
 
     @Override
-    public <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1) {
+    public <T, J> JoinManager on(SelectColumn<T, ?> column,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1) {
+        Column selectColumn = Column.create(column);
+        Column selectColumn1 = Column.create(column1);
+        this.sqlContext.addOn(selectColumn, opEnum, selectColumn1);
         return this;
     }
 
     @Override
-    public <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, Condition... condition) {
+    public <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1) {
+        Column selectColumn = Column.create(column, alias);
+        Column selectColumn1 = Column.create(column1);
+        this.sqlContext.addOn(selectColumn, opEnum, selectColumn1);
         return this;
     }
 
-    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum, boolean... requireds) {
-        Column field = Column.create(selectColumn);
-        boolean required = false;
-        if (requireds.length > 0) {
-            required = requireds[0];
+    @Override
+    public <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1, String alias1) {
+        Column selectColumn = Column.create(column, alias);
+        Column selectColumn1 = Column.create(column1, alias1);
+        this.sqlContext.addOn(selectColumn, opEnum, selectColumn1);
+        return this;
+    }
+
+    @Override
+    public <T, J> JoinManager on(SelectColumn<T, ?> column,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1, String alias1) {
+        Column selectColumn = Column.create(column);
+        Column selectColumn1 = Column.create(column1, alias1);
+        this.sqlContext.addOn(selectColumn, opEnum, selectColumn1);
+        return this;
+    }
+
+    @Override
+    public <T, J> JoinManager on(SelectColumn<T, ?> column,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1,
+                                 Condition... condition) {
+        Column selectColumn = Column.create(column);
+        Column selectColumn1 = Column.create(column1);
+        this.sqlContext.addOn(selectColumn,opEnum,selectColumn1,condition);
+        return this;
+    }
+
+    @Override
+    public <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
+                                 OpEnum opEnum,
+                                 SelectColumn<J, ?> column1, String alias1,
+                                 Condition... condition) {
+        Column selectColumn = Column.create(column,alias);
+        Column selectColumn1 = Column.create(column1, alias1);
+        this.sqlContext.addOn(selectColumn, opEnum, selectColumn1,condition);
+        return this;
+    }
+
+    private void addJoin(JoinEnum joinEnum, Class<?> clazz, String... alias) {
+        String tableName = ClassUtils.getTableName(clazz);
+        String tableAlias = tableName;
+        if (null != alias && alias.length > 0) {
+            tableAlias = alias[0];
         }
+        this.sqlContext.addJoin(joinEnum, tableName, tableAlias);
+    }
+
+    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum, boolean required) {
+        Column field = Column.create(selectColumn);
         if (required && null == value) {
             throw new DtoQueryException("参数不能为空，fieldName:[" + field.getField() + "]");
         }
+        if (null == value) {
+            return;
+        }
+        String cdnSql = field.getCdnSql(opEnum);
+        this.sqlContext.addCdn(cdnSql);
+    }
+
+    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum) {
+        Column field = Column.create(selectColumn);
         if (null == value) {
             return;
         }
@@ -297,6 +449,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
         }
         try {
             Field field = first.get();
+            field.setAccessible(true);
             Object result = field.get(this);
             Optional<com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition> condition =
                     Arrays.stream(field.getDeclaredAnnotations()).map(it -> it.annotationType().getDeclaredAnnotation(

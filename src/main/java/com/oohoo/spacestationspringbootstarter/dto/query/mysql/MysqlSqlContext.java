@@ -5,10 +5,11 @@ import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,6 +20,10 @@ import java.util.List;
  * @since 21 October 2022
  */
 public class MysqlSqlContext implements SqlContext {
+
+    private static final String ON = " on ";
+
+    private Class<?> fromClazz;
     private StringBuilder selectSql;
 
     private final StringBuilder joinSql = new StringBuilder();
@@ -74,28 +79,44 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public void setCdn(StringBuilder cdn) {
-
+        this.cdnSql.append(" where ");
     }
 
     @Override
-    public void addJoin(JoinEnum joinEnum, Class<?> clazz, String... alias) {
-        String tableName = ClassUtils.getTableName(clazz);
+    public void addJoin(JoinEnum joinEnum, String tableName, String alias) {
         this.joinSql.append(joinEnum.getType()).append(tableName);
-        if (null != alias && alias.length > 0) {
-            this.joinSql.append(" as ").append(alias[0]);
-        }else {
+        if (StringUtils.hasLength(alias)) {
+            this.joinSql.append(" as ").append(alias);
+        } else {
             this.joinSql.append(" as ").append(tableName);
         }
     }
 
     @Override
     public void addOn(Column column, OpEnum opEnum, Column column1) {
-
+        this.joinSql.append(ON);
+        this.addOnCdn(column, opEnum, column1);
     }
 
     @Override
-    public void addOn(Column column, OpEnum opEnum, Column column1, Condition... condition) {
+    public void addOn(Column column, OpEnum opEnum, Object object) {
+        this.joinSql.append(ON);
+        this.addOnCdn(column, opEnum, object);
+    }
 
+
+
+    @Override
+    public void addOn(Column column, OpEnum opEnum, Column column1, Condition... condition) {
+        this.addOn(column, opEnum, column1);
+        Arrays.stream(condition).forEach(it -> {
+            this.joinSql.append(it.getLogicSymbol().getValue());
+            if (null == it.getColumn1()) {
+                this.addOnCdn(it.getColumn(), it.getOpEnum(), it.getValue());
+            } else {
+                this.addOnCdn(it.getColumn(), it.getOpEnum(), it.getColumn1());
+            }
+        });
     }
 
     @Override
@@ -115,16 +136,17 @@ public class MysqlSqlContext implements SqlContext {
             if (null != this.temporaryLogicEnum) {
                 this.cdnSql.append(this.temporaryLogicEnum.getValue());
                 this.temporaryLogicEnum = null;
+            } else {
+                this.cdnSql.append(this.logicEnum.getValue());
             }
-            this.cdnSql.append(this.logicEnum.getValue());
         }
         if (this.bracketCount % 2 != 0 && this.temporaryBracket) {
             this.cdnSql.append(" (");
             this.temporaryBracket = false;
         }
-        this.cdnSql.append(cdn);
+        this.cdnSql.append(cdn).append("\n");
         if (this.bracketCount % 2 == 0 && this.temporaryBracket) {
-            this.cdnSql.append(" )");
+            this.cdnSql.append(" )\n");
             this.temporaryBracket = false;
         }
         this.isFirstCdn = false;
@@ -139,5 +161,14 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public void addParams(Object param) {
         this.params.add(param);
+    }
+
+    private void addOnCdn(Column column, OpEnum opEnum, Object object) {
+        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(" ? ");
+        this.params.add(object);
+    }
+
+    private void addOnCdn(Column column, OpEnum opEnum, Column column1) {
+        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(column1.getOnSql());
     }
 }

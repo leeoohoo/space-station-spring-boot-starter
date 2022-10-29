@@ -5,20 +5,13 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 /**
  * @author Lei Li. lei.d.li@capgemini.com
  * @Description
- * @since 21 October 2022
+ * @since 28 October 2022
  */
-public interface SelectManager {
+public interface FromManager {
+
+    FromManager from(Class<?> clazz);
 
     <T> SelectManager select(SelectColumn<T, ?>... columns);
 
     <T, D> SelectManager select(SelectColumn<T, ?> column, String alias);
-
-
-    CdnManager where();
-
-    JoinManager inner(Class<?> clazz, String... alias);
-
-    JoinManager left(Class<?> clazz, String... alias);
-
-    JoinManager right(Class<?> clazz, String... alias);
 }

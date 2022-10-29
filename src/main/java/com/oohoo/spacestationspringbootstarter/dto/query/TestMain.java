@@ -1,8 +1,10 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.In;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import lombok.extern.java.Log;
 
 import java.lang.invoke.SerializedLambda;
 import java.util.ArrayList;
@@ -21,15 +23,19 @@ public class TestMain {
 
 
         test.creat()
-                .select(Test::getUserName,Test::getAge)
-                .select(Test::getAge,"userAge")
+                .select(Test::getUserName, Test::getAge, Test::getUserName)
+                .select(Test::getAge, "userAge")
                 .left(Test1.class)
                 .on(Test::getId, OpEnum.EQ, Test1::getAge)
-                .where().eq(Test::getAge,true)
+                .left(Test1.class, "ceshi")
+                .on(Test1::getJob, "ceshi", OpEnum.EQ, Test::getAge)
+                .inner(Test.class)
+                .on(Test::getAge,OpEnum.EQ,Test::getUserName,Condition.create(Test::getId,OpEnum.EQ,1, LogicEnum.AND))
+                .where().eq(Test::getAge, 1, true)
                 .eq(Test::getAge)
                 .or()
-                .eq(Test1::getJob,"ceshi");
-
+                .eq(Test1::getJob, "ceshi")
+                .findOne();
 
 
     }

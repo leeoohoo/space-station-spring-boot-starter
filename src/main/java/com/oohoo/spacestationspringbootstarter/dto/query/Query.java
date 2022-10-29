@@ -11,4 +11,6 @@ import com.oohoo.spacestationspringbootstarter.dto.query.mysql.MysqlQuery;
 public interface Query {
     void initContext();
 
+
+
 }

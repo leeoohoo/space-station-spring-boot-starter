@@ -8,17 +8,29 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
  * @Description
  * @since 21 October 2022
  */
-public interface JoinManager extends SqlManager{
+public interface JoinManager extends SqlManager {
 
-    JoinManager inner(Class<?> clazz);
+    JoinManager inner(Class<?> clazz, String... alias);
 
-    JoinManager left(Class<?> clazz);
+    JoinManager left(Class<?> clazz, String... alias);
 
-    JoinManager right(Class<?> clazz);
+    JoinManager right(Class<?> clazz, String... alias);
 
     <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1);
 
 
+    <T, J> JoinManager on(SelectColumn<T, ?> column, String alias, OpEnum opEnum, SelectColumn<J, ?> column1);
+
+    <T, J> JoinManager on(SelectColumn<T, ?> column, String alias, OpEnum opEnum, SelectColumn<J, ?> column1, String alias1);
+
+    <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, String alias);
+
     <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, Condition... condition);
+
     CdnManager where();
+
+    <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
+                          OpEnum opEnum,
+                          SelectColumn<J, ?> column1, String alias1,
+                          Condition... condition);
 }

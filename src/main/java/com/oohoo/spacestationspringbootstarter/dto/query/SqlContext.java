@@ -58,9 +58,11 @@ public interface SqlContext {
 
     void setCdn(StringBuilder cdn);
 
-    void addJoin(JoinEnum joinEnum, Class<?> clazz,String... alias);
+    void addJoin(JoinEnum joinEnum, String tableName,String alias);
 
     void addOn(Column column, OpEnum opEnum, Column column1);
+
+    void addOn(Column column, OpEnum opEnum, Object object);
 
     void addOn(Column column, OpEnum opEnum, Column column1, Condition... condition);
 

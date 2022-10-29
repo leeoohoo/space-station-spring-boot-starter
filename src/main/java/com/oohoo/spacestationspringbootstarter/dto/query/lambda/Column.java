@@ -47,7 +47,7 @@ public class Column {
     }
 
     public static <T> Column create(SelectColumn<T, ?> selectColumn) {
-        return create(selectColumn,"");
+        return create(selectColumn, "");
     }
 
     public String getSelectFieldSql() {
@@ -55,9 +55,12 @@ public class Column {
     }
 
     public String getCdnSql(OpEnum opEnum) {
-        return tableName + "." + field  + opEnum.getOp() + " ? ";
+        return tableName + "." + field + opEnum.getOp() + " ? ";
     }
 
+    public String getOnSql() {
+        return " " + (StringUtils.hasLength(alias) ? alias : tableName) + "." + field + " ";
+    }
 
 
     public static String camelToUnderline(String line) {
