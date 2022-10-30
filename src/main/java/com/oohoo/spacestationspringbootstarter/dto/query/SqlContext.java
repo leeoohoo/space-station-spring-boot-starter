@@ -45,7 +45,7 @@ public interface SqlContext {
      *
      * @return
      */
-    StringBuilder getSql();
+    Class<?> getFromClass();
 
     /**
      * 获取参数
@@ -75,4 +75,6 @@ public interface SqlContext {
     void setSql(StringBuilder sql);
 
     void addParams(Object param);
+
+    void setFrom(Class<?> clazz);
 }

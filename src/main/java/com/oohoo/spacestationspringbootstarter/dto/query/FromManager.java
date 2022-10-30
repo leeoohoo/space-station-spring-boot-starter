@@ -13,5 +13,5 @@ public interface FromManager {
 
     <T> SelectManager select(SelectColumn<T, ?>... columns);
 
-    <T, D> SelectManager select(SelectColumn<T, ?> column, String alias);
+    <T> SelectManager select(SelectColumn<T, ?> column, String alias);
 }

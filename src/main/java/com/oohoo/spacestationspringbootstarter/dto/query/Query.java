@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
-import com.oohoo.spacestationspringbootstarter.dto.query.mysql.MysqlQuery;
+
+import java.util.List;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -12,5 +12,10 @@ public interface Query {
     void initContext();
 
 
+    Query create();
+
+    String getSql();
+
+    List<Object> getParams();
 
 }

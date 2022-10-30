@@ -6,4 +6,5 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
  * @since 21 October 2022
  */
 public interface SqlManager {
+    String getSql();
 }

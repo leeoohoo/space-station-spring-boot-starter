@@ -19,22 +19,32 @@ import java.util.Optional;
  * @Description
  * @since 21 October 2022
  */
-public abstract class AbstractSqlQuery implements CdnManager, JoinManager, SelectManager, FromManager, Query {
+public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinManager, SelectManager, Query {
 
     protected SqlContext sqlContext;
 
     protected List<Field> fields;
-    protected Class<?> clazz = this.getClass();
+
+    protected Class<?> dtoClazz;
 
 
-    protected AbstractSqlQuery creat() {
+    public AbstractSqlQuery create() {
         this.initContext();
-        this.fields = Arrays.asList(this.clazz.getDeclaredFields());
+        this.dtoClazz = this.getClass();
+        this.fields = Arrays.asList(this.dtoClazz.getDeclaredFields());
         return this;
     }
 
+
+
     @Override
-    public FromManager from(Class<?> clazz) {
+    public List<Object> getParams() {
+        return null;
+    }
+
+    @Override
+    public final AbstractSqlQuery from(Class<?> clazz) {
+        this.sqlContext.setFrom(clazz);
         return this;
     }
 
@@ -45,7 +55,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
      */
     @Override
     @SafeVarargs
-    public final <T> SelectManager select(SelectColumn<T, ?>... columns) {
+    public final <T>  SelectManager select(SelectColumn<T, ?>... columns) {
         StringBuilder select = this.sqlContext.getSelect();
         Arrays.stream(columns).forEach(it -> {
             Column column = Column.create(it, "");
@@ -56,7 +66,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     }
 
     @Override
-    public final <T, D> SelectManager select(SelectColumn<T, ?> selectColumn, String alias) {
+    public final <T> SelectManager select(SelectColumn<T, ?> selectColumn, String alias) {
         StringBuilder select = this.sqlContext.getSelect();
         Column column = Column.create(selectColumn, alias);
         select.append(column.getSelectFieldSql()).append(", ");
@@ -66,7 +76,7 @@ public abstract class AbstractSqlQuery implements CdnManager, JoinManager, Selec
     @Override
     public CdnManager where() {
         this.sqlContext.setCdn(new StringBuilder(" where "));
-        return (CdnManager) this;
+        return this;
     }
 
 

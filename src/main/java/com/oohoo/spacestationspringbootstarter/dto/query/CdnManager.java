@@ -80,6 +80,8 @@ public interface CdnManager extends SqlManager {
 
     CdnManager bracket();
 
+    SqlManager fnish();
+
     void findOne();
 
 }

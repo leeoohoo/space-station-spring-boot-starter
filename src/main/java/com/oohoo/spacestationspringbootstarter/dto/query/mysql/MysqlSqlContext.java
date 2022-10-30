@@ -23,6 +23,8 @@ public class MysqlSqlContext implements SqlContext {
 
     private static final String ON = " on ";
 
+
+
     private Class<?> fromClazz;
     private StringBuilder selectSql;
 
@@ -54,7 +56,7 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public StringBuilder getJoin() {
-        return null;
+        return this.joinSql;
     }
 
     @Override
@@ -63,9 +65,10 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     @Override
-    public StringBuilder getSql() {
-        return null;
+    public Class<?> getFromClass() {
+        return this.fromClazz;
     }
+
 
     @Override
     public List<Object> getParams() {
@@ -133,22 +136,11 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public void addCdn(String cdn) {
         if (!isFirstCdn) {
-            if (null != this.temporaryLogicEnum) {
-                this.cdnSql.append(this.temporaryLogicEnum.getValue());
-                this.temporaryLogicEnum = null;
-            } else {
-                this.cdnSql.append(this.logicEnum.getValue());
-            }
+            this.addLogic(this.cdnSql);
         }
-        if (this.bracketCount % 2 != 0 && this.temporaryBracket) {
-            this.cdnSql.append(" (");
-            this.temporaryBracket = false;
-        }
+        this.addBracket(this.cdnSql);
         this.cdnSql.append(cdn).append("\n");
-        if (this.bracketCount % 2 == 0 && this.temporaryBracket) {
-            this.cdnSql.append(" )\n");
-            this.temporaryBracket = false;
-        }
+        this.addBracket(this.cdnSql);
         this.isFirstCdn = false;
     }
 
@@ -163,6 +155,11 @@ public class MysqlSqlContext implements SqlContext {
         this.params.add(param);
     }
 
+    @Override
+    public void setFrom(Class<?> clazz) {
+        this.fromClazz = clazz;
+    }
+
     private void addOnCdn(Column column, OpEnum opEnum, Object object) {
         this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(" ? ");
         this.params.add(object);
@@ -170,5 +167,25 @@ public class MysqlSqlContext implements SqlContext {
 
     private void addOnCdn(Column column, OpEnum opEnum, Column column1) {
         this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(column1.getOnSql());
+    }
+
+    private void addBracket(StringBuilder sb) {
+        if (this.bracketCount % 2 != 0 && this.temporaryBracket) {
+            sb.append(" (");
+            this.temporaryBracket = false;
+        }
+        if (this.bracketCount % 2 == 0 && this.temporaryBracket) {
+            sb.append(" )\n");
+            this.temporaryBracket = false;
+        }
+    }
+
+    private void addLogic(StringBuilder sb) {
+        if (null != this.temporaryLogicEnum) {
+            sb.append(this.temporaryLogicEnum.getValue());
+            this.temporaryLogicEnum = null;
+        } else {
+            sb.append(this.logicEnum.getValue());
+        }
     }
 }
