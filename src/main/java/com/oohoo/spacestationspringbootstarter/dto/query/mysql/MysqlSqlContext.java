@@ -161,15 +161,15 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     private void addOnCdn(Column column, OpEnum opEnum, Object object) {
-        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(" ? ");
+        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(" ? ").append("\n");
         this.params.add(object);
     }
 
     private void addOnCdn(Column column, OpEnum opEnum, Column column1) {
-        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(column1.getOnSql());
+        this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(column1.getOnSql()).append("\n");
     }
 
-    private void addBracket(StringBuilder sb) {
+    public void addBracket(StringBuilder sb) {
         if (this.bracketCount % 2 != 0 && this.temporaryBracket) {
             sb.append(" (");
             this.temporaryBracket = false;
@@ -180,7 +180,7 @@ public class MysqlSqlContext implements SqlContext {
         }
     }
 
-    private void addLogic(StringBuilder sb) {
+    public void addLogic(StringBuilder sb) {
         if (null != this.temporaryLogicEnum) {
             sb.append(this.temporaryLogicEnum.getValue());
             this.temporaryLogicEnum = null;

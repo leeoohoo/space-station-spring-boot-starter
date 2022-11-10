@@ -15,7 +15,7 @@ public class TestMain {
         Test test = new Test();
         test.setAge(11);
 
-        String sql = test.create()
+        SqlManager fnish = test.create()
                 .from(Test.class)
                 .select(Test::getUserName, Test::getAge, Test::getUserName)
                 .select(Test::getAge, "userAge")
@@ -32,9 +32,10 @@ public class TestMain {
                 .eq(Test1::getJob, "ceshi")
                 .eq(Test::getJob, "sss")
                 .bracket()
-                .fnish()
-                .getSql();
-        System.out.println(sql);
+                .fnish();
+
+        System.out.println(fnish.getSql());
+        System.out.println(fnish.getParams());
 
     }
 

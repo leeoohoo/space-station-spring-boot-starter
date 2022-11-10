@@ -77,4 +77,8 @@ public interface SqlContext {
     void addParams(Object param);
 
     void setFrom(Class<?> clazz);
+
+    void addBracket(StringBuilder sb);
+
+    void addLogic(StringBuilder sb);
 }

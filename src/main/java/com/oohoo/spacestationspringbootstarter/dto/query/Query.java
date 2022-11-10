@@ -16,6 +16,5 @@ public interface Query {
 
     String getSql();
 
-    List<Object> getParams();
 
 }

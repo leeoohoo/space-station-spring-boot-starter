@@ -37,10 +37,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
 
 
 
-    @Override
-    public List<Object> getParams() {
-        return null;
-    }
+
 
     @Override
     public final AbstractSqlQuery from(Class<?> clazz) {
@@ -59,7 +56,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getSelect();
         Arrays.stream(columns).forEach(it -> {
             Column column = Column.create(it, "");
-            select.append(column.getSelectFieldSql()).append(", ");
+            select.append(column.getSelectFieldSql()).append(", ").append("\n");
         });
         this.sqlContext.setSelect(select);
         return this;
@@ -69,7 +66,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     public final <T> SelectManager select(SelectColumn<T, ?> selectColumn, String alias) {
         StringBuilder select = this.sqlContext.getSelect();
         Column column = Column.create(selectColumn, alias);
-        select.append(column.getSelectFieldSql()).append(", ");
+        select.append(column.getSelectFieldSql()).append(", ").append("\n");
         return this;
     }
 

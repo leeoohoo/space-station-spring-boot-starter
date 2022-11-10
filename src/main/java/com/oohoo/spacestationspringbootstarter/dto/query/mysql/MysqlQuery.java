@@ -7,6 +7,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.SerializedLambda;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 /**
  * @Description:
@@ -25,12 +26,41 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     @Override
     public String getSql() {
-        this.selectSql();
+        this.bulidSelectSql();
+        this.bulidJoinSql();
+        this.bulidCdnSql();
         return this.sql.toString();
     }
 
+    @Override
+    public List<Object> getParams() {
+        return this.sqlContext.getParams();
+    }
 
-    private void selectSql() {
+    private void bulidCdnSql() {
+        StringBuilder cdn = this.sqlContext.getCdn();
+        this.sqlContext.addBracket(cdn);
+        cdn = this.sqlContext.getCdn();
+
+        if (null == cdn) {
+            // todo 通过dto 的注解生成
+            return;
+        }
+
+        this.sql.append(" ").append(cdn);
+    }
+
+    private void bulidJoinSql() {
+        StringBuilder join = this.sqlContext.getJoin();
+        if(null == join) {
+            // todo 通过DTO 的注解生成
+            return;
+        }
+        this.sql.append(" ").append(join);
+    }
+
+
+    private void bulidSelectSql() {
         StringBuilder select = this.sqlContext.getSelect();
         if (null == select) {
             // todo 通过 dto的字段生成
