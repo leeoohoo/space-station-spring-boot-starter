@@ -39,6 +39,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
 
 
 
+
     @Override
     public final AbstractSqlQuery from(Class<?> clazz) {
         this.sqlContext.setFrom(clazz);
@@ -453,6 +454,9 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Optional<Field> first = fields.stream().filter(it -> it.getName().equals(fieldName)).findFirst();
         if (!first.isPresent()) {
             return null;
+        }
+        if(!this.getClass().equals(this.dtoClazz)) {
+          return null;
         }
         try {
             Field field = first.get();

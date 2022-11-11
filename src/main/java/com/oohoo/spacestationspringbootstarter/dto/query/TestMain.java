@@ -11,11 +11,9 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 public class TestMain {
 
     public static void main(String[] args) {
-
         Test test = new Test();
         test.setAge(11);
-
-        SqlManager fnish = test.create()
+        SqlManager fnish = EQ.find()
                 .from(Test.class)
                 .select(Test::getUserName, Test::getAge, Test::getUserName)
                 .select(Test::getAge, "userAge")
@@ -24,7 +22,8 @@ public class TestMain {
                 .left(Test1.class, "ceshi")
                 .on(Test1::getJob, "ceshi", OpEnum.EQ, Test::getAge)
                 .inner(Test.class)
-                .on(Test::getAge, OpEnum.EQ, Test::getUserName, Condition.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
+                .on(Test::getAge, OpEnum.EQ, Test::getUserName,
+                        Condition.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
                 .where().eq(Test::getAge, 1, true)
                 .eq(Test::getAge)
                 .or()
@@ -32,11 +31,13 @@ public class TestMain {
                 .eq(Test1::getJob, "ceshi")
                 .eq(Test::getJob, "sss")
                 .bracket()
-                .fnish();
+                .finish();
 
         System.out.println(fnish.getSql());
         System.out.println(fnish.getParams());
 
+
+        EQ.find(test);
     }
 
 

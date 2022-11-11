@@ -152,7 +152,9 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public void addParams(Object param) {
-        this.params.add(param);
+        if(null != param) {
+            this.params.add(param);
+        }
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.*;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Join;
-import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.SerializedLambda;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
@@ -26,9 +22,9 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     @Override
     public String getSql() {
-        this.bulidSelectSql();
-        this.bulidJoinSql();
-        this.bulidCdnSql();
+        this.buildSelectSql();
+        this.buildJoinSql();
+        this.buildCdnSql();
         return this.sql.toString();
     }
 
@@ -37,7 +33,7 @@ public class MysqlQuery extends AbstractSqlQuery {
         return this.sqlContext.getParams();
     }
 
-    private void bulidCdnSql() {
+    private void buildCdnSql() {
         StringBuilder cdn = this.sqlContext.getCdn();
         this.sqlContext.addBracket(cdn);
         cdn = this.sqlContext.getCdn();
@@ -50,7 +46,7 @@ public class MysqlQuery extends AbstractSqlQuery {
         this.sql.append(" ").append(cdn);
     }
 
-    private void bulidJoinSql() {
+    private void buildJoinSql() {
         StringBuilder join = this.sqlContext.getJoin();
         if(null == join) {
             // todo 通过DTO 的注解生成
@@ -60,7 +56,7 @@ public class MysqlQuery extends AbstractSqlQuery {
     }
 
 
-    private void bulidSelectSql() {
+    private void buildSelectSql() {
         StringBuilder select = this.sqlContext.getSelect();
         if (null == select) {
             // todo 通过 dto的字段生成
@@ -75,7 +71,7 @@ public class MysqlQuery extends AbstractSqlQuery {
 
 
     @Override
-    public MysqlQuery fnish() {
+    public MysqlQuery finish() {
         return (MysqlQuery)this;
     }
 }

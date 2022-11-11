@@ -14,7 +14,7 @@ import lombok.Data;
 @From(Test.class)
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "job")
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "age")
-public class Test extends MysqlQuery {
+public class Test extends AbstractDtoQuery {
 
     private Integer id;
 
