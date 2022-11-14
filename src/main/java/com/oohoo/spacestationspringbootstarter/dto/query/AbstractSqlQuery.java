@@ -8,6 +8,11 @@ import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryExcep
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.CdnManager;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.FromManager;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.JoinManager;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.SelectManager;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -376,7 +381,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     public <T, J> JoinManager on(SelectColumn<T, ?> column,
                                  OpEnum opEnum,
                                  SelectColumn<J, ?> column1,
-                                 Condition... condition) {
+                                 CdnContainer... condition) {
         Column selectColumn = Column.create(column);
         Column selectColumn1 = Column.create(column1);
         this.sqlContext.addOn(selectColumn,opEnum,selectColumn1,condition);
@@ -387,7 +392,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     public <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
                                  OpEnum opEnum,
                                  SelectColumn<J, ?> column1, String alias1,
-                                 Condition... condition) {
+                                 CdnContainer... condition) {
         Column selectColumn = Column.create(column,alias);
         Column selectColumn1 = Column.create(column1, alias1);
         this.sqlContext.addOn(selectColumn, opEnum, selectColumn1,condition);

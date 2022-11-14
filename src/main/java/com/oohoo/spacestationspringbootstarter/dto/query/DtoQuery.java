@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface DtoQuery {
 
+    void scan();
+
     String getSql();
 
     List<Object> getParams();

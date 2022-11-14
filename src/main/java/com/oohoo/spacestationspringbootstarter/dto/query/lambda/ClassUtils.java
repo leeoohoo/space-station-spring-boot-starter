@@ -1,16 +1,20 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column.camelToUnderline;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -224,6 +228,8 @@ public class ClassUtils {
     }
 
 
+
+
     /**
      * 获取字段名
      *
@@ -241,6 +247,42 @@ public class ClassUtils {
         String substring = str.substring(3);
         char[] cs = substring.toCharArray();
         cs[0] += 32;
-        return camelToUnderline(String.valueOf(cs));
+        return String.valueOf(cs);
     }
+
+    public static List<Column> fieldsToColumns(Class<?> dtoClass, List<Field> fields) {
+        List<Column> columns = new ArrayList<>();
+        fields.forEach(it -> {
+            columns.add(fieldToColumn(it,dtoClass));
+        });
+        return columns;
+    }
+
+    public static Column fieldToColumn(Field field,Class<?> dtoClass) {
+        Column column = Column.create(dtoClass,field);
+        JoinColumn joinColumn = field.getDeclaredAnnotation(JoinColumn.class);
+        if (null != joinColumn) {
+            column.setClazz(joinColumn.joinClass());
+            column.setField(joinColumn.columnName());
+            column.setField(joinColumn.alias());
+        }
+        return column;
+    }
+
+    public static String camelToUnderline(String line) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
+        StringBuilder sb = new StringBuilder();
+        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            sb.append(word.toLowerCase());
+            sb.append(matcher.end() == line.length() ? "" : "_");
+        }
+        return sb.toString();
+    }
+
 }

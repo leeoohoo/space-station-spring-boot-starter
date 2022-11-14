@@ -3,8 +3,8 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public interface SqlContext {
 
     void addOn(Column column, OpEnum opEnum, Object object);
 
-    void addOn(Column column, OpEnum opEnum, Column column1, Condition... condition);
+    void addOn(Column column, OpEnum opEnum, Column column1, CdnContainer... condition);
 
     void setLogicEnum(LogicEnum logicEnum);
 

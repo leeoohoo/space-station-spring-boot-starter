@@ -1,5 +1,6 @@
-package com.oohoo.spacestationspringbootstarter.dto.query;
+package com.oohoo.spacestationspringbootstarter.dto.query.manager;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 
@@ -25,12 +26,12 @@ public interface JoinManager extends SqlManager {
 
     <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, String alias);
 
-    <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, Condition... condition);
+    <T, J> JoinManager on(SelectColumn<T, ?> column, OpEnum opEnum, SelectColumn<J, ?> column1, CdnContainer... condition);
 
     CdnManager where();
 
     <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
                           OpEnum opEnum,
                           SelectColumn<J, ?> column1, String alias1,
-                          Condition... condition);
+                          CdnContainer... condition);
 }

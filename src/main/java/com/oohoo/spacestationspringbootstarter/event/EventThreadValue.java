@@ -15,7 +15,7 @@ import java.util.Map;
 public class EventThreadValue {
 
     /**
-     * 合同字段列表
+     * 字段列表
      */
     private static final ThreadLocal<List<Object>> PARAMS =  new ThreadLocal<>();
     private static final ThreadLocal<Object> RETURN =  new ThreadLocal<>();

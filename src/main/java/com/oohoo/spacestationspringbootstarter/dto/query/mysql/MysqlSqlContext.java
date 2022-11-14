@@ -1,6 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.Condition;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
@@ -44,6 +44,12 @@ public class MysqlSqlContext implements SqlContext {
 
     private boolean temporaryBracket = false;
 
+
+    private MysqlSqlContext(){}
+
+    public static MysqlSqlContext init() {
+        return new MysqlSqlContext();
+    }
 
     @Override
     public StringBuilder getSelect() {
@@ -110,7 +116,7 @@ public class MysqlSqlContext implements SqlContext {
 
 
     @Override
-    public void addOn(Column column, OpEnum opEnum, Column column1, Condition... condition) {
+    public void addOn(Column column, OpEnum opEnum, Column column1, CdnContainer... condition) {
         this.addOn(column, opEnum, column1);
         Arrays.stream(condition).forEach(it -> {
             this.joinSql.append(it.getLogicSymbol().getValue());

@@ -1,4 +1,4 @@
-package com.oohoo.spacestationspringbootstarter.dto.query;
+package com.oohoo.spacestationspringbootstarter.dto.query.manager;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 

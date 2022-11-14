@@ -1,6 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.mysql.MysqlQuery;
 import lombok.Data;
 
@@ -13,19 +16,19 @@ import lombok.Data;
 @Entity(name = "test")
 @From(Test.class)
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "job")
-@Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "age")
-public class Test extends AbstractDtoQuery {
+public class Test implements DTO {
 
     private Integer id;
 
-    @Eq
+    @Eq(order = 1,required = true)
     private String name;
 
-    @Like
+    @Like(required = true)
     private String job;
 
-    @Like
+    @Like(required = true)
     private Integer age;
+
 
     private String userName;
 }

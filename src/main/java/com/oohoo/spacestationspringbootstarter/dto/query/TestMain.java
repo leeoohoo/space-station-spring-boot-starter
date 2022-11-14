@@ -2,6 +2,8 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
 /**
  * @Description:
@@ -23,7 +25,7 @@ public class TestMain {
                 .on(Test1::getJob, "ceshi", OpEnum.EQ, Test::getAge)
                 .inner(Test.class)
                 .on(Test::getAge, OpEnum.EQ, Test::getUserName,
-                        Condition.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
+                        CdnContainer.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
                 .where().eq(Test::getAge, 1, true)
                 .eq(Test::getAge)
                 .or()
@@ -36,8 +38,8 @@ public class TestMain {
         System.out.println(fnish.getSql());
         System.out.println(fnish.getParams());
 
-
         EQ.find(test);
+
     }
 
 

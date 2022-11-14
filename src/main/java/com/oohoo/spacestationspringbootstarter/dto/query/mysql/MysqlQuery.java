@@ -14,9 +14,15 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     private StringBuilder sql;
 
+    public static MysqlQuery init(){
+         return new MysqlQuery();
+    }
+
+    private MysqlQuery() {}
+
     @Override
     public void initContext() {
-        this.sqlContext = new MysqlSqlContext();
+        this.sqlContext = MysqlSqlContext.init();
     }
 
 

@@ -8,6 +8,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +31,15 @@ public class Column {
 
     private Column(Class<?> clazz, String fieldFunc, String alias) {
         this.tableName = ClassUtils.getTableName(clazz);
-        this.field = ClassUtils.getFiledName(fieldFunc);
+        String filedName = ClassUtils.getFiledName(fieldFunc);
+        this.field = ClassUtils.camelToUnderline(filedName);
+        this.alias = StringUtils.hasLength(alias) ? alias : filedName;
+        this.clazz = clazz;
+    }
+
+    private Column(Class<?> clazz, Field field, String alias) {
+        this.tableName = ClassUtils.getTableName(clazz);
+        this.field = ClassUtils.camelToUnderline(field.getName());
         this.alias = alias;
         this.clazz = clazz;
     }
@@ -44,6 +53,14 @@ public class Column {
         Class<?> clazz = resolve.getImplClass();
         String implMethodName = resolve.getImplMethodName();
         return create(clazz, implMethodName, alias);
+    }
+
+    public static <T> Column create(Class<?> clazz, Field field, String alias) {
+        return new Column(clazz, field, StringUtils.hasLength(alias) ? alias : field.getName());
+    }
+
+    public static <T> Column create(Class<?> clazz, Field field) {
+        return create(clazz, field, null);
     }
 
     public static <T> Column create(SelectColumn<T, ?> selectColumn) {
@@ -63,21 +80,7 @@ public class Column {
     }
 
 
-    public static String camelToUnderline(String line) {
-        if (line == null || "".equals(line)) {
-            return "";
-        }
-        line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
-        StringBuilder sb = new StringBuilder();
-        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
-        Matcher matcher = pattern.matcher(line);
-        while (matcher.find()) {
-            String word = matcher.group();
-            sb.append(word.toLowerCase());
-            sb.append(matcher.end() == line.length() ? "" : "_");
-        }
-        return sb.toString();
-    }
+
 
 
 }

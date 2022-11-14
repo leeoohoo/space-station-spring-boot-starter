@@ -6,10 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author 17986
+ * @author Lei Li. lei.d.li@capgemini.com
+ * @Description 排除非数据库的字段
+ * @since 14 November 2022
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JoinTables {
-    Join[] joinTable();
+public @interface Exclude {
 }
