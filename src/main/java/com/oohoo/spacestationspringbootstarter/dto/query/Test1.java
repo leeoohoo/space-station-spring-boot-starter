@@ -10,7 +10,7 @@ import lombok.Data;
  * @CreateTime: 2022/9/1
  */
 @Data
-@Entity(name = "test")
+@Entity(name = "test1")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "job")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "age")
 public class Test1  {

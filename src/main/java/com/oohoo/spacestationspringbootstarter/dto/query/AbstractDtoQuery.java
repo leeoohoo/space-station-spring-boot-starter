@@ -2,15 +2,17 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.google.gson.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.JoinContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.DtoSqlManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.CdnScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.JoinScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.SelectScan;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
  * @Description
  * @since 11 November 2022
  */
-public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan {
+public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, DtoSqlManager {
 
     protected DTO dto;
 
@@ -42,22 +44,26 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
 
     protected List<JoinContainer> joinContainers;
 
+    protected StringBuilder selectSql;
+
+    protected StringBuilder cdnSql;
+
+    protected StringBuilder joinSql;
+
+    protected List<Object> params;
+
     @Override
     public void scan() {
         this.fromScan();
         this.selectScan();
         this.joinScan();
         this.cdnScan();
+        this.build();
+        System.out.println("");
 
     }
 
-    private void fromScan() {
-        From declaredAnnotation = this.dtoClass.getDeclaredAnnotation(From.class);
-        if(null == declaredAnnotation) {
-            throw new DtoQueryException("缺少查询的主表，请尝试添加@From()注解");
-        }
-        this.fromClass = declaredAnnotation.value();
-    }
+
 
     @Override
     public String getSql() {
@@ -74,37 +80,26 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
         this.cdnContainers = new ArrayList<>();
         Arrays.stream(this.declaredFields).forEach(it -> {
             AtomicReference<Condition> conditionAtomicReference = new AtomicReference<>(it.getDeclaredAnnotation(Condition.class));
-            Arrays.stream(it.getDeclaredAnnotations()).forEach(annotation -> {
+            Integer order = 0;
+            Boolean required = false;
+            LogicEnum logic = LogicEnum.AND;
+            for (Annotation annotation : it.getDeclaredAnnotations()) {
                 conditionAtomicReference.set(annotation.annotationType().getDeclaredAnnotation(Condition.class));
-                Field[] fields = annotation.annotationType().getDeclaredFields();
-                Arrays.stream(fields).forEach(its -> {
-                    its.setAccessible(true);
-                    try {
-                        Object o = its.get(annotation);
-                        System.out.println("");
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                String s = annotation.toString();
-                Gson gson = new GsonBuilder().create();
-                if(annotation instanceof Eq || annotation instanceof Like){
 
-                    System.out.println("");
-
-                }
-            });
+                order = (Integer) AnnotationUtils.getValue(annotation, "order");
+                required = (Boolean) AnnotationUtils.getValue(annotation, "required");
+                logic = (LogicEnum) AnnotationUtils.getValue(annotation, "logic");
+                System.out.println("");
+            }
             Condition condition = conditionAtomicReference.get();
-            if(null != condition) {
+            if (null != condition) {
                 //1. 存放cdn 容器
-                CdnContainer cdnContainer = CdnContainer.create(condition, it, this.fromClass, this.dto);
-                if(null != cdnContainer) {
-                    this.cdnContainers.add(cdnContainer);
-                }
+                CdnContainer cdnContainer =
+                        CdnContainer.create(required, order, logic, condition.op(), it, this.fromClass, this.dto);
+                this.cdnContainers.add(cdnContainer);
             }
 
         });
-        System.out.println("aa");
 
     }
 
@@ -139,9 +134,32 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
         this.columns = ClassUtils.fieldsToColumns(this.dtoClass, fields);
     }
 
+    @Override
+    public void build() {
+        this.selectSql = new StringBuilder();
+        this.cdnSql = new StringBuilder();
+        this.joinSql = new StringBuilder();
+        this.params = new ArrayList<>();
+        this.selectBuild();
+        this.cdnBuild();
+        this.joinBuild();
+    }
+
+
+
 
     private void joinContainer(Join join) {
         this.joinContainers.add(JoinContainer.create(join));
     }
+
+
+    private void fromScan() {
+        From declaredAnnotation = this.dtoClass.getDeclaredAnnotation(From.class);
+        if (null == declaredAnnotation) {
+            throw new DtoQueryException("缺少查询的主表，请尝试添加@From()注解");
+        }
+        this.fromClass = declaredAnnotation.value();
+    }
+
 
 }

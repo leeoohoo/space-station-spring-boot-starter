@@ -262,9 +262,10 @@ public class ClassUtils {
         Column column = Column.create(dtoClass,field);
         JoinColumn joinColumn = field.getDeclaredAnnotation(JoinColumn.class);
         if (null != joinColumn) {
+            column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
             column.setClazz(joinColumn.joinClass());
-            column.setField(joinColumn.columnName());
-            column.setField(joinColumn.alias());
+            column.setAlias(StringUtils.hasLength(joinColumn.alias()) ? joinColumn.alias() : field.getName());
+            column.setTableName(ClassUtils.getTableName(column.getClazz()));
         }
         return column;
     }

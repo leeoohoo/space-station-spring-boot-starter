@@ -10,6 +10,7 @@ import lombok.Data;
  * @Description
  * @since 14 November 2022
  */
+@Data
 public class JoinContainer {
 
     private JoinEnum joinEnum;

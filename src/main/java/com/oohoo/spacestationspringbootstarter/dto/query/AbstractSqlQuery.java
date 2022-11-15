@@ -1,7 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -83,11 +85,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     }
 
 
-    @Override
-    public <T> CdnManager eq(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.EQ));
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager eq(SelectColumn<T, ?> column, Object value) {
@@ -103,70 +101,54 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager like(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams("'%" + this.addCdnAndParams(column, OpEnum.LIKE) + "%'");
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager like(SelectColumn<T, ?> column, String value) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE);
-        this.sqlContext.addParams("'%" + value + "%'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE,LikeLocation.ALL);
+        this.sqlContext.addParams(value);
         return this;
     }
 
     @Override
     public <T> CdnManager like(SelectColumn<T, ?> column, String value, boolean required) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
-        this.sqlContext.addParams("'%" + value + "%'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required,LikeLocation.ALL);
+        this.sqlContext.addParams( value);
         return this;
     }
 
-    @Override
-    public <T> CdnManager likeLeft(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams("'%" + this.addCdnAndParams(column, OpEnum.LIKE) + "'");
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE);
-        this.sqlContext.addParams("'%" + value + "'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE,LikeLocation.LEFT);
+        this.sqlContext.addParams(value );
         return this;
     }
 
     @Override
     public <T> CdnManager likeLeft(SelectColumn<T, ?> column, String value, boolean required) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
-        this.sqlContext.addParams("'%" + value + "'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required,LikeLocation.LEFT);
+        this.sqlContext.addParams(value );
         return this;
     }
 
-    @Override
-    public <T> CdnManager likeRight(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams("'" + this.addCdnAndParams(column, OpEnum.LIKE) + "%'");
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE);
-        this.sqlContext.addParams("'" + value + "%'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE,LikeLocation.RIGHT);
+        this.sqlContext.addParams( value );
         return this;
     }
     @Override
     public <T> CdnManager likeRight(SelectColumn<T, ?> column, String value, boolean required) {
-        this.addCdnAndParams(column, value, OpEnum.LIKE, required);
-        this.sqlContext.addParams("'" + value + "%'");
+        this.addCdnAndParams(column, value, OpEnum.LIKE, required, LikeLocation.RIGHT);
+        this.sqlContext.addParams(value);
         return this;
     }
 
-    @Override
-    public <T> CdnManager le(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.LE));
-        return this;
-    }
+
 
 
     @Override
@@ -182,11 +164,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager lt(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.LT));
-        return this;
-    }
+
 
 
     @Override
@@ -202,11 +180,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager ge(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.GE));
-        return this;
-    }
+
 
 
     @Override
@@ -222,11 +196,6 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager gt(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.GT));
-        return this;
-    }
 
     @Override
     public <T> CdnManager gt(SelectColumn<T, ?> column, Object value) {
@@ -242,11 +211,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager in(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.IN));
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager in(SelectColumn<T, ?> column, List<?> value) {
@@ -262,11 +227,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager notIn(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.NOT_IN));
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager notIn(SelectColumn<T, ?> column, List<?> value) {
@@ -281,11 +242,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public <T> CdnManager ne(SelectColumn<T, ?> column) {
-        this.sqlContext.addParams(this.addCdnAndParams(column, OpEnum.NE));
-        return this;
-    }
+
 
     @Override
     public <T> CdnManager ne(SelectColumn<T, ?> column, Object value) {
@@ -420,12 +377,33 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         this.sqlContext.addCdn(cdnSql);
     }
 
+    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum, boolean required,LikeLocation likeLocation) {
+        Column field = Column.create(selectColumn);
+        if (required && null == value) {
+            throw new DtoQueryException("参数不能为空，fieldName:[" + field.getField() + "]");
+        }
+        if (null == value) {
+            return;
+        }
+        String cdnSql = field.getCdnSql(opEnum,likeLocation);
+        this.sqlContext.addCdn(cdnSql);
+    }
+
     private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum) {
         Column field = Column.create(selectColumn);
         if (null == value) {
             return;
         }
         String cdnSql = field.getCdnSql(opEnum);
+        this.sqlContext.addCdn(cdnSql);
+    }
+
+    private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum,LikeLocation likeLocation) {
+        Column field = Column.create(selectColumn);
+        if (null == value) {
+            return;
+        }
+        String cdnSql = field.getCdnSql(opEnum,likeLocation);
         this.sqlContext.addCdn(cdnSql);
     }
 
@@ -467,13 +445,10 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
             Field field = first.get();
             field.setAccessible(true);
             Object result = field.get(this);
-            Optional<com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition> condition =
+            Optional<Condition> condition =
                     Arrays.stream(field.getDeclaredAnnotations()).map(it -> it.annotationType().getDeclaredAnnotation(
-                            com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition.class)).findFirst();
-            boolean conditionRequired = condition.isPresent() && condition.get().required();
-            if (conditionRequired && null == result) {
-                throw new DtoQueryException("参数不能为空，fieldName:[" + field.getName() + "]");
-            }
+                            Condition.class)).findFirst();
+
             return result;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);

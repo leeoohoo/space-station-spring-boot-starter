@@ -27,8 +27,8 @@ public class TestMain {
                 .on(Test::getAge, OpEnum.EQ, Test::getUserName,
                         CdnContainer.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
                 .where().eq(Test::getAge, 1, true)
-                .eq(Test::getAge)
                 .or()
+                .likeLeft(Test::getName,"sss")
                 .bracket()
                 .eq(Test1::getJob, "ceshi")
                 .eq(Test::getJob, "sss")
@@ -37,7 +37,8 @@ public class TestMain {
 
         System.out.println(fnish.getSql());
         System.out.println(fnish.getParams());
-
+        test.setName("ceshi");
+        test.setJob("ss");
         EQ.find(test);
 
     }

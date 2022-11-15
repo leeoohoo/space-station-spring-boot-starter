@@ -3,7 +3,16 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.AbstractDtoQuery;
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.DtoQuery;
-import com.oohoo.spacestationspringbootstarter.dto.query.Query;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.JoinContainer;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -20,6 +29,59 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
         mysqlDtoQuery.dtoClass = dto.getClass();
         mysqlDtoQuery.declaredFields = mysqlDtoQuery.dtoClass.getDeclaredFields();
         return mysqlDtoQuery;
+    }
 
+    @Override
+    public void selectBuild() {
+        if(CollectionUtils.isEmpty(this.columns)) {
+            throw new DtoQueryException("[缺少查询的字段，请检查DTO: "+this.dtoClass.getName()+"]");
+        }
+        this.selectSql.append("select \n");
+        this.columns.forEach(it -> {
+            this.selectSql.append(it.getTableName()).append(".")
+                    .append(it.getField()).append(" as ").append(it.getAlias()).append(",\n");
+
+        });
+        this.selectSql = new StringBuilder(this.selectSql.substring(0,this.selectSql.lastIndexOf(","))).append("\n");
+        this.selectSql.append(" from ").append(ClassUtils.getTableName(this.fromClass)).append("\n");
+        System.out.println(this.selectSql);
+    }
+
+    @Override
+    public void cdnBuild() {
+        this.cdnSql.append(" where ");
+        AtomicBoolean ifBegin = new AtomicBoolean(true);
+        this.cdnContainers.stream().sorted(Comparator.comparing(CdnContainer::getOrder)).forEach(it -> {
+            if(!ifBegin.get()) {
+                this.cdnSql.append(it.getLogicSymbol().getValue());
+            }
+            Column column = it.getColumn();
+            JoinColumn joinColumn = it.getField().getDeclaredAnnotation(JoinColumn.class);
+            if(null != joinColumn) {
+                column.setTableName(ClassUtils.getTableName(joinColumn.joinClass()));
+                column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
+                column.setAlias(it.getField().getName());
+            }
+            this.cdnSql.append(column.getCdnSql(it.getOpEnum())).append(" \n");
+            this.params.add(it.getValue());
+            ifBegin.set(false);
+        });
+        System.out.println("");
+
+    }
+
+    @Override
+    public void joinBuild() {
+        this.joinContainers.stream().sorted(Comparator.comparing(JoinContainer::getOrder).reversed()).forEach(it -> {
+            this.joinSql.append(it.getJoinEnum().getType())
+                    .append(ClassUtils.getTableName(it.getJoinClass())).append(" as ")
+                    .append(ClassUtils.getTableName(it.getJoinClass()))
+                    .append(" on ")
+                    .append(ClassUtils.getTableName(it.getFromClass())).append(".").append(it.getFromField())
+                    .append(it.getOpEnum().getOp())
+                    .append(ClassUtils.getTableName(it.getJoinClass())).append(".").append(it.getJoinField())
+                    .append(" \n");
+        });
+        System.out.println("");
     }
 }

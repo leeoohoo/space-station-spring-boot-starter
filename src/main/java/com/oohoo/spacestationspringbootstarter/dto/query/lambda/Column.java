@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.Test;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
@@ -73,6 +74,24 @@ public class Column {
 
     public String getCdnSql(OpEnum opEnum) {
         return tableName + "." + field + opEnum.getOp() + " ? ";
+    }
+
+    public String getCdnSql(OpEnum opEnum, LikeLocation leftOrRight) {
+        String placeholder = " ? ";
+        if(OpEnum.LIKE.equals(opEnum)) {
+            switch (leftOrRight){
+                case ALL:
+                    placeholder = " concat('%',? ,'%') ";
+                    break;
+                case LEFT:
+                    placeholder = " concat('%',? ) ";
+                    break;
+                case RIGHT:
+                    placeholder = " concat(? ,'%') ";
+                    break;
+            }
+        }
+        return tableName + "." + field + opEnum.getOp() + placeholder;
     }
 
     public String getOnSql() {

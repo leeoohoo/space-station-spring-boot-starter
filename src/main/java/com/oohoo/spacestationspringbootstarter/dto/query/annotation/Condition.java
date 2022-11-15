@@ -15,15 +15,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Indexed
-@Inherited
 public @interface Condition {
-    LogicEnum logic() default LogicEnum.AND;
-
     OpEnum op();
-
-    boolean required() default false;
-
-    @AliasFor(attribute = "order")
-    int order() default 0;
-
 }

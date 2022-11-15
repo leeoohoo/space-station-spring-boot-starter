@@ -16,11 +16,13 @@ import lombok.Data;
 @Entity(name = "test")
 @From(Test.class)
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "job")
+@Join(join = JoinEnum.LEFT,fromClazz = Test.class,fromField = "id",joinClazz = Test1.class,joinField = "id")
 public class Test implements DTO {
 
     private Integer id;
 
     @Eq(order = 1,required = true)
+
     private String name;
 
     @Like(required = true)
@@ -30,5 +32,6 @@ public class Test implements DTO {
     private Integer age;
 
 
+    @JoinColumn(joinClass = Test1.class,columnName = "userName")
     private String userName;
 }

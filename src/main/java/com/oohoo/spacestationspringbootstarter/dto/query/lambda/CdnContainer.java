@@ -1,5 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
@@ -35,6 +36,16 @@ public class CdnContainer {
     private Column column1;
 
     private Integer order;
+
+    /**
+     * 第一个字段
+     */
+    private Field field;
+
+    /**
+     * 第二个字段
+     */
+    private Field field1;
 
     private CdnContainer() {
     }
@@ -73,22 +84,24 @@ public class CdnContainer {
 
     /**
      * 默认等一某一个参数
+     *
      * @param column
      * @param value
      * @param logicSymbol
-     * @return
      * @param <T>
      * @param <P>
+     * @return
      */
     public static <T, P> CdnContainer create(SelectColumn<T, ?> column,
                                              Object value, LogicEnum... logicSymbol) {
-        return create(column, OpEnum.EQ, null,value, logicSymbol);
+        return create(column, OpEnum.EQ, null, value, logicSymbol);
     }
 
     public static <T, P> CdnContainer create(SelectColumn<T, ?> column,
                                              OpEnum opEnum, Object value, LogicEnum... logicSymbol) {
-        return create(column, OpEnum.EQ, null,value, logicSymbol);
+        return create(column, OpEnum.EQ, null, value, logicSymbol);
     }
+
     /**
      * 默认逻辑判定符号后为“?”
      *
@@ -119,28 +132,35 @@ public class CdnContainer {
         return create(column, OpEnum.EQ, null, logicSymbol);
     }
 
-    public static CdnContainer create(Condition condition, Field field,Class<?> fromClazz,Object dto) {
+    public static CdnContainer create(Boolean required,
+                                      Integer order,
+                                      LogicEnum logicEnum,
+                                      OpEnum opEnum,
+                                      Field field,
+                                      Class<?> fromClazz,
+                                      Object dto) {
         field.setAccessible(true);
-        CdnContainer cdnContainer = getValue(field,dto,condition.required());
-        if(null == cdnContainer) {
+        CdnContainer cdnContainer = getValue(field, dto, required);
+        if (null == cdnContainer) {
             return null;
         }
-        cdnContainer.column = Column.create(fromClazz,field);
-        cdnContainer.logicSymbol = LogicEnum.AND;
-        cdnContainer.opEnum = condition.op();
-        cdnContainer.order = condition.order();
+        cdnContainer.field = field;
+        cdnContainer.column = Column.create(fromClazz, field);
+        cdnContainer.logicSymbol = logicEnum;
+        cdnContainer.opEnum = opEnum;
+        cdnContainer.order = order;
         return cdnContainer;
     }
 
-    private static CdnContainer getValue(Field field,Object dto,boolean required) {
+    private static CdnContainer getValue(Field field, Object dto, boolean required) {
         try {
             CdnContainer cdnContainer = new CdnContainer();
             field.setAccessible(true);
             Object value = field.get(dto);
-            if(required && null == value) {
-                throw new DtoQueryException("------>>>>>请传入必传的查询参数");
+            if (required && null == value) {
+                throw new DtoQueryException("[fieldName:" + field.getName() + ",缺少参数，请传入必传的查询参数]");
             }
-            if(null == value) {
+            if (null == value) {
                 return null;
             }
             cdnContainer.value = value;
@@ -149,4 +169,5 @@ public class CdnContainer {
             throw new DtoQueryException("获取参数发生异常");
         }
     }
+
 }
