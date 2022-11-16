@@ -16,7 +16,7 @@ import lombok.Data;
 @Entity(name = "test")
 @From(Test.class)
 @Join(fromClazz = Test.class, fromField = "name", joinClazz = Test.class, joinField = "job")
-@Join(join = JoinEnum.LEFT,fromClazz = Test.class,fromField = "id",joinClazz = Test1.class,joinField = "id")
+@Join(fromClazz = Test.class,fromField = "id",joinClazz = Test1.class,joinField = "id")
 public class Test implements DTO {
 
     private Integer id;
@@ -25,7 +25,7 @@ public class Test implements DTO {
 
     private String name;
 
-    @Like(required = true)
+    @LikeLeft
     private String job;
 
     @Like(required = true)

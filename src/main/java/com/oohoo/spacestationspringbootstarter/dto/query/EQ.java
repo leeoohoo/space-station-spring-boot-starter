@@ -25,9 +25,8 @@ public class EQ {
 
 
     public static DtoQuery find(DTO dto) {
-
         DtoQuery init = MysqlDtoQuery.init(dto);
         init.scan();
-        return null;
+        return init;
     }
 }

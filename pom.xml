@@ -72,6 +72,12 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
         <!-- Compile dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

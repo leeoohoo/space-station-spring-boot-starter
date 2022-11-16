@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.google.gson.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
@@ -64,15 +65,15 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
     }
 
 
-
     @Override
     public String getSql() {
-        return null;
+        this.selectSql.append(this.joinSql).append(this.cdnSql);
+        return this.selectSql.toString();
     }
 
     @Override
     public List<Object> getParams() {
-        return null;
+        return this.params;
     }
 
     @Override
@@ -82,20 +83,21 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
             AtomicReference<Condition> conditionAtomicReference = new AtomicReference<>(it.getDeclaredAnnotation(Condition.class));
             Integer order = 0;
             Boolean required = false;
-            LogicEnum logic = LogicEnum.AND;
+            LogicEnum logic = null;
+            LikeLocation likeLocation = null;
             for (Annotation annotation : it.getDeclaredAnnotations()) {
                 conditionAtomicReference.set(annotation.annotationType().getDeclaredAnnotation(Condition.class));
-
                 order = (Integer) AnnotationUtils.getValue(annotation, "order");
                 required = (Boolean) AnnotationUtils.getValue(annotation, "required");
                 logic = (LogicEnum) AnnotationUtils.getValue(annotation, "logic");
-                System.out.println("");
+                likeLocation = (LikeLocation) AnnotationUtils.getValue(annotation, "likeLocation");
             }
             Condition condition = conditionAtomicReference.get();
             if (null != condition) {
                 //1. 存放cdn 容器
                 CdnContainer cdnContainer =
-                        CdnContainer.create(required, order, logic, condition.op(), it, this.fromClass, this.dto);
+                        CdnContainer.create(required, order, logic, likeLocation,
+                                condition.op(), it, this.fromClass, this.dto);
                 this.cdnContainers.add(cdnContainer);
             }
 
@@ -144,8 +146,6 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
         this.cdnBuild();
         this.joinBuild();
     }
-
-
 
 
     private void joinContainer(Join join) {

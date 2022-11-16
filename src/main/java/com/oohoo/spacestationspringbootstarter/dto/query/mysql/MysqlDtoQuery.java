@@ -3,12 +3,15 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.AbstractDtoQuery;
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.DtoQuery;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.JoinContainer;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
@@ -44,7 +47,6 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
         });
         this.selectSql = new StringBuilder(this.selectSql.substring(0,this.selectSql.lastIndexOf(","))).append("\n");
         this.selectSql.append(" from ").append(ClassUtils.getTableName(this.fromClass)).append("\n");
-        System.out.println(this.selectSql);
     }
 
     @Override
@@ -62,12 +64,15 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
                 column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
                 column.setAlias(it.getField().getName());
             }
-            this.cdnSql.append(column.getCdnSql(it.getOpEnum())).append(" \n");
+            //如果是Like
+            if(null != it.getLikeLocation()) {
+                this.cdnSql.append(column.getCdnSql(it.getOpEnum(),it.getLikeLocation())).append(" \n");
+            }else {
+                this.cdnSql.append(column.getCdnSql(it.getOpEnum())).append(" \n");
+            }
             this.params.add(it.getValue());
             ifBegin.set(false);
         });
-        System.out.println("");
-
     }
 
     @Override
@@ -82,6 +87,5 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
                     .append(ClassUtils.getTableName(it.getJoinClass())).append(".").append(it.getJoinField())
                     .append(" \n");
         });
-        System.out.println("");
     }
 }

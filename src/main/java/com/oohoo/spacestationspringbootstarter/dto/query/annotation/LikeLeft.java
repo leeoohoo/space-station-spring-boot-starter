@@ -16,10 +16,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Condition(op = OpEnum.LIKE)
-public @interface Like {
+public @interface LikeLeft {
     LogicEnum logic() default LogicEnum.AND;
 
-    LikeLocation likeLocation() default LikeLocation.ALL;
+    LikeLocation likeLocation() default LikeLocation.LEFT;
 
     int order() default 0;
 

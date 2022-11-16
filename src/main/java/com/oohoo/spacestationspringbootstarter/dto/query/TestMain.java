@@ -5,6 +5,8 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
+import java.util.List;
+
 /**
  * @Description:
  * @Author: lei.d.li@capgemini.com
@@ -13,8 +15,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 public class TestMain {
 
     public static void main(String[] args) {
-        Test test = new Test();
-        test.setAge(11);
+        // 链式调用
         SqlManager fnish = EQ.find()
                 .from(Test.class)
                 .select(Test::getUserName, Test::getAge, Test::getUserName)
@@ -37,9 +38,19 @@ public class TestMain {
 
         System.out.println(fnish.getSql());
         System.out.println(fnish.getParams());
+
+        //-----通过dto 来生成sql与参数
+        Test test = new Test();
+        test.setAge(11);
         test.setName("ceshi");
         test.setJob("ss");
-        EQ.find(test);
+
+        DtoQuery sql = EQ.find(test);
+
+        List<Object> params = sql.getParams();
+        System.out.println(sql.getSql());
+        System.out.println(params);
+        
 
     }
 

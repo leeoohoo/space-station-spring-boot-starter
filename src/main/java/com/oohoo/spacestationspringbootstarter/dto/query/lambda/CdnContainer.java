@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -46,6 +47,8 @@ public class CdnContainer {
      * 第二个字段
      */
     private Field field1;
+
+    private LikeLocation likeLocation;
 
     private CdnContainer() {
     }
@@ -135,6 +138,7 @@ public class CdnContainer {
     public static CdnContainer create(Boolean required,
                                       Integer order,
                                       LogicEnum logicEnum,
+                                      LikeLocation likeLocation,
                                       OpEnum opEnum,
                                       Field field,
                                       Class<?> fromClazz,
@@ -144,6 +148,7 @@ public class CdnContainer {
         if (null == cdnContainer) {
             return null;
         }
+        cdnContainer.likeLocation = likeLocation;
         cdnContainer.field = field;
         cdnContainer.column = Column.create(fromClazz, field);
         cdnContainer.logicSymbol = logicEnum;
