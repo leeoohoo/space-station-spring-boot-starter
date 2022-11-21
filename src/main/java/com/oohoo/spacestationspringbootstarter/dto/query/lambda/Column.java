@@ -46,10 +46,14 @@ public class Column {
     }
 
     public static Column create(Class<?> clazz, String fieldFunc, String alias) {
+        if(alias.trim().contains(" ")) {
+            throw new DtoQueryException("别名不允许有空格");
+        }
         return new Column(clazz, fieldFunc, alias);
     }
 
     public static <T> Column create(SelectColumn<T, ?> selectColumn, String alias) {
+
         SerializedLambda resolve = SerializedLambda.resolve(selectColumn);
         Class<?> clazz = resolve.getImplClass();
         String implMethodName = resolve.getImplMethodName();
@@ -97,9 +101,6 @@ public class Column {
     public String getOnSql() {
         return " " + (StringUtils.hasLength(alias) ? alias : tableName) + "." + field + " ";
     }
-
-
-
 
 
 }

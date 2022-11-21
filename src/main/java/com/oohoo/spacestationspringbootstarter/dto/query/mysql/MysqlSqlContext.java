@@ -88,7 +88,6 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public void setCdn(StringBuilder cdn) {
-        this.cdnSql.append(" where ");
     }
 
     @Override
@@ -143,6 +142,8 @@ public class MysqlSqlContext implements SqlContext {
     public void addCdn(String cdn) {
         if (!isFirstCdn) {
             this.addLogic(this.cdnSql);
+        }else {
+            this.cdnSql.append(" where ");
         }
         this.addBracket(this.cdnSql);
         this.cdnSql.append(cdn).append("\n");

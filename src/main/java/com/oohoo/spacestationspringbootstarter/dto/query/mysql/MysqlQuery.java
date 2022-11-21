@@ -58,7 +58,7 @@ public class MysqlQuery extends AbstractSqlQuery {
             // todo 通过DTO 的注解生成
             return;
         }
-        this.sql.append(" ").append(join);
+        this.sql.append(" ").append(join).append(" \n");
     }
 
 
@@ -70,7 +70,8 @@ public class MysqlQuery extends AbstractSqlQuery {
         }
         select.deleteCharAt(select.lastIndexOf(","));
         select.append(" from ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()))
-                .append(" as ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()));
+                .append(" as ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()))
+                .append(" \n");
         this.sql = select;
 
     }

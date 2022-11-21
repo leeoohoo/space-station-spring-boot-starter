@@ -80,7 +80,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
 
     @Override
     public CdnManager where() {
-        this.sqlContext.setCdn(new StringBuilder(" where "));
+        this.sqlContext.setCdn(new StringBuilder());
         return this;
     }
 
@@ -360,7 +360,10 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         String tableName = ClassUtils.getTableName(clazz);
         String tableAlias = tableName;
         if (null != alias && alias.length > 0) {
-            tableAlias = alias[0];
+            if(alias[0].trim().contains(" ")) {
+                throw new DtoQueryException("别名不允许有空格");
+            }
+            tableAlias = alias[0].trim();
         }
         this.sqlContext.addJoin(joinEnum, tableName, tableAlias);
     }

@@ -3,15 +3,18 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
+import lombok.SneakyThrows;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +110,8 @@ public class ClassUtils {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw ExceptionUtils.mpe("实例化对象时出现错误,请尝试给 %s 添加无参的构造方法", e, clazz.getName());
         }
     }
@@ -228,8 +232,6 @@ public class ClassUtils {
     }
 
 
-
-
     /**
      * 获取字段名
      *
@@ -253,13 +255,13 @@ public class ClassUtils {
     public static List<Column> fieldsToColumns(Class<?> dtoClass, List<Field> fields) {
         List<Column> columns = new ArrayList<>();
         fields.forEach(it -> {
-            columns.add(fieldToColumn(it,dtoClass));
+            columns.add(fieldToColumn(it, dtoClass));
         });
         return columns;
     }
 
-    public static Column fieldToColumn(Field field,Class<?> dtoClass) {
-        Column column = Column.create(dtoClass,field);
+    public static Column fieldToColumn(Field field, Class<?> dtoClass) {
+        Column column = Column.create(dtoClass, field);
         JoinColumn joinColumn = field.getDeclaredAnnotation(JoinColumn.class);
         if (null != joinColumn) {
             column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
@@ -285,5 +287,24 @@ public class ClassUtils {
         }
         return sb.toString();
     }
+
+    @SneakyThrows
+    public static <T> T mapToObj(Map source, Class<T> target) {
+        Field[] fields = target.getDeclaredFields();
+        T o = target.newInstance();
+        for (Field field : fields) {
+            Object val;
+            if ((val = source.get(field.getName())) != null) {
+                // 针对jpa 的转换问题做的单独处理，同样适用于类似的其他情况
+                if (val instanceof BigInteger && field.getType().getName().equals("java.lang.Long")) {
+                    val = Long.valueOf(String.valueOf(val));
+                }
+                field.setAccessible(true);
+                field.set(o, val);
+            }
+        }
+        return o;
+    }
+
 
 }
