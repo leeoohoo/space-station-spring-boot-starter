@@ -1,13 +1,20 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.function;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
  * @Description
  * @since 21 November 2022
  */
-public interface MathSqlFunction extends GeneralFunction{
+public class MathSqlFunction extends GeneralFunction {
 
-    <T> MathSqlFunction abs(SelectColumn<T, ?> selectColumn, SelectColumn<T, ?>... alias);
+    public MathSqlFunction(SqlFunctionEnum sqlFunctionEnum, String funcSql, String alias) {
+        this.sqlFunctionEnum = sqlFunctionEnum;
+        this.funcSql = funcSql;
+        this.alias = alias;
+    }
+
 }

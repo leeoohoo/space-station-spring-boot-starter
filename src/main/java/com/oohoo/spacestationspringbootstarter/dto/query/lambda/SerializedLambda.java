@@ -2,6 +2,8 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.util.Assert;
 
 import java.io.*;
 
@@ -32,9 +34,7 @@ public class SerializedLambda implements Serializable {
      * @return 返回解析后的 SerializedLambda
      */
     public static SerializedLambda resolve(SelectColumn<?, ?> lambda) {
-        if(null == lambda) {
-            throw new DtoQueryException("Column初始化发生空指针异常,请检查参数是否传递");
-        }
+        Assert.notNull(lambda,"Column初始化发生空指针异常,请检查参数是否传递");
         if (!lambda.getClass().isSynthetic()) {
             throw ExceptionUtils.mpe("该方法仅能传入 lambda 表达式产生的合成类");
         }

@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
@@ -29,7 +30,7 @@ public class TestMain {
                         CdnContainer.create(Test::getId, OpEnum.EQ, 1, LogicEnum.AND))
                 .where().eq(Test::getAge, 1, true)
                 .or()
-                .likeLeft(null,"sss")
+                .likeLeft(Test::getName,"sss")
                 .bracket()
                 .eq(Test::getName, "ceshi")
                 .eq(Test::getJob, "sss")
@@ -48,6 +49,8 @@ public class TestMain {
         DtoQuery sql = EQ.find(test);
 
         List<Object> params = sql.getParams();
+        GeneralFunction abs = EF.pow(Test::getAge,Test1::getAge);
+        GeneralFunction concat = EF.concat(Test::getName, "test", Test::getAge, Test::getAge,Test::getAge);
         System.out.println(sql.getSql());
         System.out.println(params);
         

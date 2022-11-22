@@ -5,5 +5,5 @@ package com.oohoo.spacestationspringbootstarter.dto.query.function;
  * @Description
  * @since 21 November 2022
  */
-public interface DateSqlFunction extends GeneralFunction{
+public class DateSqlFunction extends GeneralFunction{
 }

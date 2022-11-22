@@ -5,5 +5,5 @@ package com.oohoo.spacestationspringbootstarter.dto.query.function;
  * @Description
  * @since 21 November 2022
  */
-public interface CdnSqlFunction extends GeneralFunction {
+public class CdnSqlFunction extends GeneralFunction {
 }

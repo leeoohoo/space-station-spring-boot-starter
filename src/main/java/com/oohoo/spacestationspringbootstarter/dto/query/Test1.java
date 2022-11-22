@@ -13,7 +13,7 @@ import lombok.Data;
 @Entity(name = "test1")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "job")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "age")
-public class Test1  {
+public class Test1 implements DTO  {
 
     private Integer id;
 
