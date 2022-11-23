@@ -42,6 +42,38 @@ public enum SqlFunctionEnum {
     UPPER("upper(?)","STRING"),
     LOWER("lower(?)","STRING"),
     CONCAT("concat(?)","STRING"),
+
+
+    /**
+     * 时间函数
+     */
+    UNIX_TIMESTAMP("unix_timestamp(?)","DATE"),
+    FROM_UNIXTIME("from_unixtime(?)","DATE"),
+    MONTH("month(?)","DATE"),
+    MONTH_NAME("monthname(?)","DATE"),
+    DAY_NAME("dayname(?)","DATE"),
+    WEEK_DAY("weekday(?)","DATE"),
+    WEEK("week(?)","DATE"),
+    DAY_OF_YEAR("dayofyear(?)","DATE"),
+    DAY_OF_MONTH("dayofMonth(?)","DATE"),
+    QUARTER("quarter(?)","DATE"),
+    HOUR("hour(?)","DATE"),
+    MINUTE("minute(?)","DATE"),
+    SECOND("second(?)","DATE"),
+    TIME_TO_SEC("time_to_sec(?)","DATE"),
+    SEC_TO_TIME("sec_to_time(?)","DATE"),
+    DATE_DIFF("datediff(?, ?)","DATE"),
+    ADD_DATE("adddate(?, ?)","DATE"),
+    SUB_DATE("subdate(?, ?)","DATE"),
+    ADD_TIME("addtime(?, ?)","DATE"),
+    SUB_TIME("subtime(?, ?)","DATE"),
+
+
+    /**
+     * 条件函数
+     */
+
+    CASE_WHEN("","CDN"),
     ;
 
     private String value;

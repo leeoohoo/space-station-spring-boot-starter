@@ -1,12 +1,14 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
+import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.DaoName;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import lombok.SneakyThrows;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.Entity;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 
 /**
@@ -224,11 +227,27 @@ public class ClassUtils {
      * @return
      */
     public static String getTableName(Class<?> clazz) {
-        Entity declaredAnnotation = clazz.getDeclaredAnnotation(Entity.class);
-        if (null == declaredAnnotation) {
+        DaoName daoName = clazz.getDeclaredAnnotation(DaoName.class);
+        Entity entity = clazz.getDeclaredAnnotation(Entity.class);
+        String tableName = "";
+        boolean flag = false;
+        if (null != entity) {
+            flag = true;
+            tableName = entity.name();
+        }
+        if (null != daoName) {
+            flag = true;
+            tableName = daoName.name();
+        }
+        Class<?>[] superclass = clazz.getInterfaces();
+        if(null != superclass && superclass.length > 0 && superclass[0].equals(DTO.class)) {
+            flag = true;
+        }
+        if(flag) {
+            return StringUtils.hasLength(tableName) ? tableName : camelToUnderline(clazz.getSimpleName());
+        }else {
             throw new DtoQueryException("查询的对象不是实体类，className:[" + clazz.getName() + "]");
         }
-        return declaredAnnotation.name();
     }
 
 

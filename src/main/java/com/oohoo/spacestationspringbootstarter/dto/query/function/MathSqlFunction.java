@@ -12,9 +12,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunctio
 public class MathSqlFunction extends GeneralFunction {
 
     public MathSqlFunction(SqlFunctionEnum sqlFunctionEnum, String funcSql, String alias) {
-        this.sqlFunctionEnum = sqlFunctionEnum;
-        this.funcSql = funcSql;
-        this.alias = alias;
+        super(sqlFunctionEnum,funcSql,alias);
     }
 
 }

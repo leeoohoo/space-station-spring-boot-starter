@@ -105,6 +105,12 @@ public class CdnContainer {
         return create(column, OpEnum.EQ, null, value, logicSymbol);
     }
 
+
+    public static <T, P> CdnContainer create(SelectColumn<T, ?> column,
+                                             OpEnum opEnum, SelectColumn<P,?> column2, LogicEnum... logicSymbol) {
+        return create(column, OpEnum.EQ, column2, null, logicSymbol);
+    }
+
     /**
      * 默认逻辑判定符号后为“?”
      *

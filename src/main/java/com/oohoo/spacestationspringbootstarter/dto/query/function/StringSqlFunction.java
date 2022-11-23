@@ -10,8 +10,6 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
 public class StringSqlFunction extends GeneralFunction{
 
     public StringSqlFunction(SqlFunctionEnum sqlFunctionEnum, String funcSql, String alias) {
-        this.sqlFunctionEnum = sqlFunctionEnum;
-        this.funcSql = funcSql;
-        this.alias = alias;
+        super(sqlFunctionEnum,funcSql,alias);
     }
 }

@@ -1,7 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.Test;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Entity;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -10,8 +8,6 @@ import lombok.Data;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
