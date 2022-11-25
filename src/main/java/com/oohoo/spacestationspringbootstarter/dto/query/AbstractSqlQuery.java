@@ -2,12 +2,15 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Exclude;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
@@ -15,18 +18,21 @@ import com.oohoo.spacestationspringbootstarter.dto.query.manager.CdnManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.FromManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.JoinManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SelectManager;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
  * @Description
  * @since 21 October 2022
  */
-public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinManager, SelectManager, Query {
+public abstract  class AbstractSqlQuery implements FromManager, CdnManager, JoinManager, SelectManager, Query {
 
     protected SqlContext sqlContext;
 
@@ -65,8 +71,8 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Arrays.stream(columns).forEach(it -> {
             Column column = Column.create(it, "");
             select.append(column.getSelectFieldSql()).append(", ").append("\n");
+            this.sqlContext.getAlias().append(column.getAlias()).append(", ");
         });
-        this.sqlContext.setSelect(select);
         return this;
     }
 
@@ -75,6 +81,44 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getSelect();
         Column column = Column.create(selectColumn, alias);
         select.append(column.getSelectFieldSql()).append(", ").append("\n");
+        this.sqlContext.getAlias().append(alias).append(", ");
+        return this;
+    }
+
+    @Override
+    public SelectManager select(@Nullable Class<?> dtoClazz) {
+        Assert.notNull(dtoClazz,"传入要查询的DTO 类型不能为空");
+        List<Field> fields = Arrays.stream(dtoClazz.getDeclaredFields())
+                .filter(it -> null == it.getDeclaredAnnotation(Exclude.class)).collect(Collectors.toList());
+        List<Column> columns = ClassUtils.fieldsToColumns(dtoClazz, fields);
+        StringBuilder select = this.sqlContext.getSelect();
+        columns.forEach(it -> {
+            select.append(it.getSelectFieldSql()).append(", ").append("\n");
+            this.sqlContext.getAlias().append(it.getAlias()).append(", ");
+        });
+        return this;
+    }
+
+    @Override
+    public SelectManager select(@Nullable GeneralFunction... sqlFunction) {
+        Assert.notNull(sqlFunction,"传入的sql 函数不能为空");
+        StringBuilder select = this.sqlContext.getGeneralFunctionSql();
+        Arrays.stream(sqlFunction).forEach(it -> {
+            select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
+            this.sqlContext.getAlias().append(it.getAlias()).append(", ");
+        });
+        return this;
+    }
+
+    @Override
+    public SelectManager select(@Nullable GroupByFunction... sqlFunction) {
+        Assert.notNull(sqlFunction, "传入的sql 函数不能为空");
+        this.sqlContext.groupBy();
+        StringBuilder select = this.sqlContext.getGroupFunctionSql();
+        Arrays.stream(sqlFunction).forEach(it -> {
+            select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
+            this.sqlContext.getGroupAlias().append(it.getAlias()).append(", ");
+        });
         return this;
     }
 
@@ -272,8 +316,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     @Override
     public void findOne() {
 
-        System.out.println(this.sqlContext.getCdn().toString());
-        System.out.println("我只找你");
+
     }
 
     @Override
@@ -447,12 +490,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         try {
             Field field = first.get();
             field.setAccessible(true);
-            Object result = field.get(this);
-            Optional<Condition> condition =
-                    Arrays.stream(field.getDeclaredAnnotations()).map(it -> it.annotationType().getDeclaredAnnotation(
-                            Condition.class)).findFirst();
-
-            return result;
+            return field.get(this);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

@@ -31,8 +31,11 @@ public class MysqlQuery extends AbstractSqlQuery {
         this.buildSelectSql();
         this.buildJoinSql();
         this.buildCdnSql();
+        this.buildSqlFunctionSql();
         return this.sql.toString();
     }
+
+
 
     @Override
     public List<Object> getParams() {
@@ -44,30 +47,30 @@ public class MysqlQuery extends AbstractSqlQuery {
         this.sqlContext.addBracket(cdn);
         cdn = this.sqlContext.getCdn();
 
-        if (null == cdn) {
-            // todo 通过dto 的注解生成
-            return;
-        }
+
 
         this.sql.append(" ").append(cdn);
     }
 
     private void buildJoinSql() {
         StringBuilder join = this.sqlContext.getJoin();
-        if(null == join) {
-            // todo 通过DTO 的注解生成
-            return;
-        }
+
         this.sql.append(" ").append(join).append(" \n");
     }
 
+    private void buildSqlFunctionSql() {
+        if(!this.sqlContext.getGroupBy()) {
+            return;
+        }
+        this.sql.append(" group by ");
+        this.sqlContext.getAlias().deleteCharAt(this.sqlContext.getAlias().lastIndexOf(","));
+        this.sql.append(this.sqlContext.getAlias());
+    }
 
     private void buildSelectSql() {
         StringBuilder select = this.sqlContext.getSelect();
-        if (null == select) {
-            // todo 通过 dto的字段生成
-            return;
-        }
+        select.append(this.sqlContext.getGeneralFunctionSql());
+        select.append(this.sqlContext.getGroupFunctionSql());
         select.deleteCharAt(select.lastIndexOf(","));
         select.append(" from ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()))
                 .append(" as ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()))

@@ -26,6 +26,19 @@ public interface SqlContext {
      */
     StringBuilder getSelect();
 
+    StringBuilder getGeneralFunctionSql();
+    StringBuilder getGroupFunctionSql();
+
+
+
+    void groupBy();
+
+    Boolean getGroupBy();
+
+    StringBuilder getAlias();
+
+    StringBuilder getGroupAlias();
+
     /**
      * 获取join 语句
      *

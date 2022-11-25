@@ -1,6 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.manager;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -18,6 +21,12 @@ public interface SelectManager {
     <T> SelectManager select(SelectColumn<T, ?>... columns);
 
     <T> SelectManager select(SelectColumn<T, ?> column, String alias);
+
+    SelectManager select(Class<?> dtoClazz);
+
+    SelectManager select(GeneralFunction... sqlFunction);
+
+    SelectManager select(GroupByFunction... sqlFunction);
 
 
     CdnManager where();

@@ -24,13 +24,21 @@ public class MysqlSqlContext implements SqlContext {
     private static final String ON = " on ";
 
 
-
     private Class<?> fromClazz;
     private StringBuilder selectSql;
+
+    private final StringBuilder generalFunctionSql = new StringBuilder();
+    private final StringBuilder groupFunctionSql = new StringBuilder();
 
     private final StringBuilder joinSql = new StringBuilder();
 
     private final StringBuilder cdnSql = new StringBuilder();
+
+    private Boolean groupBy = false;
+
+    private final StringBuilder alias = new StringBuilder();
+
+    private final StringBuilder groupAlias = new StringBuilder();
 
     private final List<Object> params = new ArrayList<>();
 
@@ -45,7 +53,8 @@ public class MysqlSqlContext implements SqlContext {
     private boolean temporaryBracket = false;
 
 
-    private MysqlSqlContext(){}
+    private MysqlSqlContext() {
+    }
 
     public static MysqlSqlContext init() {
         return new MysqlSqlContext();
@@ -58,6 +67,34 @@ public class MysqlSqlContext implements SqlContext {
             return this.selectSql;
         }
         return selectSql;
+    }
+
+    @Override
+    public StringBuilder getGeneralFunctionSql() {
+        return this.generalFunctionSql;
+    }
+
+    @Override
+    public StringBuilder getGroupFunctionSql() {
+        return this.groupFunctionSql;
+    }
+
+    @Override
+    public void groupBy() {
+        this.groupBy = true;
+    }
+
+    @Override
+    public Boolean getGroupBy() {
+        return this.groupBy;
+    }
+
+    public StringBuilder getAlias() {
+        return this.alias;
+    }
+
+    public StringBuilder getGroupAlias() {
+        return this.groupAlias;
     }
 
     @Override
@@ -113,7 +150,6 @@ public class MysqlSqlContext implements SqlContext {
     }
 
 
-
     @Override
     public void addOn(Column column, OpEnum opEnum, Column column1, CdnContainer... condition) {
         this.addOn(column, opEnum, column1);
@@ -142,7 +178,7 @@ public class MysqlSqlContext implements SqlContext {
     public void addCdn(String cdn) {
         if (!isFirstCdn) {
             this.addLogic(this.cdnSql);
-        }else {
+        } else {
             this.cdnSql.append(" where ");
         }
         this.addBracket(this.cdnSql);
@@ -159,7 +195,7 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public void addParams(Object param) {
-        if(null != param) {
+        if (null != param) {
             this.params.add(param);
         }
     }

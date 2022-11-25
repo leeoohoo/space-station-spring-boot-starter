@@ -74,6 +74,19 @@ public enum SqlFunctionEnum {
      */
 
     CASE_WHEN("","CDN"),
+
+
+
+    /**
+     * 聚合函数
+     */
+    SUM("sum(distinct ?)","AGGREGATE"),
+    AVG("avg(distinct ?)","AGGREGATE"),
+    MAX("max(distinct ?)","AGGREGATE"),
+    MIN("min(distinct ?)","AGGREGATE"),
+    COUNT("count(distinct ?)","AGGREGATE"),
+
+
     ;
 
     private String value;

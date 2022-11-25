@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class TestDto implements DTO {
 
-    private Long id;
+    private Long dtoId;
 
-    private String name;
+    private String dtoName;
 }

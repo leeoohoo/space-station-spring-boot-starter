@@ -3,6 +3,8 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.WhenItem;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
@@ -22,6 +24,9 @@ public class TestMain {
                 .from(TestWhat.class)
                 .select(TestWhat::getUserName, TestWhat::getAge, TestWhat::getUserName)
                 .select(TestWhat::getAge, "userAge")
+                .select(TestDto.class)
+                .select(EF.abs(TestDto::getDtoId))
+                .select(EF.sum(Test1::getJob))
                 .left(Test1.class)
                 .on(TestWhat::getId, OpEnum.EQ, Test1::getAge)
                 .left(Test1.class, "ceshion1=1leftjiontest1asceshi")
@@ -50,23 +55,30 @@ public class TestMain {
         DtoQuery sql = EQ.find(test);
 
         List<Object> params = sql.getParams();
-        GeneralFunction abs = EF.addDate(TestWhat::getAge, 1, TestDto::getId);
-        GeneralFunction generalFunction = EF.charLength(TestWhat::getAge);
-        GeneralFunction concat = EF.concat(TestWhat::getName,
+        SqlFunction abs = EF.addDate(TestWhat::getAge, 1, TestDto::getDtoId);
+        SqlFunction generalFunction = EF.charLength(TestWhat::getAge);
+        SqlFunction concat = EF.concat(TestWhat::getName,
                 "null",
                 TestWhat::getAge,
                 TestWhat::getAge,
                 TestWhat::getAge);
-        GeneralFunction generalFunction1 = EF.caseWhen(TestDto::getName,
+        SqlFunction generalFunction1 = EF.caseWhen(TestDto::getDtoName,
                 WhenItem.when(CdnContainer.create(TestWhat::getAge, OpEnum.EQ, Test1::getAge), Test1::getAge),
                 WhenItem.when(CdnContainer.create(TestWhat::getAge, OpEnum.EQ, 1), Test1::getAge)
 
         );
+        GroupByFunction sum = EF.sum(Test1::getId);
+        GroupByFunction sum1 = EF.sum(EF.abs(Test1::getJob), Test1::getAge).distinct();
+        String funcSql = sum1.getFuncSql();
+        sum.getFuncSql();
         System.out.println(sql.getSql());
+
         System.out.println(params);
 
 
     }
+
+
 
 
 }

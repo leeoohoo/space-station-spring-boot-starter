@@ -2,14 +2,13 @@ package com.oohoo.spacestationspringbootstarter.dto.query.function;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
-import org.springframework.util.Assert;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
  * @Description
  * @since 21 November 2022
  */
-public abstract class GeneralFunction {
+public abstract class GeneralFunction implements SqlFunction {
 
     protected SqlFunctionEnum sqlFunctionEnum;
     protected String alias;
@@ -20,6 +19,15 @@ public abstract class GeneralFunction {
         this.alias = alias;
         this.funcSql = funcSql;
     }
+
+    public String getFuncSql() {
+        return this.funcSql;
+    }
+
+    public String getAlias() {
+        return this.alias;
+    }
+
 
     public static GeneralFunction create(SqlFunctionEnum sqlFunctionEnum, String funcSql, String alias) {
         switch (sqlFunctionEnum.getType()) {
