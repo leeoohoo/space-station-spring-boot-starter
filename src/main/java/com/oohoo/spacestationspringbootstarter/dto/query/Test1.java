@@ -13,7 +13,7 @@ import lombok.Data;
 @DaoName(name = "test1")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "job")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "age")
-public class Test1 implements DTO  {
+public class Test1 {
 
     private Integer id;
 

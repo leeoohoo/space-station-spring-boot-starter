@@ -9,5 +9,5 @@ import java.util.function.Function;
  * @CreateTime: 2022/10/19
  */
 @FunctionalInterface
-public interface SelectColumn<T, R> extends Function<T, R>, Serializable {
+public interface SelectColumn<T, R> extends Function<T, R>, Serializable{
 }

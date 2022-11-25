@@ -26,6 +26,7 @@ public class TestMain {
                 .select(TestWhat::getAge, "userAge")
                 .select(TestDto.class)
                 .select(EF.abs(TestDto::getDtoId))
+
                 .select(EF.sum(Test1::getJob))
                 .left(Test1.class)
                 .on(TestWhat::getId, OpEnum.EQ, Test1::getAge)
@@ -67,7 +68,7 @@ public class TestMain {
                 WhenItem.when(CdnContainer.create(TestWhat::getAge, OpEnum.EQ, 1), Test1::getAge)
 
         );
-        GroupByFunction sum = EF.sum(Test1::getId);
+        GroupByFunction sum = EF.sum(Test1::getId,Test1::getAge);
         GroupByFunction sum1 = EF.sum(EF.abs(Test1::getJob), Test1::getAge).distinct();
         String funcSql = sum1.getFuncSql();
         sum.getFuncSql();

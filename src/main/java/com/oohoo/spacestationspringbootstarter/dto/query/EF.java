@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
+import com.oohoo.spacestationspringbootstarter.dto.query.func.DTOColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
@@ -32,7 +33,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction abs(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction abs(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.ABS, "Abs", selectColumn, alias);
     }
 
@@ -46,7 +47,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction ceil(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction ceil(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.CEIL, "Ceil", selectColumn, alias);
     }
 
@@ -59,7 +60,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction floor(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction floor(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.FLOOR, "Floor", selectColumn, alias);
     }
 
@@ -72,7 +73,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction rand(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction rand(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.RAND, "Rand", selectColumn, alias);
     }
 
@@ -85,7 +86,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction sign(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction sign(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.SIGN, "Sign", selectColumn, alias);
     }
 
@@ -98,7 +99,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction round(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction round(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.ROUND, "Round", selectColumn, alias);
     }
 
@@ -111,7 +112,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction round(SelectColumn<T, ?> selectColumn, SelectColumn<J, ?> selectColumn1, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO, J> GeneralFunction round(SelectColumn<T, ?> selectColumn,
+                                                              SelectColumn<J, ?> selectColumn1,
+                                                              DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.ROUND_DIGITS, "RoundDigits", selectColumn, selectColumn1, alias);
     }
 
@@ -124,7 +127,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction pow(SelectColumn<T, ?> selectColumn, SelectColumn<J, ?> selectColumn1, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO, J> GeneralFunction pow(SelectColumn<T, ?> selectColumn,
+                                                SelectColumn<J, ?> selectColumn1,
+                                                DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.POW, "Pow", selectColumn, selectColumn1, alias);
     }
 
@@ -137,7 +142,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction truncate(SelectColumn<T, ?> selectColumn, SelectColumn<J, ?> selectColumn1, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO, J> GeneralFunction truncate(SelectColumn<T, ?> selectColumn,
+                                                     SelectColumn<J, ?> selectColumn1,
+                                                     DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.TRUNCATE, "Truncate", selectColumn, selectColumn1, alias);
     }
 
@@ -150,7 +157,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction mod(SelectColumn<T, ?> selectColumn, SelectColumn<J, ?> selectColumn1, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO, J> GeneralFunction mod(SelectColumn<T, ?> selectColumn,
+                                                SelectColumn<J, ?> selectColumn1,
+                                                DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.MOD, "Mod", selectColumn, selectColumn1, alias);
     }
 
@@ -163,7 +172,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction sqrt(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction sqrt(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.SQRT, "Sqrt", selectColumn, alias);
     }
 
@@ -177,7 +186,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction exp(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction exp(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.EXP, "Exp", selectColumn, alias);
     }
 
@@ -191,7 +200,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction log(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction log(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.LOG, "Log", selectColumn, alias);
     }
 
@@ -204,7 +213,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction log10(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction log10(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.LOG10, "Log10", selectColumn, alias);
     }
 
@@ -218,7 +227,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction radians(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction radians(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.RADIANS, "Radians", selectColumn, alias);
     }
 
@@ -231,7 +240,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction degrees(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction degrees(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.DEGREES, "Degrees", selectColumn, alias);
     }
 
@@ -244,7 +253,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction sin(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction sin(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.SIN, "Sin", selectColumn, alias);
     }
 
@@ -257,7 +266,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction asin(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction asin(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.ASIN, "Asin", selectColumn, alias);
     }
 
@@ -270,7 +279,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction cos(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction cos(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.COS, "Cos", selectColumn, alias);
     }
 
@@ -283,7 +292,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction acos(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction acos(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.ACOS, "Acos", selectColumn, alias);
     }
 
@@ -297,7 +306,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction tan(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction tan(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.TAN, "Tan", selectColumn, alias);
     }
 
@@ -310,7 +319,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction atan(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction atan(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.ATAN, "Atan", selectColumn, alias);
     }
 
@@ -323,7 +332,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction cot(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction cot(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.COT, "Cot", selectColumn, alias);
     }
 
@@ -337,7 +346,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction charLength(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction charLength(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.CHAR_LENGTH, "CharLength", selectColumn, alias);
     }
 
@@ -350,7 +359,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction length(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction length(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.LENGTH, "Length", selectColumn, alias);
     }
 
@@ -363,7 +372,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction upper(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction upper(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.UPPER, "Upper", selectColumn, alias);
     }
 
@@ -376,7 +385,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction lower(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction lower(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.LOWER, "Lower", selectColumn, alias);
     }
 
@@ -392,7 +401,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction concat(SelectColumn<T, ?> alias,
+    public static <T extends DTO, R> GeneralFunction concat(DTOColumn<T, ?> alias,
                                                 String separator,
                                                 SelectColumn<R, ?>... selectColumn) {
         return  moreParameter(SqlFunctionEnum.CONCAT, alias, separator, selectColumn);
@@ -407,7 +416,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction unixTimestamp(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction unixTimestamp(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.UNIX_TIMESTAMP, "UnixTimestamp", selectColumn, alias);
     }
 
@@ -420,7 +429,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction fromUnixtime(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction fromUnixtime(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.FROM_UNIXTIME, "FromUnixtime", selectColumn, alias);
     }
 
@@ -433,7 +442,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction month(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction month(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.MONTH, "Month", selectColumn, alias);
     }
 
@@ -446,7 +455,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction monthName(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction monthName(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.MONTH_NAME, "MonthName", selectColumn, alias);
     }
 
@@ -460,7 +469,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction dayName(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction dayName(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.DAY_NAME, "DayName", selectColumn, alias);
     }
 
@@ -473,7 +482,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction weekDay(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction weekDay(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.WEEK_DAY, "WeekDay", selectColumn, alias);
     }
 
@@ -487,7 +496,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction week(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction week(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.WEEK, "Week", selectColumn, alias);
     }
 
@@ -500,7 +509,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction dayOfYear(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction dayOfYear(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.DAY_OF_YEAR, "DayOfYear", selectColumn, alias);
     }
 
@@ -514,7 +523,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction dayOfMonth(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction dayOfMonth(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.DAY_OF_MONTH, "DayOfMonth", selectColumn, alias);
     }
 
@@ -528,7 +537,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction quarter(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction quarter(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.QUARTER, "Quarter", selectColumn, alias);
     }
 
@@ -541,7 +550,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction hour(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction hour(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.HOUR, "hour", selectColumn, alias);
     }
 
@@ -554,7 +563,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction minute(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction minute(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.MINUTE, "Minute", selectColumn, alias);
     }
 
@@ -567,7 +576,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction second(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction second(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.SECOND, "Second", selectColumn, alias);
     }
 
@@ -581,7 +590,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction timeToSec(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction timeToSec(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.TIME_TO_SEC, "TimeToSec", selectColumn, alias);
     }
 
@@ -595,7 +604,7 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R> GeneralFunction secToTime(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GeneralFunction secToTime(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return  singleParameter(SqlFunctionEnum.SEC_TO_TIME, "SecToTime", selectColumn, alias);
     }
 
@@ -608,9 +617,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction dateDiff(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction dateDiff(SelectColumn<T, ?> selectColumn,
                                                      SelectColumn<J, ?> secondParam,
-                                                     SelectColumn<R, ?>... alias) {
+                                                     DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.DATE_DIFF, "DateDiff", selectColumn, secondParam, alias);
     }
 
@@ -625,9 +634,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction addDate(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction addDate(SelectColumn<T, ?> selectColumn,
                                                     SelectColumn<J, ?> secondParam,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.ADD_DATE, "AddDate", selectColumn, secondParam, alias);
     }
@@ -642,9 +651,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction addDate(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction addDate(SelectColumn<T, ?> selectColumn,
                                                     Integer days,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.ADD_DATE, "AddDate", selectColumn, days, alias);
     }
@@ -659,9 +668,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction subDate(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction subDate(SelectColumn<T, ?> selectColumn,
                                                     SelectColumn<J, ?> secondParam,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.SUB_DATE, "SubDate", selectColumn, secondParam, alias);
     }
@@ -676,9 +685,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction subDate(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction subDate(SelectColumn<T, ?> selectColumn,
                                                     Integer days,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.SUB_DATE, "SubDate", selectColumn, days, alias);
     }
@@ -693,9 +702,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction addTime(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction addTime(SelectColumn<T, ?> selectColumn,
                                                     SelectColumn<J, ?> secondParam,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.ADD_DATE, "AddTime", selectColumn, secondParam, alias);
     }
@@ -710,9 +719,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction addTime(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction addTime(SelectColumn<T, ?> selectColumn,
                                                     Long seconds,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.ADD_TIME, "AddTime", selectColumn, seconds, alias);
     }
@@ -727,9 +736,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction subTime(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction subTime(SelectColumn<T, ?> selectColumn,
                                                     SelectColumn<J, ?> secondParam,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
 
         return  doubleParameter(SqlFunctionEnum.SUB_TIME, "SubTime", selectColumn, secondParam, alias);
     }
@@ -744,9 +753,9 @@ public class EF {
      * @return sql 函数
      */
     @SafeVarargs
-    public static <T, R, J> GeneralFunction subTime(SelectColumn<T, ?> selectColumn,
+    public static <T, R extends DTO, J> GeneralFunction subTime(SelectColumn<T, ?> selectColumn,
                                                     Long seconds,
-                                                    SelectColumn<R, ?>... alias) {
+                                                    DTOColumn<R, ?>... alias) {
         return  doubleParameter(SqlFunctionEnum.SUB_TIME, "SubTime", selectColumn, seconds, alias);
     }
 
@@ -798,7 +807,7 @@ public class EF {
      * @param <R> 别名的字段 不传默认在实体字段后添加 “Sum”
      */
     @SafeVarargs
-    public static <T, R> GroupByFunction sum(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GroupByFunction sum(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return initGroupFunction(selectColumn,SqlFunctionEnum.SUM,"Sum",alias);
     }
 
@@ -811,7 +820,7 @@ public class EF {
      * @param <T> 实体的字段
      * @param <R> 别名的字段
      */
-    public static <T, R> GroupByFunction sum(GeneralFunction generalFunction, SelectColumn<R, ?> alias) {
+    public static <T, R extends DTO> GroupByFunction sum(GeneralFunction generalFunction, DTOColumn<R, ?> alias) {
         return initGroupFunction(generalFunction,SqlFunctionEnum.SUM,alias);
     }
 
@@ -824,7 +833,7 @@ public class EF {
      * @param <R> 别名的字段 不传默认在实体字段后添加 “Avg”
      */
     @SafeVarargs
-    public static <T, R> GroupByFunction avg(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GroupByFunction avg(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return initGroupFunction(selectColumn,SqlFunctionEnum.AVG,"Avg",alias);
     }
 
@@ -837,7 +846,7 @@ public class EF {
      * @param <T> 实体的字段
      * @param <R> 别名的字段 必传
      */
-    public static <T, R> GroupByFunction avg(GeneralFunction generalFunction, SelectColumn<R, ?> alias) {
+    public static <T, R extends DTO> GroupByFunction avg(GeneralFunction generalFunction, DTOColumn<R, ?> alias) {
         return initGroupFunction(generalFunction,SqlFunctionEnum.AVG,alias);
     }
 
@@ -850,7 +859,7 @@ public class EF {
      * @param <R> 别名的字段 不传默认在实体字段后添加 “Avg”
      */
     @SafeVarargs
-    public static <T, R> GroupByFunction max(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GroupByFunction max(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return initGroupFunction(selectColumn,SqlFunctionEnum.MAX,"Max",alias);
     }
 
@@ -863,7 +872,7 @@ public class EF {
      * @param <T> 实体的字段
      * @param <R> 别名的字段 必传
      */
-    public static <T, R> GroupByFunction max(GeneralFunction generalFunction, SelectColumn<R, ?> alias) {
+    public static <T, R extends DTO> GroupByFunction max(GeneralFunction generalFunction, DTOColumn<R, ?> alias) {
         return initGroupFunction(generalFunction,SqlFunctionEnum.MAX,alias);
     }
 
@@ -876,7 +885,7 @@ public class EF {
      * @param <R> 别名的字段 不传默认在实体字段后添加 “Min”
      */
     @SafeVarargs
-    public static <T, R> GroupByFunction min(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GroupByFunction min(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return initGroupFunction(selectColumn,SqlFunctionEnum.MIN,"Min",alias);
     }
 
@@ -889,7 +898,7 @@ public class EF {
      * @param <T> 实体的字段
      * @param <R> 别名的字段 必传
      */
-    public static <T, R> GroupByFunction min(GeneralFunction generalFunction, SelectColumn<R, ?> alias) {
+    public static <T, R extends DTO> GroupByFunction min(GeneralFunction generalFunction, DTOColumn<R, ?> alias) {
         return initGroupFunction(generalFunction,SqlFunctionEnum.MIN,alias);
     }
 
@@ -916,7 +925,7 @@ public class EF {
      * @param <R> 别名的字段 不传默认在实体字段后添加 “Count”
      */
     @SafeVarargs
-    public static <T, R> GroupByFunction count(SelectColumn<T, ?> selectColumn, SelectColumn<R, ?>... alias) {
+    public static <T, R extends DTO> GroupByFunction count(SelectColumn<T, ?> selectColumn, DTOColumn<R, ?>... alias) {
         return initGroupFunction(selectColumn,SqlFunctionEnum.COUNT,"Count",alias);
     }
 
@@ -929,16 +938,16 @@ public class EF {
      * @param <T> 实体的字段
      * @param <R> 别名的字段 必传
      */
-    public static <T, R> GroupByFunction count(GeneralFunction generalFunction, SelectColumn<R, ?> alias) {
+    public static <T, R extends DTO> GroupByFunction count(GeneralFunction generalFunction, DTOColumn<R, ?> alias) {
         return initGroupFunction(generalFunction,SqlFunctionEnum.COUNT,alias);
     }
 
 
     @SafeVarargs
-    private static <T, R> GroupByFunction initGroupFunction(SelectColumn<T, ?> selectColumn,
+    private static <T, R extends DTO> GroupByFunction initGroupFunction(SelectColumn<T, ?> selectColumn,
                                                             SqlFunctionEnum sqlFunctionEnum,
                                                             String aliasSuffix,
-                                                            SelectColumn<R, ?>... alias) {
+                                                            DTOColumn<R, ?>... alias) {
         Column column = Column.create(selectColumn);
         String defaultAlias = getAlias(column,aliasSuffix,alias);
         String replace = sqlFunctionEnum.getValue().replace("?",
@@ -946,10 +955,10 @@ public class EF {
         return GroupByFunction.create(null,sqlFunctionEnum,replace,defaultAlias);
     }
 
-    private static <T, R> GroupByFunction initGroupFunction(GeneralFunction generalFunction,
+    private static <T, R extends DTO> GroupByFunction initGroupFunction(GeneralFunction generalFunction,
                                                             SqlFunctionEnum sqlFunctionEnum,
-                                                            SelectColumn<R, ?> alias) {
-        String defaultAlias = Column.create(alias).getAlias();
+                                                            DTOColumn<R, ?> alias) {
+        String defaultAlias = DTOColumn.getFieldName(alias);
         String replace = sqlFunctionEnum.getValue().replace("?",
                 generalFunction.getFuncSql());
         return GroupByFunction.create(generalFunction,sqlFunctionEnum,replace,defaultAlias);
@@ -959,11 +968,11 @@ public class EF {
 
 
     @SafeVarargs
-    private static <T, R> GeneralFunction singleParameter(
+    private static <T, R extends DTO> GeneralFunction singleParameter(
             SqlFunctionEnum sqlFunctionEnum,
             String aliasSuffix,
             SelectColumn<T, ?> selectColumn,
-            SelectColumn<R, ?>... alias) {
+            DTOColumn<R, ?>... alias) {
         Column column = Column.create(selectColumn);
         String defaultAlias = getAlias(column,aliasSuffix,alias);
         String replace = sqlFunctionEnum.getValue().replace("?", column.getTableName() + "." + column.getField());
@@ -971,12 +980,12 @@ public class EF {
     }
 
     @SafeVarargs
-    private static <T, R, J> GeneralFunction doubleParameter(
+    private static <T, R extends DTO, J> GeneralFunction doubleParameter(
             SqlFunctionEnum sqlFunctionEnum,
             String aliasSuffix,
             SelectColumn<T, ?> selectColumn,
             Object secondParam,
-            SelectColumn<R, ?>... alias) {
+            DTOColumn<R, ?>... alias) {
         Column column = Column.create(selectColumn);
         Object second = null;
         if (secondParam instanceof SelectColumn) {
@@ -994,20 +1003,20 @@ public class EF {
 
 
     @SafeVarargs
-    private static <T> String getAlias(Column column, String aliasSuffix, SelectColumn<T,?>... alias) {
+    private static <R extends DTO> String getAlias(Column column, String aliasSuffix, DTOColumn<R, ?>... alias) {
         String defaultAlias = column.getAlias() + aliasSuffix;
         if (null != alias && alias.length > 0) {
-            defaultAlias = Column.create(alias[0]).getAlias();
+            defaultAlias = DTOColumn.getFieldName(alias[0]);
         }
         return defaultAlias;
     }
 
-    private static <T, R> GeneralFunction moreParameter(SqlFunctionEnum sqlFunctionEnum,
-                                                        SelectColumn<T, ?> alias,
+    private static <T extends DTO, R> GeneralFunction moreParameter(SqlFunctionEnum sqlFunctionEnum,
+                                                        DTOColumn<T, ?> alias,
                                                         String separator,
                                                         SelectColumn<R, ?>... selectColumns) {
-        Column aliasColumn = Column.create(alias);
-        String defaultAlias = aliasColumn.getAlias();
+
+        String defaultAlias = DTOColumn.getFieldName(alias);
         List<Object> list = new ArrayList<>();
         StringBuilder placeholder = new StringBuilder("");
         AtomicInteger index = new AtomicInteger(1);

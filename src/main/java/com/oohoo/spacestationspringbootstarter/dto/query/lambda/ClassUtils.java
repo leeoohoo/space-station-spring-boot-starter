@@ -239,10 +239,7 @@ public class ClassUtils {
             flag = true;
             tableName = daoName.name();
         }
-        Class<?>[] superclass = clazz.getInterfaces();
-        if(null != superclass && superclass.length > 0 && superclass[0].equals(DTO.class)) {
-            flag = true;
-        }
+
         if(flag) {
             return StringUtils.hasLength(tableName) ? tableName : camelToUnderline(clazz.getSimpleName());
         }else {

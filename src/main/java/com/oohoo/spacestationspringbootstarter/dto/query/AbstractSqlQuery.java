@@ -86,11 +86,11 @@ public abstract  class AbstractSqlQuery implements FromManager, CdnManager, Join
     }
 
     @Override
-    public SelectManager select(@Nullable Class<?> dtoClazz) {
-        Assert.notNull(dtoClazz,"传入要查询的DTO 类型不能为空");
-        List<Field> fields = Arrays.stream(dtoClazz.getDeclaredFields())
+    public SelectManager select(@Nullable Class<?> clazz) {
+        Assert.notNull(clazz,"传入要查询的DTO 类型不能为空");
+        List<Field> fields = Arrays.stream(clazz.getDeclaredFields())
                 .filter(it -> null == it.getDeclaredAnnotation(Exclude.class)).collect(Collectors.toList());
-        List<Column> columns = ClassUtils.fieldsToColumns(dtoClazz, fields);
+        List<Column> columns = ClassUtils.fieldsToColumns(clazz, fields);
         StringBuilder select = this.sqlContext.getSelect();
         columns.forEach(it -> {
             select.append(it.getSelectFieldSql()).append(", ").append("\n");
