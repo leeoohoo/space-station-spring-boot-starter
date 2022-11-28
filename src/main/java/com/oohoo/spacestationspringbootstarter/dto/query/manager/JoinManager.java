@@ -30,6 +30,8 @@ public interface JoinManager extends SqlManager {
 
     CdnManager where();
 
+    HavingManager having();
+
     <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
                           OpEnum opEnum,
                           SelectColumn<J, ?> column1, String alias1,

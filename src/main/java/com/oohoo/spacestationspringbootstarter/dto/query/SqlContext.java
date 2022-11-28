@@ -53,6 +53,8 @@ public interface SqlContext {
      */
     StringBuilder getCdn();
 
+    StringBuilder getHaving();
+
     /**
      * 获取整条sql
      *
@@ -83,7 +85,11 @@ public interface SqlContext {
 
     void setBracket();
 
+    void setHavBracket();
+
     void addCdn(String cdn);
+
+    void addHaving(String having);
 
     void setSql(StringBuilder sql);
 
@@ -92,6 +98,8 @@ public interface SqlContext {
     void setFrom(Class<?> clazz);
 
     void addBracket(StringBuilder sb);
+
+    void addHavBracket(StringBuilder sb);
 
     void addLogic(StringBuilder sb);
 }

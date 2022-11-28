@@ -17,5 +17,4 @@ public @interface JoinColumn {
 
     String columnName();
 
-    String alias() default "";
 }

@@ -32,9 +32,16 @@ public class MysqlQuery extends AbstractSqlQuery {
         this.buildJoinSql();
         this.buildCdnSql();
         this.buildSqlFunctionSql();
+        this.buildHavingSql();
         return this.sql.toString();
     }
 
+    private void buildHavingSql() {
+        StringBuilder having = this.sqlContext.getHaving();
+        this.sqlContext.addHavBracket(having);
+        having = this.sqlContext.getHaving();
+        this.sql.append(" ").append(having);
+    }
 
 
     @Override
@@ -46,15 +53,11 @@ public class MysqlQuery extends AbstractSqlQuery {
         StringBuilder cdn = this.sqlContext.getCdn();
         this.sqlContext.addBracket(cdn);
         cdn = this.sqlContext.getCdn();
-
-
-
         this.sql.append(" ").append(cdn);
     }
 
     private void buildJoinSql() {
         StringBuilder join = this.sqlContext.getJoin();
-
         this.sql.append(" ").append(join).append(" \n");
     }
 
@@ -64,7 +67,7 @@ public class MysqlQuery extends AbstractSqlQuery {
         }
         this.sql.append(" group by ");
         this.sqlContext.getAlias().deleteCharAt(this.sqlContext.getAlias().lastIndexOf(","));
-        this.sql.append(this.sqlContext.getAlias());
+        this.sql.append(this.sqlContext.getAlias()).append(" \n");
     }
 
     private void buildSelectSql() {
@@ -76,7 +79,6 @@ public class MysqlQuery extends AbstractSqlQuery {
                 .append(" as ").append(ClassUtils.getTableName(this.sqlContext.getFromClass()))
                 .append(" \n");
         this.sql = select;
-
     }
 
 

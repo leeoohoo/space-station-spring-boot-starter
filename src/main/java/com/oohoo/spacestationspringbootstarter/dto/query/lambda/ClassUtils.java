@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.DaoName;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.From;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import lombok.SneakyThrows;
@@ -227,6 +228,32 @@ public class ClassUtils {
      * @return
      */
     public static String getTableName(Class<?> clazz) {
+        try {
+            String tableNameByEntity = getTableNameByEntity(clazz);
+            if(StringUtils.hasLength(tableNameByEntity)) {
+                return tableNameByEntity;
+            }
+        }catch (DtoQueryException dtoQueryException) {
+            return getTableNameByDto(clazz);
+        }
+        return getTableNameByDto(clazz);
+    }
+
+    private static String getTableNameByDto(Class<?> clazz) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        boolean isDto = interfaces.length > 0 && interfaces[0].equals(DTO.class);
+        if(isDto) {
+            From declaredAnnotation = clazz.getDeclaredAnnotation(From.class);
+            if(null != declaredAnnotation){
+                return getTableNameByEntity(declaredAnnotation.value());
+            }else {
+                throw new DtoQueryException("获取查询的类发生错误，DTO 未添加“@From 注解”");
+            }
+        }
+        throw new DtoQueryException("获取查询的类发生错误，请继承DTO”");
+    }
+
+    private static String getTableNameByEntity(Class<?> clazz) {
         DaoName daoName = clazz.getDeclaredAnnotation(DaoName.class);
         Entity entity = clazz.getDeclaredAnnotation(Entity.class);
         String tableName = "";
@@ -245,6 +272,7 @@ public class ClassUtils {
         }else {
             throw new DtoQueryException("查询的对象不是实体类，className:[" + clazz.getName() + "]");
         }
+
     }
 
 
@@ -282,7 +310,7 @@ public class ClassUtils {
         if (null != joinColumn) {
             column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
             column.setClazz(joinColumn.joinClass());
-            column.setAlias(StringUtils.hasLength(joinColumn.alias()) ? joinColumn.alias() : field.getName());
+            column.setAlias(field.getName());
             column.setTableName(ClassUtils.getTableName(column.getClazz()));
         }
         return column;

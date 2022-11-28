@@ -42,6 +42,12 @@ public class TestMain {
                 .eq(TestWhat::getName, "ceshi")
                 .eq(TestWhat::getJob, "sss")
                 .bracket()
+                .having()
+                .havBracket()
+                .addCdn(EF.sum(Test1::getJob),OpEnum.EQ,1)
+                .havOr()
+                .addCdn(EF.avg(Test1::getId),OpEnum.EQ,Test1::getId)
+                .havBracket()
                 .finish();
 
         System.out.println(fnish.getSql());

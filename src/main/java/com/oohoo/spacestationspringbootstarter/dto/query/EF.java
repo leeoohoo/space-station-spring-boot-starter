@@ -6,7 +6,6 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.DTOColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
-import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.WhenItem;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;

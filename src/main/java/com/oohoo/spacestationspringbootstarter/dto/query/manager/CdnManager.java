@@ -83,6 +83,8 @@ public interface CdnManager extends SqlManager {
 
     SqlManager finish();
 
+    HavingManager having();
+
     void findOne();
 
 }

@@ -34,6 +34,8 @@ public class MysqlSqlContext implements SqlContext {
 
     private final StringBuilder cdnSql = new StringBuilder();
 
+    private final StringBuilder havingSql = new StringBuilder();
+
     private Boolean groupBy = false;
 
     private final StringBuilder alias = new StringBuilder();
@@ -48,9 +50,17 @@ public class MysqlSqlContext implements SqlContext {
 
     private boolean isFirstCdn = true;
 
+    private boolean isFirstHaving = true;
+
     private Integer bracketCount = 0;
 
     private boolean temporaryBracket = false;
+
+    private boolean havTemporaryBracket = false;
+
+
+
+
 
 
     private MysqlSqlContext() {
@@ -105,6 +115,11 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public StringBuilder getCdn() {
         return this.cdnSql;
+    }
+
+    @Override
+    public StringBuilder getHaving() {
+        return this.havingSql;
     }
 
     @Override
@@ -175,6 +190,12 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     @Override
+    public void setHavBracket() {
+        this.bracketCount++;
+        this.havTemporaryBracket = true;
+    }
+
+    @Override
     public void addCdn(String cdn) {
         if (!isFirstCdn) {
             this.addLogic(this.cdnSql);
@@ -185,6 +206,19 @@ public class MysqlSqlContext implements SqlContext {
         this.cdnSql.append(cdn).append("\n");
         this.addBracket(this.cdnSql);
         this.isFirstCdn = false;
+    }
+
+    @Override
+    public void addHaving(String having) {
+        if (!isFirstHaving) {
+            this.addLogic(this.havingSql);
+        } else {
+            this.havingSql.append(" having ");
+        }
+        this.addHavBracket(this.havingSql);
+        this.havingSql.append(having).append("\n");
+        this.addHavBracket(this.havingSql);
+        this.isFirstHaving = false;
     }
 
 
@@ -222,6 +256,18 @@ public class MysqlSqlContext implements SqlContext {
         if (this.bracketCount % 2 == 0 && this.temporaryBracket) {
             sb.append(" )\n");
             this.temporaryBracket = false;
+        }
+    }
+
+    @Override
+    public void addHavBracket(StringBuilder sb) {
+        if (this.bracketCount % 2 != 0 && this.havTemporaryBracket) {
+            sb.append(" (");
+            this.havTemporaryBracket = false;
+        }
+        if (this.bracketCount % 2 == 0 && this.havTemporaryBracket) {
+            sb.append(" )\n");
+            this.havTemporaryBracket = false;
         }
     }
 

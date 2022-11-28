@@ -31,6 +31,8 @@ public interface SelectManager {
 
     CdnManager where();
 
+    HavingManager having();
+
     JoinManager inner(Class<?> clazz, String... alias);
 
     JoinManager left(Class<?> clazz, String... alias);
