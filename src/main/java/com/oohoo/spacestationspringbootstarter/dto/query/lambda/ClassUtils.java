@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.DaoName;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.EntityName;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.From;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -254,7 +254,7 @@ public class ClassUtils {
     }
 
     private static String getTableNameByEntity(Class<?> clazz) {
-        DaoName daoName = clazz.getDeclaredAnnotation(DaoName.class);
+        EntityName entityName = clazz.getDeclaredAnnotation(EntityName.class);
         Entity entity = clazz.getDeclaredAnnotation(Entity.class);
         String tableName = "";
         boolean flag = false;
@@ -262,9 +262,9 @@ public class ClassUtils {
             flag = true;
             tableName = entity.name();
         }
-        if (null != daoName) {
+        if (null != entityName) {
             flag = true;
-            tableName = daoName.name();
+            tableName = entityName.name();
         }
 
         if(flag) {

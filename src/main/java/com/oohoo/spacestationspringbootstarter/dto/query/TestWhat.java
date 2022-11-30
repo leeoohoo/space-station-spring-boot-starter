@@ -1,6 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OrderByEnum;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -16,6 +17,8 @@ import javax.persistence.Id;
 @From(TestWhat.class)
 @Join(fromClazz = TestWhat.class, fromField = "name", joinClazz = TestWhat.class, joinField = "job")
 @Join(fromClazz = TestWhat.class,fromField = "id",joinClazz = Test1.class,joinField = "id")
+@OrderBy(table = TestWhat.class,field = "namece",orderType = OrderByEnum.DESC)
+@OrderBy(table = TestWhat.class,field = "age",orderType = OrderByEnum.DESC)
 public class TestWhat implements DTO {
 
     @Id

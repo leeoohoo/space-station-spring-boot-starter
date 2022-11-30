@@ -15,4 +15,6 @@ public interface DtoSqlManager {
 
     void joinBuild();
 
+    void orderBuild();
+
 }

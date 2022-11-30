@@ -11,6 +11,8 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunctio
  */
 public interface HavingManager extends SqlManager{
 
+
+    OrderByManager order();
     HavingManager havOr();
 
     HavingManager havBracket();

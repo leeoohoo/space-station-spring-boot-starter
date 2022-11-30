@@ -7,10 +7,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.JoinContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -61,7 +58,7 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
             JoinColumn joinColumn = it.getField().getDeclaredAnnotation(JoinColumn.class);
             if(null != joinColumn) {
                 column.setTableName(ClassUtils.getTableName(joinColumn.joinClass()));
-                column.setField(ClassUtils.camelToUnderline(joinColumn.columnName()));
+                column.setField(ClassUtils.camelToUnderline(validateFieldName(joinColumn.columnName())));
                 column.setAlias(it.getField().getName());
             }
             //如果是Like
@@ -77,15 +74,44 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
 
     @Override
     public void joinBuild() {
+        if(null == this.joinContainers) {
+            return;
+        }
         this.joinContainers.stream().sorted(Comparator.comparing(JoinContainer::getOrder).reversed()).forEach(it -> {
             this.joinSql.append(it.getJoinEnum().getType())
                     .append(ClassUtils.getTableName(it.getJoinClass())).append(" as ")
                     .append(ClassUtils.getTableName(it.getJoinClass()))
                     .append(" on ")
-                    .append(ClassUtils.getTableName(it.getFromClass())).append(".").append(it.getFromField())
+                    .append(ClassUtils.getTableName(it.getFromClass())).append(".").append(validateFieldName(it.getFromField()))
                     .append(it.getOpEnum().getOp())
-                    .append(ClassUtils.getTableName(it.getJoinClass())).append(".").append(it.getJoinField())
+                    .append(ClassUtils.getTableName(it.getJoinClass())).append(".").append(validateFieldName(it.getJoinField()))
                     .append(" \n");
         });
+    }
+
+    @Override
+    public void orderBuild() {
+        if(null == this.orderByContainers) {
+            return;
+        }
+        this.orderBySql.append(" order by ");
+
+        this.orderByContainers.stream().sorted(Comparator.comparing(OrderByContainer::getOrder).reversed()).forEach(it -> {
+                   this.orderBySql.append(ClassUtils.getTableName(it.getClazz()))
+                           .append(".")
+                           .append(validateFieldName(it.getFieldName()))
+                           .append(" ")
+                           .append(it.getOrderType().getSortType())
+                           .append(", ");
+        });
+
+    }
+
+
+    private String validateFieldName(String fieldName) {
+        if(fieldName.contains(" ")){
+            throw new DtoQueryException("字段生成发生异常, 请检查字段名不能有空格");
+        }
+        return fieldName;
     }
 }

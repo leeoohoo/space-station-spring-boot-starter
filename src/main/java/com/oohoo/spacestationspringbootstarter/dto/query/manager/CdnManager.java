@@ -85,6 +85,8 @@ public interface CdnManager extends SqlManager {
 
     HavingManager having();
 
+    OrderByManager order();
+
     void findOne();
 
 }

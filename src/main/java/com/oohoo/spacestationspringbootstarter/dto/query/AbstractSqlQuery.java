@@ -2,10 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Exclude;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 21 October 2022
  */
 public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinManager, SelectManager,
-        HavingManager, Query {
+        HavingManager, OrderByManager, Query {
 
     protected SqlContext sqlContext;
 
@@ -63,7 +60,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Arrays.stream(columns).forEach(it -> {
             Column column = Column.create(it, "");
             select.append(column.getSelectFieldSql()).append(", ").append("\n");
-            this.sqlContext.getAlias().append(column.getTableName()).append(".").append(column.getField()).append(", ");
+            this.sqlContext.addAlias(column);
         });
         return this;
     }
@@ -73,7 +70,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getSelect();
         Column column = Column.create(selectColumn, alias);
         select.append(column.getSelectFieldSql()).append(", ").append("\n");
-        this.sqlContext.getAlias().append(column.getTableName()).append(".").append(column.getField()).append(", ");
+        this.sqlContext.addAlias(column);
         return this;
     }
 
@@ -92,7 +89,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getSelect();
         columns.forEach(it -> {
             select.append(it.getSelectFieldSql()).append(", ").append("\n");
-            this.sqlContext.getAlias().append(it.getTableName()).append(".").append(it.getField()).append(", ");
+            this.sqlContext.addAlias(it);
         });
         return this;
     }
@@ -103,7 +100,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getGeneralFunctionSql();
         Arrays.stream(sqlFunction).forEach(it -> {
             select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
-            this.sqlContext.getAlias().append(it.getAlias()).append(", ");
+            this.sqlContext.addAlias(it.getAlias());
         });
         return this;
     }
@@ -115,7 +112,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getGroupFunctionSql();
         Arrays.stream(sqlFunction).forEach(it -> {
             select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
-            this.sqlContext.getGroupAlias().append(it.getAlias()).append(", ");
+            this.sqlContext.addAlias(it.getAlias());
         });
         return this;
     }
@@ -284,6 +281,12 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     @Override
     public HavingManager having() {
         this.sqlContext.addBracket(this.sqlContext.getCdn());
+        return this;
+    }
+
+    @Override
+    public OrderByManager order() {
+        this.sqlContext.setOrder(new StringBuilder(" order by "));
         return this;
     }
 
@@ -476,13 +479,38 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Column column1 = Column.create(column);
         String s = column1.getTableName() + "." + column1.getField();
         this.sqlContext.addHaving(groupByFunction.getFuncSql() + " " + opEnum.getOp() + " " + s);
-        this.sqlContext.getAlias().append(column1.getTableName()).append(".").append(column1.getField()).append(", ");
+        this.sqlContext.addAlias(column1);
         return this;
     }
 
     @Override
     public <T> HavingManager addCdn(GroupByFunction groupByFunction, OpEnum opEnum, GroupByFunction groupByFunction1) {
         this.sqlContext.addHaving(groupByFunction.getFuncSql() + " " + opEnum.getOp() + " " + groupByFunction1.getFuncSql());
+        return this;
+    }
+
+    @Override
+    public <T> OrderByManager by(SelectColumn<T, ?> column, OrderByEnum order) {
+        Column column1 = Column.create(column);
+        this.sqlContext.addOrderBy(column1.getTableName() + "." + column1.getField()+ " "+order.getSortType());
+        return this;
+    }
+
+    @Override
+    public <T> OrderByManager by(SelectColumn<T, ?> column) {
+        Column column1 = Column.create(column);
+        this.sqlContext.addOrderBy(column1.getTableName() + "." + column1.getField()+ " "+OrderByEnum.ASC.getSortType());
+        return this;
+    }
+
+    @Override
+    public <T> OrderByManager by(OrderByEnum order, SelectColumn<T, ?>... columns) {
+        if(null == columns || columns.length <= 0) {
+            throw new DtoQueryException("添加order by 发生异常, 请选择要排序的字段");
+        }
+        Arrays.stream(columns).forEach(it -> {
+            this.by(it,order);
+        });
         return this;
     }
 }

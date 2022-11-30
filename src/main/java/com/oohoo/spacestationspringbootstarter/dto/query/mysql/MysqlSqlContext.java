@@ -36,6 +36,8 @@ public class MysqlSqlContext implements SqlContext {
 
     private final StringBuilder havingSql = new StringBuilder();
 
+    private final StringBuilder orderBySql = new StringBuilder();
+
     private Boolean groupBy = false;
 
     private final StringBuilder alias = new StringBuilder();
@@ -57,10 +59,6 @@ public class MysqlSqlContext implements SqlContext {
     private boolean temporaryBracket = false;
 
     private boolean havTemporaryBracket = false;
-
-
-
-
 
 
     private MysqlSqlContext() {
@@ -100,7 +98,11 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     public StringBuilder getAlias() {
-        return this.alias;
+        if(!StringUtils.hasLength(this.alias)) {
+            return this.alias;
+        }
+        return this.alias.deleteCharAt(this.alias.lastIndexOf(","));
+
     }
 
     public StringBuilder getGroupAlias() {
@@ -123,6 +125,11 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     @Override
+    public StringBuilder getOrderBySql() {
+        return this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
+    }
+
+    @Override
     public Class<?> getFromClass() {
         return this.fromClazz;
     }
@@ -136,6 +143,11 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public void setSelect(StringBuilder select) {
 
+    }
+
+    @Override
+    public void setOrder(StringBuilder order) {
+        this.orderBySql.append(order);
     }
 
     @Override
@@ -223,8 +235,8 @@ public class MysqlSqlContext implements SqlContext {
 
 
     @Override
-    public void setSql(StringBuilder sql) {
-
+    public void addOrderBy(String order) {
+        this.orderBySql.append(order).append(", ");
     }
 
     @Override
@@ -278,5 +290,15 @@ public class MysqlSqlContext implements SqlContext {
         } else {
             sb.append(this.logicEnum.getValue());
         }
+    }
+
+    @Override
+    public void addAlias(Column column) {
+        this.alias.append(column.getTableName()).append(".").append(column.getField()).append(" as ").append(column.getAlias()).append(", ");
+    }
+
+    @Override
+    public void addAlias(String column) {
+        this.alias.append(column).append(", ");
     }
 }

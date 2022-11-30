@@ -1,7 +1,9 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.DaoName;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.EntityName;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Join;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.OrderBy;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OrderByEnum;
 import lombok.Data;
 
 /**
@@ -10,9 +12,10 @@ import lombok.Data;
  * @CreateTime: 2022/9/1
  */
 @Data
-@DaoName(name = "test1")
+@EntityName(name = "test1")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "job")
 @Join(fromClazz = Test1.class, fromField = "name", joinClazz = Test1.class, joinField = "age")
+@OrderBy(table = Test1.class,field = "name",orderType = OrderByEnum.DESC)
 public class Test1 {
 
     private Integer id;

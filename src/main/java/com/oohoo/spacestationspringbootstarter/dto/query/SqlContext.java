@@ -55,6 +55,8 @@ public interface SqlContext {
 
     StringBuilder getHaving();
 
+    StringBuilder getOrderBySql();
+
     /**
      * 获取整条sql
      *
@@ -72,6 +74,8 @@ public interface SqlContext {
     void setSelect(StringBuilder select);
 
     void setCdn(StringBuilder cdn);
+
+    void setOrder(StringBuilder order);
 
     void addJoin(JoinEnum joinEnum, String tableName,String alias);
 
@@ -91,7 +95,7 @@ public interface SqlContext {
 
     void addHaving(String having);
 
-    void setSql(StringBuilder sql);
+    void addOrderBy(String having);
 
     void addParams(Object param);
 
@@ -102,4 +106,8 @@ public interface SqlContext {
     void addHavBracket(StringBuilder sb);
 
     void addLogic(StringBuilder sb);
+
+    void addAlias(Column column);
+
+    void addAlias(String column);
 }

@@ -5,16 +5,16 @@ import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.JoinContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.DtoSqlManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.CdnScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.JoinScan;
+import com.oohoo.spacestationspringbootstarter.dto.query.scan.OrderByScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.SelectScan;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @Description
  * @since 11 November 2022
  */
-public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, DtoSqlManager {
+public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, OrderByScan, DtoSqlManager {
 
     protected DTO dto;
 
@@ -45,11 +45,15 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
 
     protected List<JoinContainer> joinContainers;
 
+    protected List<OrderByContainer> orderByContainers;
+
     protected StringBuilder selectSql;
 
     protected StringBuilder cdnSql;
 
     protected StringBuilder joinSql;
+
+    protected StringBuilder orderBySql;
 
     protected List<Object> params;
 
@@ -59,21 +63,50 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
         this.selectScan();
         this.joinScan();
         this.cdnScan();
+        this.orderByScan();
         this.build();
-        System.out.println("");
 
     }
 
 
     @Override
     public String getSql() {
-        this.selectSql.append(this.joinSql).append(this.cdnSql);
+        StringBuilder order = new StringBuilder("");
+        if(StringUtils.hasLength(this.orderBySql)) {
+             order = this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
+
+        }
+        this.selectSql.append(this.joinSql).append(this.cdnSql).append(order);
         return this.selectSql.toString();
     }
 
     @Override
     public List<Object> getParams() {
         return this.params;
+    }
+
+
+    @Override
+    public void orderByScan() {
+//1. 获取所有Order
+        Annotation[] declaredAnnotations = this.dtoClass.getDeclaredAnnotations();
+        List<Annotation> annotations = Arrays.stream(declaredAnnotations).filter(it ->
+                it.annotationType().equals(OrderBy.class) || it.annotationType().equals(OrderBy.List.class)
+        ).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(annotations)) {
+            return;
+        }
+        Annotation annotation = annotations.get(0);
+
+        this.orderByContainers = new ArrayList<>();
+        if (annotation instanceof OrderBy.List) {
+            OrderBy[] value = ((OrderBy.List) annotation).value();
+            Arrays.stream(value).forEach(this::orderByContainer);
+        }
+        if (annotation instanceof OrderBy) {
+            orderByContainer((OrderBy) annotation);
+        }
+
     }
 
     @Override
@@ -141,12 +174,17 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
         this.selectSql = new StringBuilder();
         this.cdnSql = new StringBuilder();
         this.joinSql = new StringBuilder();
+        this.orderBySql = new StringBuilder();
         this.params = new ArrayList<>();
         this.selectBuild();
         this.cdnBuild();
         this.joinBuild();
+        this.orderBuild();
     }
 
+    private void orderByContainer(OrderBy order) {
+        this.orderByContainers.add(OrderByContainer.create(order));
+    }
 
     private void joinContainer(Join join) {
         this.joinContainers.add(JoinContainer.create(join));

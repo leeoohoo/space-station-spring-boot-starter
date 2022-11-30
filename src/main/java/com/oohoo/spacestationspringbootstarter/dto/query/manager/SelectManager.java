@@ -33,6 +33,8 @@ public interface SelectManager {
 
     HavingManager having();
 
+    OrderByManager order();
+
     JoinManager inner(Class<?> clazz, String... alias);
 
     JoinManager left(Class<?> clazz, String... alias);

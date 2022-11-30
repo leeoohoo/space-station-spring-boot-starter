@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.enums.OrderByEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
@@ -23,10 +24,10 @@ public class TestMain {
         SqlManager fnish = EQ.find()
                 .from(TestWhat.class)
                 .select(TestWhat::getUserName, TestWhat::getAge, TestWhat::getUserName)
+                .select(TestWhat::getUserName,"userName")
                 .select(TestWhat::getAge, "userAge")
                 .select(TestDto.class)
                 .select(EF.abs(TestDto::getDtoId))
-
                 .select(EF.sum(Test1::getJob))
                 .left(Test1.class)
                 .on(TestWhat::getId, OpEnum.EQ, Test1::getAge)
@@ -46,8 +47,11 @@ public class TestMain {
                 .havBracket()
                 .addCdn(EF.sum(Test1::getJob),OpEnum.EQ,1)
                 .havOr()
-                .addCdn(EF.avg(Test1::getId),OpEnum.EQ,Test1::getId)
+                .addCdn(EF.avg(Test1::getAge),OpEnum.EQ,Test1::getAge)
                 .havBracket()
+                .order()
+                .by(Test1::getJob, OrderByEnum.DESC)
+                .by(Test1::getAge)
                 .finish();
 
         System.out.println(fnish.getSql());

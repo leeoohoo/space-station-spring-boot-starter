@@ -1,9 +1,13 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description:
@@ -14,11 +18,12 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     private StringBuilder sql;
 
-    public static MysqlQuery init(){
-         return new MysqlQuery();
+    public static MysqlQuery init() {
+        return new MysqlQuery();
     }
 
-    private MysqlQuery() {}
+    private MysqlQuery() {
+    }
 
     @Override
     public void initContext() {
@@ -33,7 +38,12 @@ public class MysqlQuery extends AbstractSqlQuery {
         this.buildCdnSql();
         this.buildSqlFunctionSql();
         this.buildHavingSql();
+        this.buildOrderSql();
         return this.sql.toString();
+    }
+
+    private void buildOrderSql() {
+        this.sql.append(this.sqlContext.getOrderBySql());
     }
 
     private void buildHavingSql() {
@@ -62,11 +72,10 @@ public class MysqlQuery extends AbstractSqlQuery {
     }
 
     private void buildSqlFunctionSql() {
-        if(!this.sqlContext.getGroupBy()) {
+        if (!this.sqlContext.getGroupBy()) {
             return;
         }
         this.sql.append(" group by ");
-        this.sqlContext.getAlias().deleteCharAt(this.sqlContext.getAlias().lastIndexOf(","));
         this.sql.append(this.sqlContext.getAlias()).append(" \n");
     }
 
@@ -84,6 +93,16 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     @Override
     public MysqlQuery finish() {
-        return (MysqlQuery)this;
+        StringBuilder alias = this.sqlContext.getAlias();
+        String[] split = alias.toString().split(",");
+        Set<String> stringSet = new HashSet<>();
+        Arrays.stream(split).map(it ->{
+            String[] as = it.split("as");
+            return as.length >=2 ? as[1] : as[0];
+        }).forEach(stringSet::add);
+        if (stringSet.size() != split.length) {
+            throw new DtoQueryException("查询的字段重复,e:[" + this.sqlContext.getAlias() + "]");
+        }
+        return this;
     }
 }

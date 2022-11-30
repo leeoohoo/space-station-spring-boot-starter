@@ -32,6 +32,8 @@ public interface JoinManager extends SqlManager {
 
     HavingManager having();
 
+    OrderByManager order();
+
     <T, J> JoinManager on(SelectColumn<T, ?> column, String alias,
                           OpEnum opEnum,
                           SelectColumn<J, ?> column1, String alias1,
