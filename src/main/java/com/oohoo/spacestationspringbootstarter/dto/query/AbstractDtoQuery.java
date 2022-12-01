@@ -131,7 +131,9 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
                 CdnContainer cdnContainer =
                         CdnContainer.create(required, order, logic, likeLocation,
                                 condition.op(), it, this.fromClass, this.dto);
-                this.cdnContainers.add(cdnContainer);
+                if(null != cdnContainer) {
+                    this.cdnContainers.add(cdnContainer);
+                }
             }
 
         });

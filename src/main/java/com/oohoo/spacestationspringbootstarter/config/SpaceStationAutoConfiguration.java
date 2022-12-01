@@ -1,11 +1,15 @@
 package com.oohoo.spacestationspringbootstarter.config;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.jpa.Butler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * @Description:
@@ -19,6 +23,9 @@ public class SpaceStationAutoConfiguration {
     public static String TASK_EXECUTOR_NAME = null;
     private final ApplicationContext applicationContext;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public SpaceStationAutoConfiguration(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -29,5 +36,10 @@ public class SpaceStationAutoConfiguration {
         SpringUtils springUtils = new SpringUtils();
         springUtils.setApplicationContext(applicationContext);
         return springUtils;
+    }
+
+    @Bean
+    public Butler getButler() {
+        return Butler.create(this.entityManager);
     }
 }

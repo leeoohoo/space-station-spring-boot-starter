@@ -23,8 +23,7 @@ public class TestMain {
         // 链式调用
         SqlManager fnish = EQ.find()
                 .from(TestWhat.class)
-                .select(TestWhat::getUserName, TestWhat::getAge, TestWhat::getUserName)
-                .select(TestWhat::getUserName,"userName")
+                .select(TestWhat::getUserName, TestWhat::getAge)
                 .select(TestWhat::getAge, "userAge")
                 .select(TestDto.class)
                 .select(EF.abs(TestDto::getDtoId))
@@ -43,15 +42,8 @@ public class TestMain {
                 .eq(TestWhat::getName, "ceshi")
                 .eq(TestWhat::getJob, "sss")
                 .bracket()
-                .having()
-                .havBracket()
-                .addCdn(EF.sum(Test1::getJob),OpEnum.EQ,1)
-                .havOr()
-                .addCdn(EF.avg(Test1::getAge),OpEnum.EQ,Test1::getAge)
-                .havBracket()
-                .order()
-                .by(Test1::getJob, OrderByEnum.DESC)
-                .by(Test1::getAge)
+
+
                 .finish();
 
         System.out.println(fnish.getSql());
@@ -61,7 +53,6 @@ public class TestMain {
         TestWhat test = new TestWhat();
         test.setAge(11);
         test.setName("ceshi");
-        test.setJob("ss");
 
         DtoQuery sql = EQ.find(test);
 

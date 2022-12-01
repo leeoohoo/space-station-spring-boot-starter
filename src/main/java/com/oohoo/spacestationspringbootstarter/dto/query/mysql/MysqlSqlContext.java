@@ -126,7 +126,11 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public StringBuilder getOrderBySql() {
-        return this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
+        if(StringUtils.hasLength(this.orderBySql)) {
+            return this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
+        }else {
+            return this.orderBySql;
+        }
     }
 
     @Override

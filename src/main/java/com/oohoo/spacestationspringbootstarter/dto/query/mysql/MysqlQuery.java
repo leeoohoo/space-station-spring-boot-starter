@@ -16,6 +16,8 @@ import java.util.Set;
  */
 public class MysqlQuery extends AbstractSqlQuery {
 
+    private boolean isBuild = false;
+
     private StringBuilder sql;
 
     public static MysqlQuery init() {
@@ -33,12 +35,15 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     @Override
     public String getSql() {
-        this.buildSelectSql();
-        this.buildJoinSql();
-        this.buildCdnSql();
-        this.buildSqlFunctionSql();
-        this.buildHavingSql();
-        this.buildOrderSql();
+        if(!this.isBuild) {
+            this.buildSelectSql();
+            this.buildJoinSql();
+            this.buildCdnSql();
+            this.buildSqlFunctionSql();
+            this.buildHavingSql();
+            this.buildOrderSql();
+        }
+        this.isBuild = true;
         return this.sql.toString();
     }
 
@@ -96,9 +101,9 @@ public class MysqlQuery extends AbstractSqlQuery {
         StringBuilder alias = this.sqlContext.getAlias();
         String[] split = alias.toString().split(",");
         Set<String> stringSet = new HashSet<>();
-        Arrays.stream(split).map(it ->{
+        Arrays.stream(split).map(it -> {
             String[] as = it.split("as");
-            return as.length >=2 ? as[1] : as[0];
+            return as.length >= 2 ? as[1] : as[0];
         }).forEach(stringSet::add);
         if (stringSet.size() != split.length) {
             throw new DtoQueryException("查询的字段重复,e:[" + this.sqlContext.getAlias() + "]");

@@ -3,12 +3,9 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.AbstractDtoQuery;
 import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.DtoQuery;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.JoinColumn;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.*;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
