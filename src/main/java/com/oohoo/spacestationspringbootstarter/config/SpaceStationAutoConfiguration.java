@@ -1,14 +1,16 @@
 package com.oohoo.spacestationspringbootstarter.config;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.jpa.Butler;
+import com.oohoo.spacestationspringbootstarter.dto.query.Butler;
+import com.oohoo.spacestationspringbootstarter.dto.query.jpa.JpaSearch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -26,6 +28,9 @@ public class SpaceStationAutoConfiguration {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    EntityManagerFactory entityManagerFactory;
+
     public SpaceStationAutoConfiguration(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -38,8 +43,9 @@ public class SpaceStationAutoConfiguration {
         return springUtils;
     }
 
-    @Bean
+    @Bean(name = "butler")
+    @Scope(scopeName = "prototype")
     public Butler getButler() {
-        return Butler.create(this.entityManager);
+        return new JpaSearch(entityManager);
     }
 }
