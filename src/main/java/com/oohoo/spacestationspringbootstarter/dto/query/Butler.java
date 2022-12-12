@@ -2,7 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
-import javax.persistence.Query;
+import java.util.List;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
@@ -12,8 +12,17 @@ import javax.persistence.Query;
 public interface Butler {
 
 
+    <T> EPage<T> findPage(DtoQuery dtoQuery, Class<T> resultClazz, Integer pageNo, int pageSize);
 
-    <T> T findOne(DtoQuery dtoQuery,Class<T> resultClazz);
+    <T> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, int pageSize);
 
-    <T> T findOne(SqlManager sqlManager,Class<T> resultClazz);
+    <T> List<T> findList(DtoQuery dtoQuery, Class<T> resultClazz);
+
+    <T> List<T> findList(SqlManager sqlManager, Class<T> resultClazz);
+
+    <T> T findOne(DtoQuery dtoQuery, Class<T> resultClazz);
+
+    <T> T findOne(SqlManager sqlManager, Class<T> resultClazz);
+
+
 }

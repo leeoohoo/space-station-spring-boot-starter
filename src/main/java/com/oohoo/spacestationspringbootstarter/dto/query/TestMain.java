@@ -8,9 +8,13 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunctio
 import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.WhenItem;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -77,6 +81,11 @@ public class TestMain {
 
         System.out.println(params);
 
+        String sql1 = sql.getSql();
+
+        String select_ = sql1.substring(sql1.indexOf("select "), sql1.indexOf(" from "));
+        String replace = sql1.replace(select_, "select count(1) as count ");
+        System.out.println(select_);
 
     }
 

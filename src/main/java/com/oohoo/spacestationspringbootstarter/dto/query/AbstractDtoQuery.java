@@ -1,6 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
-import com.google.gson.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.annotation.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com
- * @Description
  * @since 11 November 2022
  */
 public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, OrderByScan, DtoSqlManager {
@@ -38,6 +36,8 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
     protected Class<?> fromClass;
 
     protected Field[] declaredFields;
+
+    protected Field[] superFields;
 
     protected List<Column> columns;
 
@@ -57,6 +57,8 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
 
     protected List<Object> params;
 
+    protected boolean isBuild = false;
+
     @Override
     public void scan() {
         this.fromScan();
@@ -71,12 +73,16 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
 
     @Override
     public String getSql() {
-        StringBuilder order = new StringBuilder("");
-        if(StringUtils.hasLength(this.orderBySql)) {
-             order = this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
+        if(!isBuild) {
+            StringBuilder order = new StringBuilder("");
+            if(StringUtils.hasLength(this.orderBySql)) {
+                order = this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
 
+            }
+            this.selectSql.append(this.joinSql).append(this.cdnSql).append(order);
+            this.isBuild = true;
         }
-        this.selectSql.append(this.joinSql).append(this.cdnSql).append(order);
+
         return this.selectSql.toString();
     }
 
@@ -166,7 +172,13 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
     public void selectScan() {
         //1. 排除所有不需要查询的字段
         List<Field> fields = Arrays.stream(this.declaredFields)
-                .filter(it -> null == it.getDeclaredAnnotation(Exclude.class)).collect(Collectors.toList());
+                .filter(it -> null == it.getDeclaredAnnotation(Exclude.class))
+                .collect(Collectors.toList());
+
+        if(null != this.superFields && this.superFields.length > 0) {
+            fields.addAll(Arrays.asList(this.superFields));
+        }
+
         //2. 将所有查询的字段转换成column
         this.columns = ClassUtils.fieldsToColumns(this.dtoClass, fields);
     }

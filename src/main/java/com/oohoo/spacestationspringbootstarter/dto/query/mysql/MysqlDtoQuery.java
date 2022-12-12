@@ -25,6 +25,10 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
         mysqlDtoQuery.dto = dto;
         mysqlDtoQuery.dtoClass = dto.getClass();
         mysqlDtoQuery.declaredFields = mysqlDtoQuery.dtoClass.getDeclaredFields();
+        Class<?> superclass = mysqlDtoQuery.dtoClass.getSuperclass();
+        if(null != superclass) {
+            mysqlDtoQuery.superFields = superclass.getDeclaredFields();
+        }
         return mysqlDtoQuery;
     }
 
@@ -45,6 +49,9 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
 
     @Override
     public void cdnBuild() {
+        if(CollectionUtils.isEmpty(this.cdnContainers)) {
+            return;
+        }
         this.cdnSql.append(" where ");
         AtomicBoolean ifBegin = new AtomicBoolean(true);
         this.cdnContainers.stream().sorted(Comparator.comparing(CdnContainer::getOrder)).forEach(it -> {
@@ -71,7 +78,7 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
 
     @Override
     public void joinBuild() {
-        if(null == this.joinContainers) {
+        if(CollectionUtils.isEmpty(this.joinContainers)) {
             return;
         }
         this.joinContainers.stream().sorted(Comparator.comparing(JoinContainer::getOrder).reversed()).forEach(it -> {
@@ -88,7 +95,7 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
 
     @Override
     public void orderBuild() {
-        if(null == this.orderByContainers) {
+        if(CollectionUtils.isEmpty(this.orderByContainers)) {
             return;
         }
         this.orderBySql.append(" order by ");

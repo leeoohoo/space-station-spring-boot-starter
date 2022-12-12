@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.*;
 
 
 /**
@@ -322,7 +323,7 @@ public class ClassUtils {
         }
         line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
         StringBuilder sb = new StringBuilder();
-        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
+        Pattern pattern = compile("[A-Z]([a-z\\d]+)?");
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
             String word = matcher.group();
@@ -334,6 +335,8 @@ public class ClassUtils {
 
     @SneakyThrows
     public static <T> T mapToObj(Map source, Class<T> target) {
+        Assert.notNull(target,"转换的实例类型不能为null");
+        Assert.notNull(source,"转换的Map不能为null");
         Field[] fields = target.getDeclaredFields();
         T o = target.newInstance();
         for (Field field : fields) {
