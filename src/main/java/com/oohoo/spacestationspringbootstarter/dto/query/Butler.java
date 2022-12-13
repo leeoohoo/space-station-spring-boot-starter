@@ -26,6 +26,20 @@ public interface Butler {
 
     <T> EPage<T> count(String sql,List<Object> params);
 
+    Object insert(DTO dto);
+
+    Boolean insertBatch(List<DTO> dtoList, Integer batchSize);
+
+    Boolean update(DtoQuery dtoQuery);
+
+
+    Boolean update(SqlManager sqlManager);
+
+
+    Boolean delete(DtoQuery dtoQuery);
+
+
+    Boolean delete(SqlManager sqlManager);
 
 
 }

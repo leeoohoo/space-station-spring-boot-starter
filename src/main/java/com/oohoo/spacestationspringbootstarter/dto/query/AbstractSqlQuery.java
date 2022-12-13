@@ -112,7 +112,6 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         StringBuilder select = this.sqlContext.getGroupFunctionSql();
         Arrays.stream(sqlFunction).forEach(it -> {
             select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
-            this.sqlContext.addAlias(it.getAlias());
         });
         return this;
     }

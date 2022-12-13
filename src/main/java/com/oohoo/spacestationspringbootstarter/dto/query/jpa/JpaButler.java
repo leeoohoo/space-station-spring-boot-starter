@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.jpa;
 
 import com.oohoo.spacestationspringbootstarter.config.SpringUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.AbstractSearch;
+import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
 import com.oohoo.spacestationspringbootstarter.dto.query.DtoQuery;
 import com.oohoo.spacestationspringbootstarter.dto.query.EPage;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -89,6 +90,36 @@ public class JpaButler extends AbstractSearch {
         return this.findCount(sql, params);
     }
 
+    @Override
+    public Object insert(DTO dto) {
+        return null;
+    }
+
+    @Override
+    public Boolean insertBatch(List<DTO> dtoList, Integer batchSize) {
+        return null;
+    }
+
+    @Override
+    public Boolean update(DtoQuery dtoQuery) {
+        return null;
+    }
+
+    @Override
+    public Boolean update(SqlManager sqlManager) {
+        return null;
+    }
+
+    @Override
+    public Boolean delete(DtoQuery dtoQuery) {
+        return null;
+    }
+
+    @Override
+    public Boolean delete(SqlManager sqlManager) {
+        return null;
+    }
+
     private <T> EPage<T> findCount(String sql, List<Object> params) {
         EPage<T> ePage = new EPage<T>();
         String selectCountSql = sql.substring(sql.indexOf("select "), sql.indexOf(" from "));
@@ -130,7 +161,7 @@ public class JpaButler extends AbstractSearch {
         }
     }
 
-    private <T> EPage<T> findPage(Query query, Class<T> resultClazz,
+    private <T> void findPage(Query query, Class<T> resultClazz,
                                   EPage<T> ePage,
                                   Integer pageNo, Integer pageSize) {
         if (null == pageNo || pageNo <= 0) {
@@ -151,7 +182,6 @@ public class JpaButler extends AbstractSearch {
             List<T> list = resultList.stream().map(it -> ClassUtils.mapToObj(it, resultClazz))
                     .collect(Collectors.toList());
             ePage.setList(list);
-            return ePage;
         } catch (Exception exception) {
             exception.printStackTrace();
             throw new DtoQueryException("查询发生了其他异常,e:[" + exception.getMessage() + "]");

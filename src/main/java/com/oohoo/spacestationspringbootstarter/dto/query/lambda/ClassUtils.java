@@ -346,6 +346,7 @@ public class ClassUtils {
                 if (val instanceof BigInteger && field.getType().getName().equals("java.lang.Long")) {
                     val = Long.valueOf(String.valueOf(val));
                 }
+
                 field.setAccessible(true);
                 field.set(o, val);
             }
