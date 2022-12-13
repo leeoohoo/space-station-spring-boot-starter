@@ -12,9 +12,9 @@ import java.util.List;
 public interface Butler {
 
 
-    <T> EPage<T> findPage(DtoQuery dtoQuery, Class<T> resultClazz, Integer pageNo, int pageSize);
+    <T> EPage<T> findPage(DtoQuery dtoQuery, Class<T> resultClazz, Integer pageNo, Integer pageSize);
 
-    <T> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, int pageSize);
+    <T> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize);
 
     <T> List<T> findList(DtoQuery dtoQuery, Class<T> resultClazz);
 
@@ -23,6 +23,9 @@ public interface Butler {
     <T> T findOne(DtoQuery dtoQuery, Class<T> resultClazz);
 
     <T> T findOne(SqlManager sqlManager, Class<T> resultClazz);
+
+    <T> EPage<T> count(String sql,List<Object> params);
+
 
 
 }

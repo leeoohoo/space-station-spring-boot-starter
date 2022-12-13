@@ -101,7 +101,11 @@ public class MysqlSqlContext implements SqlContext {
         if(!StringUtils.hasLength(this.alias)) {
             return this.alias;
         }
-        return this.alias.deleteCharAt(this.alias.lastIndexOf(","));
+        if(',' == this.alias.charAt(this.alias.toString().trim().length()-1)){
+            return this.alias.deleteCharAt(this.alias.lastIndexOf(","));
+        }else {
+            return this.alias;
+        }
 
     }
 

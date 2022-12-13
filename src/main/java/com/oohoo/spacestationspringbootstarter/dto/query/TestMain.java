@@ -84,7 +84,7 @@ public class TestMain {
 
         String select_ = sql1.substring(sql1.indexOf("select "), sql1.indexOf(" from "));
         String replace = sql1.replace(select_, "select count(1) as count ");
-        System.out.println(select_);
+        System.out.println(replace);
 
     }
 

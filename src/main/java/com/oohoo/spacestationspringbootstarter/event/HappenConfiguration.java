@@ -109,9 +109,9 @@ public class HappenConfiguration {
             Object proceed = this.happen(invocation,annotation);
             if (!CollectionUtils.isEmpty(value)) {
                 // 如果发现后续事件的接收者，手动打开事物
-                AbstractPlatformTransactionManager transactionManager = SpringUtils.getBean("transactionManager");
+                AbstractPlatformTransactionManager transactionManager =
+                        SpringUtils.getBean("transactionManager");
                 DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-
                 // 事物隔离级别，开启新事务，这样会比较安全些
                 def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                 assert transactionManager != null;
@@ -133,6 +133,7 @@ public class HappenConfiguration {
                 });
 
                 transactionManager.commit(status);
+
                 EventThreadValue.clearThreadLocal();
             }
 
@@ -211,7 +212,7 @@ public class HappenConfiguration {
                     circulationRecord =
                             EventUtil.initCirculationRecord(params, triggerMethod, e.getMessage(), null, EventEnum.FAILED);
                 }
-                transactionManager.commit(status);
+                transactionManager.rollback(status);
                 throw new RuntimeException(e);
             } finally {
                 if (annotation.enabledSave()) {

@@ -8,7 +8,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
  * @Description
  * @since 30 November 2022
  */
-public interface OrderByManager {
+public interface OrderByManager extends SqlManager {
 
     <T> OrderByManager by(SelectColumn<T, ?> column, OrderByEnum order);
 

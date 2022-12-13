@@ -3,11 +3,13 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @Description:
@@ -35,7 +37,7 @@ public class MysqlQuery extends AbstractSqlQuery {
 
     @Override
     public String getSql() {
-        if(!this.isBuild) {
+        if (!this.isBuild) {
             this.buildSelectSql();
             this.buildJoinSql();
             this.buildCdnSql();
@@ -81,7 +83,19 @@ public class MysqlQuery extends AbstractSqlQuery {
             return;
         }
         this.sql.append(" group by ");
-        this.sql.append(this.sqlContext.getAlias()).append(" \n");
+        StringBuilder alias = this.sqlContext.getAlias();
+        StringBuilder groupFiled = new StringBuilder();
+        if (StringUtils.hasLength(alias)) {
+            AtomicReference<Integer> i = new AtomicReference<>(1);
+            Arrays.stream(alias.toString().split(",")).forEach(it -> {
+                String[] as = it.split(" as ");
+                if(null != as && as.length > 0) {
+                    groupFiled.append(as[0]).append(",");
+                }
+            });
+        }
+        groupFiled.deleteCharAt(groupFiled.lastIndexOf(","));
+        this.sql.append(groupFiled).append(" \n");
     }
 
     private void buildSelectSql() {
