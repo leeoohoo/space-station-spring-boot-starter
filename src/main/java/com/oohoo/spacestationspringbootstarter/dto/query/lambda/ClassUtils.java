@@ -241,6 +241,9 @@ public class ClassUtils {
     }
 
     private static String getTableNameByDto(Class<?> clazz) {
+        if(null == clazz) {
+            throw new DtoQueryException("请选择要查询的表");
+        }
         Class<?>[] interfaces = clazz.getInterfaces();
         boolean isDto = interfaces.length > 0 && interfaces[0].equals(DTO.class);
         if(isDto) {
@@ -255,6 +258,9 @@ public class ClassUtils {
     }
 
     private static String getTableNameByEntity(Class<?> clazz) {
+        if(null == clazz) {
+            throw new DtoQueryException("请确定要查询的表");
+        }
         EntityName entityName = clazz.getDeclaredAnnotation(EntityName.class);
         Entity entity = clazz.getDeclaredAnnotation(Entity.class);
         String tableName = "";
@@ -349,6 +355,7 @@ public class ClassUtils {
 
                 field.setAccessible(true);
                 field.set(o, val);
+
             }
         }
         return o;

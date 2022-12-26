@@ -99,6 +99,9 @@ public class MysqlQuery extends AbstractSqlQuery {
     }
 
     private void buildSelectSql() {
+        if(!this.sqlContext.hasSelectField()) {
+            throw new DtoQueryException("请添加要查找的字段");
+        }
         StringBuilder select = this.sqlContext.getSelect();
         select.append(this.sqlContext.getGeneralFunctionSql());
         select.append(this.sqlContext.getGroupFunctionSql());

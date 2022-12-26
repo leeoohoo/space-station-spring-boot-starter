@@ -110,4 +110,8 @@ public interface SqlContext {
     void addAlias(Column column);
 
     void addAlias(String column);
+
+    Boolean hasSelectField();
+
+    void setSelectField();
 }

@@ -18,7 +18,7 @@ import lombok.Data;
 @OrderBy(table = Test1.class,field = "name",orderType = OrderByEnum.DESC)
 public class Test1 {
 
-    private Integer id;
+    private Long id;
 
     private String name;
 

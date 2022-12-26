@@ -48,6 +48,10 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
+    public final SelectManager select() {
+        return this;
+    }
+
     /**
      * 获得Select 语句,如未调用该方法则默认查询DTO 中所有字段
      *
@@ -55,6 +59,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
      */
     @Override
     @SafeVarargs
+    @SuppressWarnings("unchecked")
     public final <T> SelectManager select(SelectColumn<T, ?>... columns) {
         StringBuilder select = this.sqlContext.getSelect();
         Arrays.stream(columns).forEach(it -> {
@@ -62,6 +67,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
             select.append(column.getSelectFieldSql()).append(", ").append("\n");
             this.sqlContext.addAlias(column);
         });
+        this.sqlContext.setSelectField();
         return this;
     }
 
@@ -71,6 +77,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Column column = Column.create(selectColumn, alias);
         select.append(column.getSelectFieldSql()).append(", ").append("\n");
         this.sqlContext.addAlias(column);
+        this.sqlContext.setSelectField();
         return this;
     }
 
@@ -91,6 +98,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
             select.append(it.getSelectFieldSql()).append(", ").append("\n");
             this.sqlContext.addAlias(it);
         });
+        this.sqlContext.setSelectField();
         return this;
     }
 
@@ -102,6 +110,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
             select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
             this.sqlContext.addAlias(it.getAlias());
         });
+        this.sqlContext.setSelectField();
         return this;
     }
 
@@ -113,6 +122,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         Arrays.stream(sqlFunction).forEach(it -> {
             select.append(it.getFuncSql()).append(" as ").append(it.getAlias()).append(", ").append("\n");
         });
+        this.sqlContext.setSelectField();
         return this;
     }
 

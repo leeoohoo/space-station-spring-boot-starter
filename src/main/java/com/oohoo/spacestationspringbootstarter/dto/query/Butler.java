@@ -12,15 +12,15 @@ import java.util.List;
 public interface Butler {
 
 
-    <T> EPage<T> findPage(DtoQuery dtoQuery, Class<T> resultClazz, Integer pageNo, Integer pageSize);
+    <T extends DTO> EPage<T> findPage(T dto, Integer pageNo, Integer pageSize);
 
-    <T> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize);
+    <T extends DTO> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize);
 
-    <T> List<T> findList(DtoQuery dtoQuery, Class<T> resultClazz);
+    <T extends DTO> List<T> findList(T dto);
 
     <T> List<T> findList(SqlManager sqlManager, Class<T> resultClazz);
 
-    <T> T findOne(DtoQuery dtoQuery, Class<T> resultClazz);
+    <T extends DTO> T findOne(T dto);
 
     <T> T findOne(SqlManager sqlManager, Class<T> resultClazz);
 
@@ -28,7 +28,7 @@ public interface Butler {
 
     Object insert(DTO dto);
 
-    Boolean insertBatch(List<DTO> dtoList, Integer batchSize);
+    <T extends DTO> void insertBatch(List<T> dtoList, Integer batchSize);
 
     Boolean update(DtoQuery dtoQuery);
 

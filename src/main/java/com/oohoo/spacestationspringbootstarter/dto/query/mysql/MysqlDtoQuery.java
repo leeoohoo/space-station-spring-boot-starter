@@ -21,7 +21,7 @@ public class MysqlDtoQuery extends AbstractDtoQuery {
     private MysqlDtoQuery(){}
 
     public static DtoQuery init(DTO dto) {
-        MysqlDtoQuery mysqlDtoQuery = new MysqlDtoQuery(){};
+        MysqlDtoQuery mysqlDtoQuery = new MysqlDtoQuery();
         mysqlDtoQuery.dto = dto;
         mysqlDtoQuery.dtoClass = dto.getClass();
         mysqlDtoQuery.declaredFields = mysqlDtoQuery.dtoClass.getDeclaredFields();

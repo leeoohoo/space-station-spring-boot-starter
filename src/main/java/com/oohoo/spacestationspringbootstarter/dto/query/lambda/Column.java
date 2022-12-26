@@ -25,6 +25,10 @@ public class Column {
 
     private String alias;
 
+    private Field fieldRef;
+
+    private Object value;
+
 
     private Column(Class<?> clazz, String fieldFunc, String alias) {
         this.tableName = ClassUtils.getTableName(clazz);
@@ -39,6 +43,7 @@ public class Column {
         this.field = ClassUtils.camelToUnderline(field.getName());
         this.alias = alias;
         this.clazz = clazz;
+        this.fieldRef = field;
     }
 
     public static Column create(Class<?> clazz, String fieldFunc, String alias) {

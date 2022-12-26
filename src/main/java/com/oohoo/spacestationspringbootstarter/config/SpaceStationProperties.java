@@ -18,5 +18,8 @@ public class SpaceStationProperties {
     @Value("taskExecutorName")
     private String taskExecutorName;
 
+    @Value("defaultBatchSize")
+    private String defaultBatchSize;
+
 
 }

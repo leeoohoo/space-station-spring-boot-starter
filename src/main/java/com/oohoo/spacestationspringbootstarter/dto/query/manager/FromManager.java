@@ -2,6 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.manager;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
+import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
 
 /**
@@ -11,11 +12,14 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunctio
  */
 public interface FromManager {
 
-    FromManager from(Class<?> clazz);
 
-    <T> SelectManager select(SelectColumn<T, ?>... columns);
+    /**
+     * 指定要查询的表
+     * @param clazz
+     * @return
+     */
+    SelectManager from(Class<?> clazz);
 
-    <T> SelectManager select(SelectColumn<T, ?> column, String alias);
 
-    <T> HavingManager addCdn(GroupByFunction groupByFunction, OpEnum opEnum, GroupByFunction groupByFunction1);
+
 }

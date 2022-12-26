@@ -60,6 +60,8 @@ public class MysqlSqlContext implements SqlContext {
 
     private boolean havTemporaryBracket = false;
 
+    private boolean hasSelectField = false;
+
 
     private MysqlSqlContext() {
     }
@@ -308,5 +310,15 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public void addAlias(String column) {
         this.alias.append(column).append(", ");
+    }
+
+    @Override
+    public Boolean hasSelectField() {
+        return this.hasSelectField;
+    }
+
+    @Override
+    public void setSelectField(){
+        this.hasSelectField = true;
     }
 }

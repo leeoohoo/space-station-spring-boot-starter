@@ -10,8 +10,17 @@ import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryExcep
  */
 public abstract class GeneralFunction implements SqlFunction {
 
+    /**
+     * 函数类型
+     */
     protected SqlFunctionEnum sqlFunctionEnum;
+    /**
+     * 别名
+     */
     protected String alias;
+    /**
+     *  函数sql
+     */
     protected String funcSql;
 
     protected GeneralFunction(SqlFunctionEnum sqlFunctionEnum,String funcSql, String alias ) {

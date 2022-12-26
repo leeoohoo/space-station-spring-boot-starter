@@ -171,14 +171,14 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
     @Override
     public void selectScan() {
         //1. 排除所有不需要查询的字段
-        List<Field> fields = Arrays.stream(this.declaredFields)
-                .filter(it -> null == it.getDeclaredAnnotation(Exclude.class))
-                .collect(Collectors.toList());
-
+        List<Field> fields = Arrays.asList(this.declaredFields);
         if(null != this.superFields && this.superFields.length > 0) {
             fields.addAll(Arrays.asList(this.superFields));
         }
 
+        fields = fields.stream()
+                .filter(it -> null == it.getDeclaredAnnotation(Exclude.class))
+                .collect(Collectors.toList());
         //2. 将所有查询的字段转换成column
         this.columns = ClassUtils.fieldsToColumns(this.dtoClass, fields);
     }

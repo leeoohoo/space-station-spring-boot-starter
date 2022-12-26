@@ -20,6 +20,10 @@ public class TestDto implements DTO {
 
     private String dtoName;
 
+    private Integer age;
+
+    private String name;
+
     @Exclude
     private String home;
 

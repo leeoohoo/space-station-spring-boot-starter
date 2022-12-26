@@ -2,18 +2,14 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.OrderByEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.SqlFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.WhenItem;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.CdnManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Description:
@@ -24,9 +20,7 @@ public class TestMain {
 
     public static void main(String[] args) {
         // 链式调用
-        SqlManager fnish = EQ.find()
-                .from(TestWhat.class)
-                .select(TestWhat::getUserName, TestWhat::getAge)
+        SqlManager fnish = EQ.find(Test1.class).select(TestWhat::getUserName,TestWhat::getAge)
                 .select(TestWhat::getAge, "userAge")
                 .select(TestDto.class)
                 .select(EF.abs(TestDto::getDtoId))
@@ -49,7 +43,10 @@ public class TestMain {
 
                 .finish();
 
-        System.out.println(fnish.getSql());
+        CdnManager eq = EQ.find(Test1.class).select(TestWhat.class).where().eq(TestWhat::getAge, 1);
+        SqlManager finish = eq.finish();
+
+        System.out.println(finish.getSql());
         System.out.println(fnish.getParams());
 
         //-----通过dto 来生成sql与参数
@@ -82,9 +79,10 @@ public class TestMain {
 
         String sql1 = sql.getSql();
 
-        String select_ = sql1.substring(sql1.indexOf("select "), sql1.indexOf(" from "));
-        String replace = sql1.replace(select_, "select count(1) as count ");
+        String select = sql1.substring(sql1.indexOf("select "), sql1.indexOf(" from "));
+        String replace = sql1.replace(select, "select count(1) as count ");
         System.out.println(replace);
+
 
     }
 

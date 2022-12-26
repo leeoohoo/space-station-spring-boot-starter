@@ -14,7 +14,4 @@ public interface Query {
 
     Query create();
 
-    String getSql();
-
-
 }

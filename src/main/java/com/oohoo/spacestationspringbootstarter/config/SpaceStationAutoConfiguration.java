@@ -23,6 +23,8 @@ import javax.persistence.PersistenceContext;
 public class SpaceStationAutoConfiguration {
 
     public static String TASK_EXECUTOR_NAME = null;
+
+    public static Integer DEFAULT_BATCH_SIZE = 50;
     private final ApplicationContext applicationContext;
 
     @PersistenceContext
@@ -40,6 +42,8 @@ public class SpaceStationAutoConfiguration {
     @Bean
     public SpringUtils getSpringUtils(SpaceStationProperties stationProperties) {
         TASK_EXECUTOR_NAME = stationProperties.getTaskExecutorName();
+        Integer defaultBatchSize = Integer.valueOf(stationProperties.getDefaultBatchSize());
+        DEFAULT_BATCH_SIZE = defaultBatchSize <= 0 ? defaultBatchSize : DEFAULT_BATCH_SIZE;
         SpringUtils springUtils = new SpringUtils();
         springUtils.setApplicationContext(applicationContext);
         return springUtils;

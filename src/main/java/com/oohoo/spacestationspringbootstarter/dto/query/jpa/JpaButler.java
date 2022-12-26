@@ -1,10 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.jpa;
 
 import com.oohoo.spacestationspringbootstarter.config.SpringUtils;
-import com.oohoo.spacestationspringbootstarter.dto.query.AbstractSearch;
-import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
-import com.oohoo.spacestationspringbootstarter.dto.query.DtoQuery;
-import com.oohoo.spacestationspringbootstarter.dto.query.EPage;
+import com.oohoo.spacestationspringbootstarter.dto.query.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
@@ -18,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,45 +37,51 @@ public class JpaButler extends AbstractSearch {
 
 
     @Override
-    public <T> EPage<T> findPage(DtoQuery dtoQuery, Class<T> resultClazz, Integer pageNo, Integer pageSize) {
-        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams(), resultClazz);
-        return findPage(dtoQuery.getSql(), dtoQuery.getParams(), resultClazz, init, pageNo, pageSize);
+    public <T extends DTO> EPage<T> findPage(T dto, Integer pageNo, Integer pageSize) {
+        DtoQuery dtoQuery = EQ.find(dto);
+        Class<T> aClass = (Class<T>) dto.getClass();
+        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams());
+        return findPage(dtoQuery.getSql(), dtoQuery.getParams(), aClass, init, pageNo, pageSize);
 
 
     }
 
     @Override
-    public <T> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams(), resultClazz);
+    public <T extends DTO> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize) {
+        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
         return findPage(sqlManager.getSql(), sqlManager.getParams(), resultClazz, init, pageNo, pageSize);
 
     }
 
     @Override
-    public <T> List<T> findList(DtoQuery dtoQuery, Class<T> resultClazz) {
-        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams(), resultClazz);
-        return this.findList(init, resultClazz);
+    public <T extends DTO> List<T> findList(T dto) {
+        DtoQuery dtoQuery = EQ.find(dto);
+        Class<T> aClass = (Class<T>) dto.getClass();
+        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams());
+        return this.findList(init, aClass);
     }
 
     @Override
     public <T> List<T> findList(SqlManager sqlManager, Class<T> resultClazz) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams(), resultClazz);
+        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
         return this.findList(init, resultClazz);
     }
 
     @Override
-    public <T> T findOne(DtoQuery dtoQuery, Class<T> result) {
-        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams(), result);
+    public <T extends DTO> T findOne(T dto) {
+        DtoQuery dtoQuery = EQ.find(dto);
+        Class<T> aClass = (Class<T>) dto.getClass();
+        Query init = this.init(dtoQuery.getSql(), dtoQuery.getParams());
         Map<String, Object> one = this.findOne(init);
         if (null == one) {
             return null;
         }
-        return ClassUtils.mapToObj(one, result);
+        return ClassUtils.mapToObj(one, aClass);
     }
 
     @Override
     public <T> T findOne(SqlManager sqlManager, Class<T> result) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams(), result);
+        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
         Map<String, Object> one = this.findOne(init);
         if (null == one) {
             return null;
@@ -92,12 +96,31 @@ public class JpaButler extends AbstractSearch {
 
     @Override
     public Object insert(DTO dto) {
-        return null;
+        DtoInserter insert = EQ.insert(dto);
+        Query init = this.init(insert.getInsertOneSql(), insert.getParams());
+        init.executeUpdate();
+        this.em.close();
+        return insert.getEntity();
     }
 
     @Override
-    public Boolean insertBatch(List<DTO> dtoList, Integer batchSize) {
-        return null;
+    public <T extends DTO> void insertBatch(List<T> dtoList, Integer batchSize) {
+        DtoInserter insert = EQ.insert(dtoList, batchSize);
+        AbstractPlatformTransactionManager transactionManager = this.getTransactionManager();
+        TransactionStatus transactionStatus = this.getTransactionStatus(transactionManager);
+        try{
+            insert.getBatchInsertContainers().forEach(it -> {
+                Query init = this.init(it.getSql(), it.getParams());
+                init.executeUpdate();
+            });
+            transactionManager.commit(transactionStatus);
+        }catch (Exception e) {
+            transactionManager.rollback(transactionStatus);
+            throw new DtoQueryException("批量插入发生异常,e:[" + e.getMessage() + "]");
+        }finally {
+            this.em.close();
+        }
+
     }
 
     @Override
@@ -128,12 +151,12 @@ public class JpaButler extends AbstractSearch {
             params = params.subList(paramsCount, params.size() - 1);
         }
         String replace = sql.replace(selectCountSql, "select count(1) as total ");
-        Query init = this.init(replace, params, EPage.class);
+        Query init = this.init(replace, params);
         Map<String, Object> one = null;
-        try{
-            one =  (Map<String, Object>) init.getSingleResult();
-        }catch (Exception e) {
-            throw new DtoQueryException("查询总行数时发生异常，e:["+e.getMessage()+"]");
+        try {
+            one = (Map<String, Object>) init.getSingleResult();
+        } catch (Exception e) {
+            throw new DtoQueryException("查询总行数时发生异常，e:[" + e.getMessage() + "]");
         }
         if (null == one) {
             ePage.setTotal(0);
@@ -143,9 +166,9 @@ public class JpaButler extends AbstractSearch {
         return ePage;
     }
 
-    private <T> EPage<T> findPage(String sql, List<Object> params,
-                                  Class<T> resultClazz, Query query,
-                                  Integer pageNo, Integer pageSize) {
+    private <T extends DTO> EPage<T> findPage(String sql, List<Object> params,
+                                              Class<T> resultClazz, Query query,
+                                              Integer pageNo, Integer pageSize) {
         AbstractPlatformTransactionManager transactionManager = this.getTransactionManager();
         TransactionStatus transactionStatus = this.getTransactionStatus(transactionManager);
         try {
@@ -162,8 +185,8 @@ public class JpaButler extends AbstractSearch {
     }
 
     private <T> void findPage(Query query, Class<T> resultClazz,
-                                  EPage<T> ePage,
-                                  Integer pageNo, Integer pageSize) {
+                              EPage<T> ePage,
+                              Integer pageNo, Integer pageSize) {
         if (null == pageNo || pageNo <= 0) {
             pageNo = 1;
         }
@@ -226,7 +249,7 @@ public class JpaButler extends AbstractSearch {
     }
 
 
-    private <T> Query init(String sql, List<Object> params, Class<T> result) {
+    private <T> Query init(String sql, List<Object> params) {
         Query nativeQuery = em.createNativeQuery(sql);
         if (null != params) {
             for (int i = 0; i < params.size(); i++) {
