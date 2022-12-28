@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 public class JpaUtils {
 
     public static final Field getIdField(Class<?> clazz){
-        List<Field> collect = Arrays.stream(clazz.getDeclaredFields()).filter(it -> {
-            return null != it.getDeclaredAnnotation(Id.class);
-        }).collect(Collectors.toList());
+        List<Field> collect = Arrays.stream(clazz.getDeclaredFields()).filter(
+                it -> null != it.getDeclaredAnnotation(Id.class)).collect(Collectors.toList()
+        );
         if(CollectionUtils.isEmpty(collect)) {
             throw new DtoQueryException("实体类中缺少Id，请检查实体类注解。clazz:"+clazz.getName());
         }
