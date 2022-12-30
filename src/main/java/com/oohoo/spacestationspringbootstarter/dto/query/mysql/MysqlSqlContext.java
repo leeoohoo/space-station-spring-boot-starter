@@ -5,6 +5,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import org.springframework.util.StringUtils;
 
@@ -27,22 +28,26 @@ public class MysqlSqlContext implements SqlContext {
     private Class<?> fromClazz;
     private StringBuilder selectSql;
 
-    private final StringBuilder generalFunctionSql = new StringBuilder();
-    private final StringBuilder groupFunctionSql = new StringBuilder();
+    private StringBuilder generalFunctionSql;
+    private StringBuilder groupFunctionSql;
 
-    private final StringBuilder joinSql = new StringBuilder();
+    private StringBuilder joinSql;
 
-    private final StringBuilder cdnSql = new StringBuilder();
+    private StringBuilder cdnSql;
 
-    private final StringBuilder havingSql = new StringBuilder();
+    private StringBuilder havingSql;
 
-    private final StringBuilder orderBySql = new StringBuilder();
+    private StringBuilder orderBySql;
+
+    private StringBuilder updateSql;
+
+    private StringBuilder deleteSql;
 
     private Boolean groupBy = false;
 
-    private final StringBuilder alias = new StringBuilder();
+    private StringBuilder alias;
 
-    private final StringBuilder groupAlias = new StringBuilder();
+    private StringBuilder groupAlias;
 
     private final List<Object> params = new ArrayList<>();
 
@@ -100,12 +105,12 @@ public class MysqlSqlContext implements SqlContext {
     }
 
     public StringBuilder getAlias() {
-        if(!StringUtils.hasLength(this.alias)) {
+        if (!StringUtils.hasLength(this.alias)) {
             return this.alias;
         }
-        if(',' == this.alias.charAt(this.alias.toString().trim().length()-1)){
+        if (',' == this.alias.charAt(this.alias.toString().trim().length() - 1)) {
             return this.alias.deleteCharAt(this.alias.lastIndexOf(","));
-        }else {
+        } else {
             return this.alias;
         }
 
@@ -132,9 +137,9 @@ public class MysqlSqlContext implements SqlContext {
 
     @Override
     public StringBuilder getOrderBySql() {
-        if(StringUtils.hasLength(this.orderBySql)) {
+        if (StringUtils.hasLength(this.orderBySql)) {
             return this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
-        }else {
+        } else {
             return this.orderBySql;
         }
     }
@@ -261,6 +266,37 @@ public class MysqlSqlContext implements SqlContext {
         this.fromClazz = clazz;
     }
 
+    @Override
+    public void initSelect() {
+        this.alias = new StringBuilder();
+        this.cdnSql = new StringBuilder();
+        this.havingSql = new StringBuilder();
+        this.generalFunctionSql = new StringBuilder();
+        this.groupAlias = new StringBuilder();
+        this.groupFunctionSql = new StringBuilder();
+        this.joinSql = new StringBuilder();
+        this.orderBySql = new StringBuilder();
+    }
+
+    public void initUpdate() {
+        this.updateSql = new StringBuilder();
+        this.cdnSql = new StringBuilder();
+        this.havingSql = new StringBuilder();
+        String tableName = ClassUtils.getTableName(this.fromClazz);
+        this.updateSql.append("update ")
+                .append(tableName)
+                .append(" as ").append(tableName).append("\n");
+    }
+
+    public void initDelete() {
+        this.deleteSql = new StringBuilder();
+        this.cdnSql = new StringBuilder();
+        this.havingSql = new StringBuilder();
+        String tableName = ClassUtils.getTableName(this.fromClazz);
+        this.deleteSql.append("delete from ").append(tableName)
+                .append(" as ").append(tableName).append(" \n");
+    }
+
     private void addOnCdn(Column column, OpEnum opEnum, Object object) {
         this.joinSql.append(column.getOnSql()).append(opEnum.getOp()).append(" ? ").append("\n");
         this.params.add(object);
@@ -312,13 +348,29 @@ public class MysqlSqlContext implements SqlContext {
         this.alias.append(column).append(", ");
     }
 
+    public void addSet(String setSql) {
+        this.updateSql.append(setSql).append(",").append("\n");
+    }
+
+    @Override
+    public StringBuilder getUpdateSql() {
+        return this.updateSql;
+    }
+
+    @Override
+    public StringBuilder getDeleteSql() {
+        return this.deleteSql;
+    }
+
     @Override
     public Boolean hasSelectField() {
         return this.hasSelectField;
     }
 
     @Override
-    public void setSelectField(){
+    public void setSelectField() {
         this.hasSelectField = true;
     }
+
+
 }

@@ -10,7 +10,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunctio
  * @Description
  * @since 28 October 2022
  */
-public interface FromManager {
+public interface FromManager extends SqlManager {
 
 
     /**

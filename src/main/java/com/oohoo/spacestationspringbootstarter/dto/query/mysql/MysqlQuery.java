@@ -3,6 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 import com.oohoo.spacestationspringbootstarter.dto.query.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class MysqlQuery extends AbstractSqlQuery {
 
 
     @Override
-    public String getSql() {
+    public String getSelectSql() {
         if (!this.isBuild) {
             this.buildSelectSql();
             this.buildJoinSql();
@@ -46,7 +47,37 @@ public class MysqlQuery extends AbstractSqlQuery {
             this.buildOrderSql();
         }
         this.isBuild = true;
+        this.validateSelect();
         return this.sql.toString();
+    }
+
+    @Override
+    public String getUpdateSql() {
+        if (!this.isBuild) {
+            this.buildUpdate();
+            this.buildCdnSql();
+        }
+        this.isBuild = true;
+        return this.sql.toString();
+    }
+
+    private void buildUpdate() {
+        this.sql = this.sqlContext.getUpdateSql();
+        this.sql = this.sql.deleteCharAt(this.sql.lastIndexOf(","));
+    }
+
+    @Override
+    public String getDeleteSql() {
+        if (!this.isBuild) {
+            this.buildDelete();
+            this.buildCdnSql();
+        }
+        this.isBuild = true;
+        return this.sql.toString();
+    }
+
+    private void buildDelete() {
+        this.sql = this.sqlContext.getDeleteSql();
     }
 
     private void buildOrderSql() {
@@ -89,7 +120,7 @@ public class MysqlQuery extends AbstractSqlQuery {
             AtomicReference<Integer> i = new AtomicReference<>(1);
             Arrays.stream(alias.toString().split(",")).forEach(it -> {
                 String[] as = it.split(" as ");
-                if(null != as && as.length > 0) {
+                if (null != as && as.length > 0) {
                     groupFiled.append(as[0]).append(",");
                 }
             });
@@ -99,7 +130,7 @@ public class MysqlQuery extends AbstractSqlQuery {
     }
 
     private void buildSelectSql() {
-        if(!this.sqlContext.hasSelectField()) {
+        if (!this.sqlContext.hasSelectField()) {
             throw new DtoQueryException("请添加要查找的字段");
         }
         StringBuilder select = this.sqlContext.getSelect();
@@ -113,8 +144,7 @@ public class MysqlQuery extends AbstractSqlQuery {
     }
 
 
-    @Override
-    public MysqlQuery finish() {
+    private void validateSelect() {
         StringBuilder alias = this.sqlContext.getAlias();
         String[] split = alias.toString().split(",");
         Set<String> stringSet = new HashSet<>();
@@ -125,6 +155,9 @@ public class MysqlQuery extends AbstractSqlQuery {
         if (stringSet.size() != split.length) {
             throw new DtoQueryException("查询的字段重复,e:[" + this.sqlContext.getAlias() + "]");
         }
+    }
+
+    public SqlManager finish() {
         return this;
     }
 }

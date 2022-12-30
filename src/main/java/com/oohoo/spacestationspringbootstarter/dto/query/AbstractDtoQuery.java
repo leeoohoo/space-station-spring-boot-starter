@@ -6,7 +6,6 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
-import com.oohoo.spacestationspringbootstarter.dto.query.manager.DtoSqlManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.CdnScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.JoinScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.OrderByScan;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
  * @author Lei Li. lei.d.li@capgemini.com
  * @since 11 November 2022
  */
-public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, OrderByScan, DtoSqlManager {
+public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, OrderByScan {
 
     protected DTO dto;
 

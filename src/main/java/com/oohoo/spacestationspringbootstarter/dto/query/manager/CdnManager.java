@@ -81,12 +81,11 @@ public interface CdnManager extends SqlManager {
 
     CdnManager bracket();
 
-    SqlManager finish();
 
     HavingManager having();
 
     OrderByManager order();
 
-    void findOne();
+
 
 }

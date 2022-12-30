@@ -48,9 +48,8 @@ public class JpaButler extends AbstractSearch {
 
     @Override
     public <T extends DTO> EPage<T> findPage(SqlManager sqlManager, Class<T> resultClazz, Integer pageNo, Integer pageSize) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
-        return findPage(sqlManager.getSql(), sqlManager.getParams(), resultClazz, init, pageNo, pageSize);
-
+        Query init = this.init(sqlManager.getSelectSql(), sqlManager.getParams());
+        return findPage(sqlManager.getSelectSql(), sqlManager.getParams(), resultClazz, init, pageNo, pageSize);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class JpaButler extends AbstractSearch {
 
     @Override
     public <T> List<T> findList(SqlManager sqlManager, Class<T> resultClazz) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
+        Query init = this.init(sqlManager.getSelectSql(), sqlManager.getParams());
         return this.findList(init, resultClazz);
     }
 
@@ -81,7 +80,7 @@ public class JpaButler extends AbstractSearch {
 
     @Override
     public <T> T findOne(SqlManager sqlManager, Class<T> result) {
-        Query init = this.init(sqlManager.getSql(), sqlManager.getParams());
+        Query init = this.init(sqlManager.getSelectSql(), sqlManager.getParams());
         Map<String, Object> one = this.findOne(init);
         if (null == one) {
             return null;
@@ -96,11 +95,12 @@ public class JpaButler extends AbstractSearch {
 
     @Override
     public Object insert(DTO dto) {
+
         DtoInserter insert = EQ.insert(dto);
-        Query init = this.init(insert.getInsertOneSql(), insert.getParams());
-        init.executeUpdate();
-        this.em.close();
+        this.execute(insert.getInsertOneSql(), insert.getParams());
         return insert.getEntity();
+
+
     }
 
     @Override
@@ -108,39 +108,43 @@ public class JpaButler extends AbstractSearch {
         DtoInserter insert = EQ.insert(dtoList, batchSize);
         AbstractPlatformTransactionManager transactionManager = this.getTransactionManager();
         TransactionStatus transactionStatus = this.getTransactionStatus(transactionManager);
-        try{
+        try {
             insert.getBatchInsertContainers().forEach(it -> {
                 Query init = this.init(it.getSql(), it.getParams());
                 init.executeUpdate();
             });
             transactionManager.commit(transactionStatus);
-        }catch (Exception e) {
+        } catch (Exception e) {
             transactionManager.rollback(transactionStatus);
             throw new DtoQueryException("批量插入发生异常,e:[" + e.getMessage() + "]");
-        }finally {
+        } finally {
             this.em.close();
         }
 
     }
 
-    @Override
-    public Boolean update(DtoQuery dtoQuery) {
-        return null;
-    }
 
     @Override
-    public Boolean update(SqlManager sqlManager) {
-        return null;
+    public void update(SqlManager sqlManager) {
+        this.execute(sqlManager.getUpdateSql(), sqlManager.getParams());
     }
 
-    @Override
-    public Boolean delete(DtoQuery dtoQuery) {
-        return null;
-    }
 
     @Override
-    public Boolean delete(SqlManager sqlManager) {
-        return null;
+    public void delete(SqlManager sqlManager) {
+        this.execute(sqlManager.getDeleteSql(), sqlManager.getParams());
+    }
+
+
+    private void execute(String sql, List<Object> params) {
+        try {
+            Query init = this.init(sql, params);
+            init.executeUpdate();
+        } catch (Exception e) {
+            throw new DtoQueryException("执行sql 发生异常，e:[" + e.getMessage() + "，sql:" + sql + ",params:" + params + "]");
+        } finally {
+            this.em.close();
+        }
     }
 
     private <T> EPage<T> findCount(String sql, List<Object> params) {

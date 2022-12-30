@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 21 October 2022
  */
 public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinManager, SelectManager,
-        HavingManager, OrderByManager, Query {
+        HavingManager, OrderByManager,UpdateManager,DeleteManager, Query {
 
     protected SqlContext sqlContext;
 
@@ -45,12 +45,11 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     @Override
     public final AbstractSqlQuery from(Class<?> clazz) {
         this.sqlContext.setFrom(clazz);
+        this.sqlContext.initSelect();
         return this;
     }
 
-    public final SelectManager select() {
-        return this;
-    }
+
 
     /**
      * 获得Select 语句,如未调用该方法则默认查询DTO 中所有字段
@@ -127,8 +126,27 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
     }
 
     @Override
-    public CdnManager where() {
+    public <T> UpdateManager update(Class<T> clazz) {
+        this.sqlContext.setFrom(clazz);
+        this.sqlContext.initUpdate();
+        return this;
+    }
 
+    @Override
+    public <T> UpdateManager set(SelectColumn<T,?> selectColumn, Object object) {
+        this.addSetFiled(selectColumn,object);
+        return this;
+    }
+
+    @Override
+    public <T> DeleteManager delete(Class<T> clazz) {
+        this.sqlContext.setFrom(clazz);
+        this.sqlContext.initDelete();
+        return this;
+    }
+
+    @Override
+    public CdnManager where() {
         return this;
     }
 
@@ -299,11 +317,6 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         return this;
     }
 
-    @Override
-    public void findOne() {
-
-
-    }
 
     @Override
     public JoinManager inner(Class<?> clazz, String... alias) {
@@ -397,6 +410,7 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         this.sqlContext.addJoin(joinEnum, tableName, tableAlias);
     }
 
+
     private <T> void addCdnAndParams(SelectColumn<T, ?> selectColumn, Object value, OpEnum opEnum, boolean required) {
         Column field = Column.create(selectColumn);
         if (required && null == value) {
@@ -441,6 +455,12 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
         }
         String cdnSql = field.getCdnSql(opEnum, likeLocation);
         this.sqlContext.addCdn(cdnSql);
+        this.sqlContext.addParams(value);
+    }
+
+    private <T> void addSetFiled(SelectColumn<T,?> selectColumn, Object value) {
+        Column column = Column.create(selectColumn);
+        this.sqlContext.addSet(column.getCdnSql(OpEnum.EQ));
         this.sqlContext.addParams(value);
     }
 

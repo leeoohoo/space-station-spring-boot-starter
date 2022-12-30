@@ -14,4 +14,14 @@ public interface DtoQuery {
     String getSql();
 
     List<Object> getParams();
+
+    void build();
+
+    void selectBuild();
+
+    void cdnBuild();
+
+    void joinBuild();
+
+    void orderBuild();
 }

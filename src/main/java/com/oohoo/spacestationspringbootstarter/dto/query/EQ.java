@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
 import com.oohoo.spacestationspringbootstarter.config.SpaceStationAutoConfiguration;
-import com.oohoo.spacestationspringbootstarter.dto.query.manager.FromManager;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.DeleteManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SelectManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.UpdateManager;
 import com.oohoo.spacestationspringbootstarter.dto.query.mysql.MysqlDtoInserter;
@@ -58,8 +58,13 @@ public class EQ {
         return init;
     }
 
-    public static UpdateManager update(Class<?> clazz) {
+    public static<T> UpdateManager update(Class<T> clazz) {
+        MysqlQuery init = MysqlQuery.init();
+        return init.create().update(clazz);
+    }
 
-        return null;
+    public static <T> DeleteManager delete(Class<T> clazz){
+        MysqlQuery init = MysqlQuery.init();
+        return init.create().delete(clazz);
     }
 }

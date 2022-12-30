@@ -8,7 +8,11 @@ import java.util.List;
  * @since 21 October 2022
  */
 public interface SqlManager {
-    String getSql();
+    String getSelectSql();
+
+    String getUpdateSql();
+
+    String getDeleteSql();
 
     /**
      * 获取参数
@@ -16,4 +20,6 @@ public interface SqlManager {
      * @return
      */
     List<Object> getParams();
+
+    SqlManager finish();
 }

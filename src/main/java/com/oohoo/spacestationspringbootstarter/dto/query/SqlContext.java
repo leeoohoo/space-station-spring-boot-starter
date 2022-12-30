@@ -101,6 +101,12 @@ public interface SqlContext {
 
     void setFrom(Class<?> clazz);
 
+    void initSelect();
+
+    void initUpdate();
+
+    void initDelete();
+
     void addBracket(StringBuilder sb);
 
     void addHavBracket(StringBuilder sb);
@@ -114,4 +120,10 @@ public interface SqlContext {
     Boolean hasSelectField();
 
     void setSelectField();
+
+    void addSet(String cdnSql);
+
+    StringBuilder getUpdateSql();
+
+    StringBuilder getDeleteSql();
 }

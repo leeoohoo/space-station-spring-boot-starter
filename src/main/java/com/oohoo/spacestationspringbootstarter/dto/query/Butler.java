@@ -30,16 +30,15 @@ public interface Butler {
 
     <T extends DTO> void insertBatch(List<T> dtoList, Integer batchSize);
 
-    Boolean update(DtoQuery dtoQuery);
 
 
-    Boolean update(SqlManager sqlManager);
+
+    void update(SqlManager sqlManager);
 
 
-    Boolean delete(DtoQuery dtoQuery);
 
 
-    Boolean delete(SqlManager sqlManager);
+    void delete(SqlManager sqlManager);
 
 
 }

@@ -1,5 +1,8 @@
 package com.oohoo.spacestationspringbootstarter.dto.query;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.CdnManager;
+import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,19 +16,17 @@ public class TestMian1 {
     public static void main(String[] args) {
 
 
-        List<TestDto> list = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            TestDto testDto = new TestDto();
-            testDto.setTestName("ceshi");
-            testDto.setId(1L);
-            testDto.setName("ss");
-            testDto.setAge(1);
-            list.add(testDto);
-        }
-        DtoInserter insert = EQ.insert(list,43);
-        System.out.println(insert.getBatchInsertContainers());
-        System.out.println(insert.getBatchInsertContainers());
-        System.out.println(insert.getParams());
+        CdnManager ss = EQ.update(Test1.class)
+                .set(Test1::getAge, 1)
+                .set(TestWhat::getJob, "ss")
+                .where()
+                .eq(Test1::getAge, 1);
+        SqlManager finish = ss.finish();
+        System.out.println(finish.getUpdateSql());
+
+        SqlManager finish1 = EQ.delete(Test1.class)
+                .where().eq(Test1::getAge, 1).finish();
+        System.out.println(finish1.getDeleteSql());
 
 
     }

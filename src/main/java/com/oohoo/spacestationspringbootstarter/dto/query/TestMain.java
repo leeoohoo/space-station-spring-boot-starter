@@ -46,7 +46,7 @@ public class TestMain {
         CdnManager eq = EQ.find(Test1.class).select(TestWhat.class).where().eq(TestWhat::getAge, 1);
         SqlManager finish = eq.finish();
 
-        System.out.println(finish.getSql());
+        System.out.println(finish.getSelectSql());
         System.out.println(fnish.getParams());
 
         //-----通过dto 来生成sql与参数
