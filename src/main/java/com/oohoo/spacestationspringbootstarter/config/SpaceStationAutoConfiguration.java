@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.config;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.Butler;
 import com.oohoo.spacestationspringbootstarter.dto.query.jpa.JpaButler;
+import com.oohoo.spacestationspringbootstarter.dto.query.Butler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
