@@ -157,7 +157,5 @@ public class MysqlQuery extends AbstractSqlQuery {
         }
     }
 
-    public SqlManager finish() {
-        return this;
-    }
+
 }

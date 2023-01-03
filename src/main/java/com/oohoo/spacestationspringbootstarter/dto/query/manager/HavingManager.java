@@ -23,6 +23,6 @@ public interface HavingManager extends SqlManager{
 
     <T> HavingManager addCdn(GroupByFunction groupByFunction, OpEnum opEnum, SelectColumn<T,?> column);
 
-    SqlManager finish();
+
 
 }

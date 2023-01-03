@@ -107,9 +107,5 @@ public interface SelectManager extends SqlManager {
      */
     JoinManager right(Class<?> clazz, String... alias);
 
-    /**
-     * 完成链式调用
-     * @return
-     */
-    SqlManager finish();
+
 }

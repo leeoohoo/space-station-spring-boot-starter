@@ -16,5 +16,4 @@ public interface OrderByManager extends SqlManager {
 
     <T> OrderByManager by(OrderByEnum order, SelectColumn<T, ?>... columns);
 
-    SqlManager finish();
 }

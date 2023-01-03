@@ -21,5 +21,4 @@ public interface SqlManager {
      */
     List<Object> getParams();
 
-    SqlManager finish();
 }

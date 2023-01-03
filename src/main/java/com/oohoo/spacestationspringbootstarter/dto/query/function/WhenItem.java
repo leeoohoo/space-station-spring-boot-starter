@@ -1,7 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.function;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.TestWhat;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import lombok.Data;
