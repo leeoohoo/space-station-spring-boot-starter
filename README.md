@@ -1,5 +1,5 @@
 # 开发空间站
-
+目前更新至0.0.3 版本，版本详情见文末。
 ## 简介
 * 总结自己在开发过程中，遇到的一些问题，并将这些问题归集分析后， 得出的一些解决方案， 并开发成比较方便使用的注解；
 * 本项目会持续更新，追加一些新的功能或优化完善已做好的功能；
@@ -11,6 +11,7 @@
 * 开始使用
 * 验证器
 * 事件驱动引擎
+* DtoQuery
 * 待开发内容
 * 版本更新详情
 
@@ -315,6 +316,9 @@ public class TestRecord implements RecordAbstract {
 * 事件接收器会根据配置 "order" 自然排序顺序执行
 * EventThreadValue.getStepResultThreadLocal("validate") 可以根据线程变量获取已经执行过的事件接收器的返回参数
 
+# DTOQuery
+刚开发完并发版到maven中央仓库，后续会将详细的使用方法通过一个单独的文章详细阐述。
+
 # 待开发内容
 1. 完善事件驱动引擎，开放若干接口供用户实现；
 2. 基于DTO添加注解，自动生成 select 语句与where 语句；
@@ -325,6 +329,10 @@ public class TestRecord implements RecordAbstract {
 ## 0.0.2 
 更新事件驱动器注解，添加RecordAbstract的实现功能，可以自定义将事件发生的过程参数记录下来
 @Happen 注解添加新属性 boolean enabledSave() default false; 默认不记录
+## 0.0.3 
+今天终于弄好了第三个版本，主要内容为基于DTO 或链式调用的方式动态的生成sql,并在这个版本完成与jpa 的集成，
+后续看是否可以集成其他的；
+我会自己起一个博客的项目来用当前工具进行开发，将一些底级的bug清掉，博客的代码后续也会开放出来以供参考
 
 
 
