@@ -33,10 +33,10 @@ public class JoinContainer {
     public static JoinContainer create(Join join) {
         JoinContainer joinContainer = new JoinContainer();
         joinContainer.joinClass = join.joinClazz();
-        joinContainer.joinField = join.joinField();
+        joinContainer.joinField = ClassUtils.camelToUnderline(join.joinField());
         joinContainer.joinEnum = join.join();
         joinContainer.fromClass = join.fromClazz();
-        joinContainer.fromField = join.fromField();
+        joinContainer.fromField = ClassUtils.camelToUnderline(join.fromField());
         joinContainer.order = join.order();
         joinContainer.opEnum = join.op();
         return joinContainer;

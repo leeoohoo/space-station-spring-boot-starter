@@ -7,9 +7,9 @@ import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryExcep
 import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -319,20 +319,28 @@ public abstract class AbstractSqlQuery implements FromManager, CdnManager, JoinM
 
 
     @Override
-    public JoinManager inner(Class<?> clazz, String... alias) {
-        this.addJoin(JoinEnum.INNER, clazz, alias);
+    public JoinManager inner(Class<?> clazz) {
+        this.addJoin(JoinEnum.INNER, clazz);
         return this;
     }
 
     @Override
-    public JoinManager left(Class<?> clazz, String... alias) {
-        this.addJoin(JoinEnum.LEFT, clazz, alias);
+    public JoinManager left(Class<?> clazz) {
+        this.addJoin(JoinEnum.LEFT, clazz);
         return this;
     }
 
     @Override
-    public JoinManager right(Class<?> clazz, String... alias) {
-        this.addJoin(JoinEnum.RIGHT, clazz, alias);
+    public JoinManager right(Class<?> clazz) {
+        this.addJoin(JoinEnum.RIGHT, clazz);
+        return this;
+    }
+
+    @Override
+    public <T, J> JoinManager on(SelectColumn<T, ?> column, SelectColumn<J, ?> column1) {
+        Column selectColumn = Column.create(column);
+        Column selectColumn1 = Column.create(column1);
+        this.sqlContext.addOn(selectColumn, OpEnum.EQ, selectColumn1);
         return this;
     }
 

@@ -1,8 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.function;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
-import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunction;
 
 /**
  * @author Lei Li. lei.d.li@capgemini.com

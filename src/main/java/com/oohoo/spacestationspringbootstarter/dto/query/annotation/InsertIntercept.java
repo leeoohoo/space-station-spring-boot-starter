@@ -1,8 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.annotation;
 
 
-import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

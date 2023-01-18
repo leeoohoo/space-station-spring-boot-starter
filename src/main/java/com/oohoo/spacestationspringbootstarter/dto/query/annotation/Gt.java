@@ -21,4 +21,8 @@ public @interface Gt {
     int order() default 0;
 
     boolean required() default false;
+
+    String key() default "";
+
+    Class<?> table() default ClazzIsNull.class;
 }

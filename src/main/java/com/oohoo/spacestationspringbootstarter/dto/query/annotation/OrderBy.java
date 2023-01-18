@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Repeatable(OrderBy.List.class)
 public @interface OrderBy {
 
-    Class<?> table();
+    Class<?> table() default ClazzIsNull.class;
 
     String field();
 

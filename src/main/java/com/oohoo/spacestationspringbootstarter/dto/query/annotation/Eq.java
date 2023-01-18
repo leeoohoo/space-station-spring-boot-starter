@@ -3,9 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.annotation;
 
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-import org.springframework.core.annotation.AliasFor;
 
-import java.io.Serializable;
 import java.lang.annotation.*;
 
 /**
@@ -21,6 +19,10 @@ public @interface Eq {
     int order() default 0;
 
     boolean required() default false;
+
+    String key() default "";
+
+    Class<?> table() default ClazzIsNull.class;
 
 
 

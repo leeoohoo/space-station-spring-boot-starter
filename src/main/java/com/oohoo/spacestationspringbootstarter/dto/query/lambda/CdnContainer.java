@@ -1,7 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.DTO;
-import com.oohoo.spacestationspringbootstarter.dto.query.annotation.Condition;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
@@ -47,6 +45,10 @@ public class CdnContainer {
      * 第二个字段
      */
     private Field field1;
+
+    private String key;
+
+    private Class<?> table;
 
     private LikeLocation likeLocation;
 
@@ -107,7 +109,7 @@ public class CdnContainer {
 
 
     public static <T, P> CdnContainer create(SelectColumn<T, ?> column,
-                                             OpEnum opEnum, SelectColumn<P,?> column2, LogicEnum... logicSymbol) {
+                                             OpEnum opEnum, SelectColumn<P, ?> column2, LogicEnum... logicSymbol) {
         return create(column, OpEnum.EQ, column2, null, logicSymbol);
     }
 
@@ -148,7 +150,9 @@ public class CdnContainer {
                                       OpEnum opEnum,
                                       Field field,
                                       Class<?> fromClazz,
-                                      Object dto) {
+                                      Object dto,
+                                      String key,
+                                      Class<?> table) {
         field.setAccessible(true);
         CdnContainer cdnContainer = getValue(field, dto, required);
         if (null == cdnContainer) {
@@ -160,6 +164,8 @@ public class CdnContainer {
         cdnContainer.logicSymbol = logicEnum;
         cdnContainer.opEnum = opEnum;
         cdnContainer.order = order;
+        cdnContainer.key = key;
+        cdnContainer.table = table;
         return cdnContainer;
     }
 

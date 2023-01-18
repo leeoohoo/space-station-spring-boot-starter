@@ -1,9 +1,8 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.AbstractSqlQuery;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
-import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -71,14 +70,21 @@ public class MysqlQuery extends AbstractSqlQuery {
         if (!this.isBuild) {
             this.buildDelete();
             this.buildCdnSql();
+
         }
         this.isBuild = true;
         return this.sql.toString();
     }
 
+
+
+
     private void buildDelete() {
         this.sql = this.sqlContext.getDeleteSql();
     }
+
+
+
 
     private void buildOrderSql() {
         this.sql.append(this.sqlContext.getOrderBySql());
@@ -152,9 +158,11 @@ public class MysqlQuery extends AbstractSqlQuery {
             String[] as = it.split("as");
             return as.length >= 2 ? as[1] : as[0];
         }).forEach(stringSet::add);
+        this.sqlContext.validBracket();
         if (stringSet.size() != split.length) {
             throw new DtoQueryException("查询的字段重复,e:[" + this.sqlContext.getAlias() + "]");
         }
+
     }
 
 

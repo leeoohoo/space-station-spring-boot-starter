@@ -1,14 +1,19 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.mysql;
 
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.SqlContext;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.LastUpdateBy;
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.LastUpdateTime;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
+import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
+import com.oohoo.spacestationspringbootstarter.dto.query.init.InsertInit;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -213,7 +218,12 @@ public class MysqlSqlContext implements SqlContext {
     @Override
     public void setBracket() {
         this.bracketCount++;
-        this.temporaryBracket = true;
+        if (this.bracketCount % 2 == 0 ) {
+            this.cdnSql.append(" )\n");
+            this.temporaryBracket = false;
+        }else {
+            this.temporaryBracket = true;
+        }
     }
 
     @Override
@@ -285,8 +295,39 @@ public class MysqlSqlContext implements SqlContext {
         String tableName = ClassUtils.getTableName(this.fromClazz);
         this.updateSql.append("update ")
                 .append(tableName)
-                .append(" as ").append(tableName).append("\n");
+                .append(" as ")
+                .append(tableName)
+                .append("\n")
+                .append(" set ");
+
+        this.initUpdateBy();
     }
+
+
+    private void initUpdateBy() {
+        if (null == InsertInit.lastUpdateByInit) {
+            return;
+        }
+        Class<?> fromClass = this.getFromClass();
+        ArrayList<Field> fileds = ClassUtils.getFileds(fromClass);
+        fileds.forEach(field -> {
+            LastUpdateBy lastUpdateBy = field.getDeclaredAnnotation(LastUpdateBy.class);
+
+            if (null != lastUpdateBy) {
+                Column column = Column.create(fromClass, field);
+                this.addSet(column.getCdnSql(OpEnum.EQ));
+                this.addParams(InsertInit.lastUpdateByInit.current());
+            }
+            LastUpdateTime lastUpdateTime = field.getDeclaredAnnotation(LastUpdateTime.class);
+            if (null != lastUpdateTime) {
+                Column column = Column.create(fromClass, field);
+                this.addSet(column.getCdnSql(OpEnum.EQ));
+                this.addParams(InsertInit.lastUpdateByInit.time());
+            }
+        });
+    }
+
+
 
     public void initDelete() {
         this.deleteSql = new StringBuilder();
@@ -311,10 +352,7 @@ public class MysqlSqlContext implements SqlContext {
             sb.append(" (");
             this.temporaryBracket = false;
         }
-        if (this.bracketCount % 2 == 0 && this.temporaryBracket) {
-            sb.append(" )\n");
-            this.temporaryBracket = false;
-        }
+
     }
 
     @Override
@@ -357,9 +395,18 @@ public class MysqlSqlContext implements SqlContext {
         return this.updateSql;
     }
 
+
+
     @Override
     public StringBuilder getDeleteSql() {
         return this.deleteSql;
+    }
+
+    @Override
+    public void validBracket() {
+        if(this.bracketCount %2 != 0){
+            throw new DtoQueryException("请检查是否补全括号");
+        }
     }
 
     @Override

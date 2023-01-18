@@ -24,7 +24,7 @@ public interface Butler {
 
     <T> T findOne(SqlManager sqlManager, Class<T> resultClazz);
 
-    <T> EPage<T> count(String sql,List<Object> params);
+    <T> EPage<T> count(String sql, List<Object> params);
 
     Object insert(DTO dto);
 

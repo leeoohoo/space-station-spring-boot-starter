@@ -40,18 +40,19 @@ public class SpaceStationAutoConfiguration {
     }
 
     @Bean
-    public SpringUtils getSpringUtils(SpaceStationProperties stationProperties) {
+    public SpringUtils springUtils(SpaceStationProperties stationProperties) {
         TASK_EXECUTOR_NAME = stationProperties.getTaskExecutorName();
         Integer defaultBatchSize = Integer.valueOf(stationProperties.getDefaultBatchSize());
-        DEFAULT_BATCH_SIZE = defaultBatchSize <= 0 ? defaultBatchSize : DEFAULT_BATCH_SIZE;
+
+        DEFAULT_BATCH_SIZE =  defaultBatchSize <= 0  ? defaultBatchSize : DEFAULT_BATCH_SIZE;
         SpringUtils springUtils = new SpringUtils();
         springUtils.setApplicationContext(applicationContext);
         return springUtils;
     }
 
-    @Bean(name = "butler")
+    @Bean
     @Scope(scopeName = "prototype")
-    public Butler getButler() {
+    public Butler butler() {
         return new JpaButler(entityManager);
     }
 }

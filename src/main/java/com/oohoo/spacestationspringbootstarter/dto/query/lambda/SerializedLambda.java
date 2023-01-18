@@ -49,7 +49,12 @@ public class SerializedLambda implements Serializable {
                 return clazz == java.lang.invoke.SerializedLambda.class ? SerializedLambda.class : clazz;
             }
         }) {
-            return (SerializedLambda) objIn.readObject();
+
+            SerializedLambda serializedLambda = (SerializedLambda) objIn.readObject();
+            // 这里主要是为了实现实体类有基类的情况下导致的拿不到 当前类而拿到基类的这种情景
+            String instantiatedMethodType1 = serializedLambda.instantiatedMethodType;
+            serializedLambda.implClass = instantiatedMethodType1.substring(2, instantiatedMethodType1.lastIndexOf(")")-1);
+            return serializedLambda;
         } catch (ClassNotFoundException | IOException e) {
             throw ExceptionUtils.mpe("This is impossible to happen", e);
         }

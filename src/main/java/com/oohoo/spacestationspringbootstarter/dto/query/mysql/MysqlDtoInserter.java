@@ -116,9 +116,11 @@ public class MysqlDtoInserter extends AbstractDtoInserter {
             return;
         }
 
+
         if (initDeleted(field)) {
             return;
         }
+
 
         // 判断必填字段
         Column column = field.getDeclaredAnnotation(Column.class);
@@ -134,7 +136,7 @@ public class MysqlDtoInserter extends AbstractDtoInserter {
                 }
             }
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new DtoQueryException("添加");
         }
 
     }
@@ -167,6 +169,8 @@ public class MysqlDtoInserter extends AbstractDtoInserter {
         this.params.add(date);
         return true;
     }
+
+
 
     private Boolean initLastUpdateBy(Field field) {
         if (this.ifLastUpdateByInited) {

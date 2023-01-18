@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.*;
+import static java.util.regex.Pattern.compile;
 
 
 /**
@@ -361,5 +361,12 @@ public class ClassUtils {
         return o;
     }
 
-
+    public static ArrayList<Field> getFileds(Class<?> fromClazz) {
+        ArrayList<Field> declaredFields = new ArrayList<>(Arrays.asList(fromClazz.getDeclaredFields()));
+        Class<?> superclass = fromClazz.getSuperclass();
+        if(null != superclass) {
+            declaredFields.addAll(Arrays.asList(superclass.getDeclaredFields()));
+        }
+        return declaredFields;
+    }
 }

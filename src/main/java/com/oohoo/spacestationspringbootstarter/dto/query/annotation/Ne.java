@@ -20,5 +20,9 @@ public @interface Ne {
 
     boolean required() default false;
 
+    String key() default "";
+
+    Class<?> table() default ClazzIsNull.class;
+
 
 }

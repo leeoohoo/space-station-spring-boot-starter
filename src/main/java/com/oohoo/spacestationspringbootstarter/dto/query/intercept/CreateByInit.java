@@ -1,7 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.intercept;
 
-import java.util.Date;
-
 /**
  * @Description:
  * @Author: lei.d.li@capgemini.com

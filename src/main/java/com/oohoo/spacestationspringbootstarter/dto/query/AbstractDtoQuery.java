@@ -5,7 +5,6 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.*;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.CdnScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.JoinScan;
 import com.oohoo.spacestationspringbootstarter.dto.query.scan.OrderByScan;
@@ -72,9 +71,9 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
 
     @Override
     public String getSql() {
-        if(!isBuild) {
+        if (!isBuild) {
             StringBuilder order = new StringBuilder("");
-            if(StringUtils.hasLength(this.orderBySql)) {
+            if (StringUtils.hasLength(this.orderBySql)) {
                 order = this.orderBySql.deleteCharAt(this.orderBySql.lastIndexOf(","));
 
             }
@@ -123,26 +122,31 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
             Boolean required = false;
             LogicEnum logic = null;
             LikeLocation likeLocation = null;
+            String key = "";
+            Class<?> table = null;
             for (Annotation annotation : it.getDeclaredAnnotations()) {
-                conditionAtomicReference.set(annotation.annotationType().getDeclaredAnnotation(Condition.class));
-                order = (Integer) AnnotationUtils.getValue(annotation, "order");
-                required = (Boolean) AnnotationUtils.getValue(annotation, "required");
-                logic = (LogicEnum) AnnotationUtils.getValue(annotation, "logic");
-                likeLocation = (LikeLocation) AnnotationUtils.getValue(annotation, "likeLocation");
+                Condition declaredAnnotation = annotation.annotationType().getDeclaredAnnotation(Condition.class);
+                if (null != declaredAnnotation) {
+                    conditionAtomicReference.set(annotation.annotationType().getDeclaredAnnotation(Condition.class));
+                    order = (Integer) AnnotationUtils.getValue(annotation, "order");
+                    required = (Boolean) AnnotationUtils.getValue(annotation, "required");
+                    logic = (LogicEnum) AnnotationUtils.getValue(annotation, "logic");
+                    likeLocation = (LikeLocation) AnnotationUtils.getValue(annotation, "likeLocation");
+                    key = (String) AnnotationUtils.getValue(annotation, "key");
+                    table = (Class<?>) AnnotationUtils.getValue(annotation, "table");
+                }
             }
             Condition condition = conditionAtomicReference.get();
             if (null != condition) {
                 //1. 存放cdn 容器
                 CdnContainer cdnContainer =
                         CdnContainer.create(required, order, logic, likeLocation,
-                                condition.op(), it, this.fromClass, this.dto);
-                if(null != cdnContainer) {
+                                condition.op(), it, this.fromClass, this.dto, key, table);
+                if (null != cdnContainer) {
                     this.cdnContainers.add(cdnContainer);
                 }
             }
-
         });
-
     }
 
     @Override
@@ -171,7 +175,7 @@ public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan
     public void selectScan() {
         //1. 排除所有不需要查询的字段
         List<Field> fields = Arrays.asList(this.declaredFields);
-        if(null != this.superFields && this.superFields.length > 0) {
+        if (null != this.superFields && this.superFields.length > 0) {
             fields.addAll(Arrays.asList(this.superFields));
         }
 

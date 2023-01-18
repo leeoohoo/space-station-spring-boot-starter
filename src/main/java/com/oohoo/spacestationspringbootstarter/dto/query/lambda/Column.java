@@ -1,5 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 
+import com.oohoo.spacestationspringbootstarter.dto.query.annotation.ClazzIsNull;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LikeLocation;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
@@ -78,7 +79,7 @@ public class Column {
     }
 
     public String getCdnSql(OpEnum opEnum) {
-        return tableName + "." + field + opEnum.getOp() + " ? ";
+        return tableName + "." + this.field + opEnum.getOp() + " ? ";
     }
 
     public String getCdnSql(OpEnum opEnum, LikeLocation leftOrRight) {
@@ -98,9 +99,45 @@ public class Column {
         }
         return tableName + "." + field + opEnum.getOp() + placeholder;
     }
+    public String getCdnSql(OpEnum opEnum,Class<?> clazzIsNull,String key) {
+        String table = "";
+        if(null == clazzIsNull || clazzIsNull.isAssignableFrom(ClazzIsNull.class))  {
+            table = this.tableName;
+        }else {
+            table = ClassUtils.getTableName(clazzIsNull);
+        }
+        String resultField = StringUtils.hasLength(key) ? ClassUtils.camelToUnderline(key) : field;
+        return table + "." + resultField + opEnum.getOp() + " ? ";
+    }
+
+    public String getCdnSql(OpEnum opEnum, LikeLocation leftOrRight,Class<?> clazzIsNull,String key) {
+        String placeholder = " ? ";
+        if(OpEnum.LIKE.equals(opEnum)) {
+            switch (leftOrRight){
+                case ALL:
+                    placeholder = " concat('%',? ,'%') ";
+                    break;
+                case LEFT:
+                    placeholder = " concat('%',? ) ";
+                    break;
+                case RIGHT:
+                    placeholder = " concat(? ,'%') ";
+                    break;
+            }
+        }
+
+        String table = "";
+        if(null == clazzIsNull || clazzIsNull.isAssignableFrom(ClazzIsNull.class))  {
+            table = this.tableName;
+        }else {
+            table = ClassUtils.getTableName(clazzIsNull);
+        }
+        String resultField = StringUtils.hasLength(key) ? ClassUtils.camelToUnderline(key) : field;
+        return table + "." + resultField + opEnum.getOp() + placeholder;
+    }
 
     public String getOnSql() {
-        return " " + (StringUtils.hasLength(alias) ? alias : tableName) + "." + field + " ";
+        return " " + tableName + "." + field + " ";
     }
 
 

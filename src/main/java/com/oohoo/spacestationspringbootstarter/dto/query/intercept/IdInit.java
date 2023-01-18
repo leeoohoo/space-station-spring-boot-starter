@@ -1,7 +1,5 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.intercept;
 
-import org.hibernate.id.IdentifierGenerator;
-
 import java.io.Serializable;
 
 /**

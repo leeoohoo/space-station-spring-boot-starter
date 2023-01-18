@@ -89,7 +89,7 @@ public interface SelectManager extends SqlManager {
      * @param alias
      * @return
      */
-    JoinManager inner(Class<?> clazz, String... alias);
+    JoinManager inner(Class<?> clazz);
 
     /**
      * 添加左链接
@@ -97,7 +97,7 @@ public interface SelectManager extends SqlManager {
      * @param alias
      * @return
      */
-    JoinManager left(Class<?> clazz, String... alias);
+    JoinManager left(Class<?> clazz);
 
     /**
      * 添加右链接
@@ -105,7 +105,7 @@ public interface SelectManager extends SqlManager {
      * @param alias
      * @return
      */
-    JoinManager right(Class<?> clazz, String... alias);
+    JoinManager right(Class<?> clazz);
 
 
 }

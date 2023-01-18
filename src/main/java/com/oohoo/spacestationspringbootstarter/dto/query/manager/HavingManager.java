@@ -9,7 +9,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunctio
  * @Description
  * @since 28 November 2022
  */
-public interface HavingManager extends SqlManager{
+public interface HavingManager extends SqlManager {
 
 
     OrderByManager order();

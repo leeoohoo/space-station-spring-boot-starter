@@ -5,6 +5,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.*;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.ClassUtils;
 import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.Transformers;
 import org.springframework.transaction.TransactionDefinition;
@@ -14,7 +15,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +130,7 @@ public class JpaButler extends AbstractSearch {
     public void update(SqlManager sqlManager) {
         this.execute(sqlManager.getUpdateSql(), sqlManager.getParams());
     }
+
 
 
     @Override

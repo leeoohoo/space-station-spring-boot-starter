@@ -3,8 +3,8 @@ package com.oohoo.spacestationspringbootstarter.dto.query;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.JoinEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import com.oohoo.spacestationspringbootstarter.dto.query.lambda.CdnContainer;
+import com.oohoo.spacestationspringbootstarter.dto.query.lambda.Column;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -126,4 +126,6 @@ public interface SqlContext {
     StringBuilder getUpdateSql();
 
     StringBuilder getDeleteSql();
+
+    void validBracket();
 }

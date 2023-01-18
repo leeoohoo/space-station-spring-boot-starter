@@ -1,9 +1,6 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.annotation;
 
 
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.LogicEnum;
-import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

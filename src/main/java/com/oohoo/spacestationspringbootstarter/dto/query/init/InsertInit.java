@@ -1,7 +1,10 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.init;
 
 import com.oohoo.spacestationspringbootstarter.config.SpringUtils;
-import com.oohoo.spacestationspringbootstarter.dto.query.intercept.*;
+import com.oohoo.spacestationspringbootstarter.dto.query.intercept.CreateByInit;
+import com.oohoo.spacestationspringbootstarter.dto.query.intercept.IdInit;
+import com.oohoo.spacestationspringbootstarter.dto.query.intercept.LastUpdateByInit;
+import com.oohoo.spacestationspringbootstarter.dto.query.intercept.SnowFlakeUtil;
 
 import java.util.Map;
 import java.util.Optional;
@@ -15,11 +18,12 @@ public  final class InsertInit {
 
     public static final IdInit idInit = getBean(IdInit.class);
 
-    public static final SnowFlakeGenerator snowFlakeGenerator = new SnowFlakeGenerator.Factory().create();
+    public static final SnowFlakeUtil snowFlakeGenerator = new SnowFlakeUtil();
 
-    public static final InsertOrUpdateIntercept createByInit = getBean(CreateByInit.class);
+    public static final CreateByInit createByInit = getBean(CreateByInit.class);
 
-    public static final InsertOrUpdateIntercept lastUpdateByInit = getBean(LastUpdateByInit.class);
+    public static final LastUpdateByInit lastUpdateByInit = getBean(LastUpdateByInit.class);
+
 
 
     private static  <T> T getBean(Class<T> clazz){

@@ -15,11 +15,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SpaceStationProperties {
 
 
-    @Value("taskExecutorName")
+    @Value("${taskExecutorName:}")
     private String taskExecutorName;
 
-    @Value("defaultBatchSize")
     private String defaultBatchSize;
 
+    @Value("${defaultBatchSize:0}")
+    public void setDefaultBatchSize(String size) {
+        this.defaultBatchSize = size;
+    }
 
 }
