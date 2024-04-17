@@ -150,7 +150,7 @@ public class NameAndIdCardValidate implements GroupValidate {
 ```java
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/3
  */
 @Service
@@ -220,7 +220,7 @@ public class UserService {
 ```java
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/8
  */
 @Slf4j
