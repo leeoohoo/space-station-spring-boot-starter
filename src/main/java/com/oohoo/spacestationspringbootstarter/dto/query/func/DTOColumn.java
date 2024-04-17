@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/10/19
  */
 @FunctionalInterface

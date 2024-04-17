@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/16
  */
 public interface IdInit  {

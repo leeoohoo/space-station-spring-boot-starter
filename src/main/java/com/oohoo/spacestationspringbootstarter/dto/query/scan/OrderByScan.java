@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.scan;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 30 November 2022
  */

@@ -3,7 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.intercept;
 import java.util.Date;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 10 一月 2023
  */

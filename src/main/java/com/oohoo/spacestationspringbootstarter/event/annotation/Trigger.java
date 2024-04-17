@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * @Description: 事件接收器，在发生源被调用后，会根据happenName进行匹配，
  *               依次调用被该注解注释的方法，
  *
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/5
  */
 @Target({ElementType.METHOD})

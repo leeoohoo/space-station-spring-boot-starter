@@ -152,7 +152,7 @@ public class NameAndIdCardValidate implements GroupValidate {
 ```java
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/3
  */
 @Service
@@ -222,7 +222,7 @@ public class UserService {
 ```java
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/8
  */
 @Slf4j
@@ -573,7 +573,7 @@ public class OrderDTO implements DTO {
 ```java
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 11 一月 2023
  */

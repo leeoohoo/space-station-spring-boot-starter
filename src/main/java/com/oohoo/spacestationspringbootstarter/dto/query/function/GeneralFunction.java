@@ -4,7 +4,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.SqlFunctionEnum;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 21 November 2022
  */

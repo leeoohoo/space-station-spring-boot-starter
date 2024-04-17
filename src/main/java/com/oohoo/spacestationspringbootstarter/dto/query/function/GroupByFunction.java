@@ -5,7 +5,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryExcep
 import lombok.Data;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 21 November 2022
  */

@@ -5,7 +5,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.OrderByEnum;
 import java.lang.annotation.*;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 30 November 2022
  */

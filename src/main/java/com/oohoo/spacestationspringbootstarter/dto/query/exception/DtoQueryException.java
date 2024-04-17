@@ -1,7 +1,7 @@
 package com.oohoo.spacestationspringbootstarter.dto.query.exception;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 20 October 2022
  */
