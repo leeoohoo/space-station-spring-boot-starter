@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 01 December 2022
  */

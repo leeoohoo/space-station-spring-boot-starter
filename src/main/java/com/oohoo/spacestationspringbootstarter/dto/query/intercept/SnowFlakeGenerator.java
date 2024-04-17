@@ -2,7 +2,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.intercept;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/20
  */
 public class SnowFlakeGenerator {

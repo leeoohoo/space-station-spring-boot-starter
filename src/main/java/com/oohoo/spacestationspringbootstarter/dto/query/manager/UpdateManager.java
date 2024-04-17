@@ -4,7 +4,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.func.SelectColumn;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/23
  */
 public interface UpdateManager extends SqlManager {

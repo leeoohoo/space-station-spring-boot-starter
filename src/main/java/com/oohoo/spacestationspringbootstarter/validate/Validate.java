@@ -2,7 +2,7 @@ package com.oohoo.spacestationspringbootstarter.validate;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/7/27
  */
 public interface Validate {

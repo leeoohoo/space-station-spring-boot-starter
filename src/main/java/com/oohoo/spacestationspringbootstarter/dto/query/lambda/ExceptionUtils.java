@@ -3,7 +3,7 @@ package com.oohoo.spacestationspringbootstarter.dto.query.lambda;
 import com.oohoo.spacestationspringbootstarter.dto.query.exception.DtoQueryException;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 20 October 2022
  */

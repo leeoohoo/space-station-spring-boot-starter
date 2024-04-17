@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/31
  */
 public class EventUtil {

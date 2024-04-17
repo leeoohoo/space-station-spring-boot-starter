@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * @Description: 开启事件流扫描
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/5
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/14
  */
 public abstract class AbstractDtoInserter implements DtoInserter {

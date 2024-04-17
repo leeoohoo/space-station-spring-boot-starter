@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @since 11 November 2022
  */
 public abstract class AbstractDtoQuery implements DtoQuery, SelectScan, JoinScan, CdnScan, OrderByScan {

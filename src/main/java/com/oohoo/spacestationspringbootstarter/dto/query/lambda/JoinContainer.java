@@ -6,7 +6,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.enums.OpEnum;
 import lombok.Data;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 14 November 2022
  */

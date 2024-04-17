@@ -22,7 +22,7 @@ import java.util.*;
 
 /**
  * @Description: 注册 事件发生源 与接收器
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/5
  */
 public class HappenFunctionRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {

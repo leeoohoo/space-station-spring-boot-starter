@@ -6,7 +6,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.function.GeneralFunctio
 import com.oohoo.spacestationspringbootstarter.dto.query.function.GroupByFunction;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 28 October 2022
  */

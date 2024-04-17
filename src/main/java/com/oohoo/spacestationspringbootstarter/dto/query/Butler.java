@@ -5,7 +5,7 @@ import com.oohoo.spacestationspringbootstarter.dto.query.manager.SqlManager;
 import java.util.List;
 
 /**
- * @author Lei Li. lei.d.li@capgemini.com
+ * @author Lei Li. leeoohoo@gmail.com
  * @Description
  * @since 01 December 2022
  */

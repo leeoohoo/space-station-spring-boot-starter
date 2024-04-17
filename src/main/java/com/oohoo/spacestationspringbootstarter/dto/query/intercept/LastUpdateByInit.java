@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/15
  */
 public interface LastUpdateByInit extends InsertOrUpdateIntercept{

@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @Description: 事件接收上下文
  *               将事件源头与事件接收进行绑定后存放至内存中
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/8/5
  */
 @Component

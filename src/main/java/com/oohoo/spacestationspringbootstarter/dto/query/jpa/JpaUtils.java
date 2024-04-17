@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Description:
- * @Author: lei.d.li@capgemini.com
+ * @Author: leeoohoo@gmail.com
  * @CreateTime: 2022/12/15
  */
 public class JpaUtils {
